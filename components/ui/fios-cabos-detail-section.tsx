@@ -27,7 +27,7 @@ export function FiosCabosDetailSection() {
         'Cabos automotivos',
         'Cabos de dados',
       ]}
-      chipTop="NORMA TÉCNICA"
+      chipTop="Norma técnica"
       chipBottom="Cor consistente"
       chipTopStyle={{ left: '47.01%', top: '11.19%' }}
       codeCards={[

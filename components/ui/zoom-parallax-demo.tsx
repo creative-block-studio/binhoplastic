@@ -3,10 +3,12 @@
 import { useEffect } from 'react';
 import Lenis from 'lenis';
 
+import { DiferenciaisSection } from '@/components/ui/diferenciais-section';
 import { ExtrusaoDetailSection } from '@/components/ui/extrusao-detail-section';
 import { FilmeDetailSection } from '@/components/ui/filme-detail-section';
 import { FiosCabosDetailSection } from '@/components/ui/fios-cabos-detail-section';
 import { InjectionDetailSection } from '@/components/ui/injection-detail-section';
+import { ProcessSectionsStack } from '@/components/ui/process-sections-stack';
 import { SoproDetailSection } from '@/components/ui/sopro-detail-section';
 import { ZoomParallax } from '@/components/ui/zoom-parallax';
  
@@ -73,11 +75,16 @@ export default function ZoomParallaxDemo() {
         </div>
       </section>
       <ZoomParallax images={images} />
-      <InjectionDetailSection />
-      <SoproDetailSection />
-      <ExtrusaoDetailSection />
-      <FilmeDetailSection />
-      <FiosCabosDetailSection />
+      <ProcessSectionsStack
+        sections={[
+          <InjectionDetailSection key="injection" />,
+          <SoproDetailSection key="sopro" />,
+          <ExtrusaoDetailSection key="extrusao" />,
+          <FilmeDetailSection key="filme" />,
+          <FiosCabosDetailSection key="fios-cabos" />,
+        ]}
+      />
+      <DiferenciaisSection />
     </main>
   );
 }

@@ -26,6 +26,12 @@ body {
   color: var(--foreground);
 }
 
+img,
+picture {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
 .site-shell {
   width: min(calc(100% - (var(--site-gutter) * 2)), var(--site-max-width));
   margin-inline: auto;

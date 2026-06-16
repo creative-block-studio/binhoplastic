@@ -1,0 +1,22 @@
+.stack {
+  position: relative;
+}
+
+.item {
+  position: relative;
+  min-height: 224svh;
+}
+
+.item + .item {
+  margin-top: -100svh;
+}
+
+.item:last-child {
+  min-height: 100svh;
+}
+
+.card {
+  position: sticky;
+  top: 0;
+  z-index: var(--stack-z, 1);
+}
