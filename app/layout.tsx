@@ -15,8 +15,39 @@ const processSans = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Zoom Parallax Demo',
-  description: 'Next.js demo for the zoom parallax component',
+  title: 'Binho Plastic',
+  description: 'Binho Plastic - Masterbatch, pigmentos e aditivos para plastico.',
+  icons: {
+    icon: [
+      {
+        url: '/assets/images/favicon/favicon-32x32.png?v=2',
+        sizes: '32x32',
+        type: 'image/png',
+      },
+      {
+        url: '/assets/images/favicon/favicon-16x16.png?v=2',
+        sizes: '16x16',
+        type: 'image/png',
+      },
+      { url: '/assets/images/favicon/favicon.ico?v=2' },
+    ],
+    shortcut: '/assets/images/favicon/favicon-32x32.png?v=2',
+    apple: '/assets/images/favicon/apple-touch-icon.png?v=2',
+    other: [
+      {
+        rel: 'icon',
+        url: '/assets/images/favicon/android-chrome-192x192.png?v=2',
+        sizes: '192x192',
+        type: 'image/png',
+      },
+      {
+        rel: 'icon',
+        url: '/assets/images/favicon/android-chrome-512x512.png?v=2',
+        sizes: '512x512',
+        type: 'image/png',
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -26,7 +57,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="pt-BR"
       className={`${geistSans.variable} ${processSans.variable} h-full antialiased`}
     >
       <body className="min-h-full font-sans">{children}</body>
