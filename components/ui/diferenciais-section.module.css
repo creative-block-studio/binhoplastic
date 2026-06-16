@@ -123,26 +123,26 @@
 }
 
 .cta {
-  display: inline-flex;
-  align-items: center;
+  display: flex;
   justify-content: center;
-  gap: 12px;
   margin: 0 auto;
+}
+
+.ctaButton {
+  min-width: 190px;
+  min-height: 46px;
+  border-radius: 999px;
+  border-color: rgba(13, 12, 26, 0.18);
+  background: rgba(255, 255, 255, 0.36);
   color: #0d0c1a;
-  font-size: clamp(1.12rem, 1.45vw, 1.5rem);
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: -0.03em;
+  font-size: clamp(0.92rem, 0.98vw, 1rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  box-shadow: 0 14px 32px rgba(13, 12, 26, 0.08);
 }
 
-.ctaArrow {
-  display: inline-flex;
-  font-size: 1.1em;
-  transition: transform 220ms ease;
-}
-
-.cta:hover .ctaArrow {
-  transform: translateX(5px);
+.ctaButton:hover {
+  color: #f4efe6;
 }
 
 @media (max-width: 1100px) {

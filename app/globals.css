@@ -5,6 +5,8 @@
   --foreground: #171717;
   --site-gutter: clamp(20px, 4vw, 56px);
   --site-max-width: 1440px;
+  --site-content-inset-left: 7.5%;
+  --site-content-inset-right: 6.8%;
 }
 
 @theme inline {

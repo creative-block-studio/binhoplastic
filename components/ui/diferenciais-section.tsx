@@ -7,6 +7,7 @@ import { motion, useInView } from 'framer-motion';
 
 import consistenciaImage from '@/assets/images/diferenciais-consistencia.webp';
 import desenvolvimentoImage from '@/assets/images/diferenciais-desenvolvimento.webp';
+import { FlowHoverButton } from '@/components/ui/flow-hover-button';
 import laboratorioImage from '@/assets/images/diferenciais-laboratorio.webp';
 import suporteImage from '@/assets/images/diferenciais-suporte.webp';
 import styles from '@/components/ui/diferenciais-section.module.css';
@@ -170,17 +171,16 @@ export function DiferenciaisSection() {
             ))}
           </div>
 
-          <motion.p
+          <motion.div
             className={styles.cta}
             initial={{ opacity: 0, y: 18 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
             transition={{ delay: 0.5, duration: 0.58, ease: revealEase }}
           >
-            <span>Saiba Mais sobre a Binho Plastic</span>
-            <span className={styles.ctaArrow} aria-hidden="true">
-              &gt;
-            </span>
-          </motion.p>
+            <FlowHoverButton href="#sobre" className={styles.ctaButton}>
+              Saiba mais
+            </FlowHoverButton>
+          </motion.div>
         </div>
       </div>
     </section>

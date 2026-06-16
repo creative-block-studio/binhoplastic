@@ -4,8 +4,13 @@ import type { CSSProperties, ReactNode } from 'react';
 
 import styles from '@/components/ui/process-sections-stack.module.css';
 
+type ProcessSectionItem = {
+  content: ReactNode;
+  id: string;
+};
+
 type ProcessSectionsStackProps = {
-  sections: readonly ReactNode[];
+  sections: readonly ProcessSectionItem[];
 };
 
 export function ProcessSectionsStack({
@@ -14,12 +19,12 @@ export function ProcessSectionsStack({
   return (
     <section className={styles.stack} aria-label="Processos">
       {sections.map((section, index) => (
-        <div className={styles.item} key={index}>
+        <div className={styles.item} key={section.id} id={section.id}>
           <div
             className={styles.card}
             style={{ '--stack-z': index + 1 } as CSSProperties}
           >
-            {section}
+            {section.content}
           </div>
         </div>
       ))}
