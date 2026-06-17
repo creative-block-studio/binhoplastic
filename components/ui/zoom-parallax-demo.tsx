@@ -1,7 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
 import Lenis from 'lenis';
+import heroBrandLockup from '@/assets/images/logo-hero-full.webp';
+import heroPoster from '@/assets/videos/hero-poster.webp';
 import sectorsConsumerGoodsImage from '@/assets/images/sectors-consumer-goods.webp';
 import sectorsConstructionImage from '@/assets/images/sectors-construction.webp';
 import sectorsFoodImage from '@/assets/images/sectors-food.webp';
@@ -15,6 +19,7 @@ import { FilmeDetailSection } from '@/components/ui/filme-detail-section';
 import { FiosCabosDetailSection } from '@/components/ui/fios-cabos-detail-section';
 import { InjectionDetailSection } from '@/components/ui/injection-detail-section';
 import { ProcessSectionsStack } from '@/components/ui/process-sections-stack';
+import { ProductsSection } from '@/components/ui/products-section';
 import { SiteFooter } from '@/components/ui/site-footer';
 import { SiteHeader } from '@/components/ui/site-header';
 import { SoproDetailSection } from '@/components/ui/sopro-detail-section';
@@ -57,6 +62,21 @@ const images = [
   },
 ] as const;
 
+const heroRevealEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
+const heroLineVariants = {
+  hidden: { opacity: 0, y: 22 },
+  visible: (delay: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay,
+      duration: 0.94,
+      ease: heroRevealEase,
+    },
+  }),
+};
+
 export default function ZoomParallaxDemo() {
   useEffect(() => {
     const lenis = new Lenis();
@@ -78,9 +98,75 @@ export default function ZoomParallaxDemo() {
   return (
     <main id="inicio" className="min-h-screen w-full">
       <SiteHeader />
+      <section className="relative isolate min-h-screen w-full overflow-hidden bg-[#0D0C1A]" data-nav-tone="dark">
+        <video
+          className="absolute inset-0 h-full w-full object-cover object-center"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          poster={heroPoster.src}
+        >
+          <source src="/assets/videos/hero-desktop.webm" type="video/webm" />
+        </video>
+        <div className="site-shell pointer-events-none absolute inset-0 z-10">
+          <div
+            className="flex min-h-screen flex-col justify-between pb-10 pt-28 sm:pb-12 sm:pt-32 lg:pb-14 lg:pt-36"
+            style={{
+              paddingLeft: 'var(--site-content-inset-left)',
+              paddingRight: 'var(--site-content-inset-right)',
+            }}
+          >
+            <div className="ml-auto w-full max-w-[min(100%,36.5rem)]">
+              <motion.p
+                className="text-right text-[clamp(1.25rem,2.35vw,2.8rem)] font-extralight leading-[1.08] tracking-[-0.045em] text-[#e0f0f1]"
+                variants={heroLineVariants}
+                initial="hidden"
+                animate="visible"
+                custom={0.28}
+              >
+                A COR CERTA PARA O SEU PLÁSTICO
+              </motion.p>
+              <div className="mt-1.5 text-right text-[clamp(1.7rem,3.2vw,3.05rem)] font-bold leading-[1.03] tracking-[-0.05em] text-[#e0f0f1]">
+                <motion.p
+                  className="m-0"
+                  variants={heroLineVariants}
+                  initial="hidden"
+                  animate="visible"
+                  custom={0.66}
+                >
+                  <span className="font-normal">do </span>
+                  <span className="text-[#62C3D1]">desenvolvimento</span>
+                </motion.p>
+                <motion.p
+                  className="m-0"
+                  variants={heroLineVariants}
+                  initial="hidden"
+                  animate="visible"
+                  custom={1.02}
+                >
+                  <span className="font-normal">até a </span>
+                  <span className="text-[#62C3D1]">produção</span>
+                </motion.p>
+              </div>
+            </div>
+
+            <div className="w-[clamp(13rem,29vw,33rem)]">
+              <Image
+                src={heroBrandLockup}
+                alt="Binho Plastic - Masterbatch, pigmentos e aditivos"
+                className="h-auto w-full"
+                priority
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+      <ProductsSection />
       <section className="w-full bg-[#0D0C1A]" data-nav-tone="dark">
         <div className="site-shell">
-          <div className="relative flex min-h-[26vh] items-center justify-center py-6">
+          <div className="relative flex min-h-[26vh] items-center justify-center px-0 pb-6 pt-16 sm:pt-20 lg:pt-24">
             <div
               aria-hidden="true"
               className="pointer-events-none absolute -top-1/2 left-1/2 h-[120vmin] w-[120vmin] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(23,23,23,0.12),transparent_55%)] blur-[30px]"
@@ -92,10 +178,10 @@ export default function ZoomParallaxDemo() {
                 marginInline: 'auto',
               }}
             >
-              <h1 className="max-w-full whitespace-nowrap text-left text-[clamp(0.98rem,4.7vw,3.35rem)] font-thin leading-[0.98] tracking-[-0.04em] text-white">
+              <h1 className="max-w-full whitespace-nowrap text-left text-[clamp(1.2rem,5.8vw,4.5rem)] font-thin leading-[0.96] tracking-[-0.05em] text-white">
                 Presente em todos setores
               </h1>
-              <p className="mt-2 ml-auto max-w-full whitespace-nowrap text-right text-[clamp(0.98rem,4.7vw,3.35rem)] font-semibold leading-[0.98] tracking-[-0.04em] text-[#62C3D1]">
+              <p className="mt-3 ml-auto max-w-full whitespace-nowrap text-right text-[clamp(1.2rem,5.8vw,4.5rem)] font-semibold leading-[0.96] tracking-[-0.05em] text-[#62C3D1]">
                 Especialista no seu processo
               </p>
             </div>
