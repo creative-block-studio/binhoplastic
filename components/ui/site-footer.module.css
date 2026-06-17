@@ -10,7 +10,7 @@
 }
 
 .inner {
-  width: min(100%, calc(100% - clamp(120px, 15vw, 260px)));
+  width: min(100%, var(--site-content-width));
   margin-inline: auto;
   padding: clamp(72px, 7vw, 92px) 0 clamp(60px, 6vw, 88px);
 }
@@ -126,7 +126,7 @@
 }
 
 .bottomInner {
-  width: min(100%, calc(100% - clamp(120px, 15vw, 260px)));
+  width: min(100%, var(--site-content-width));
   margin-inline: auto;
   padding: 36px 0;
 }

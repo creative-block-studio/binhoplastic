@@ -11,8 +11,11 @@
   --foreground: #171717;
   --site-gutter: clamp(20px, 4vw, 56px);
   --site-max-width: 1440px;
-  --site-content-inset-left: 7.5%;
-  --site-content-inset-right: 6.8%;
+  --site-content-inset-left: clamp(24px, 7.5%, 108px);
+  --site-content-inset-right: clamp(24px, 6.8%, 98px);
+  --site-content-width: calc(
+    100% - var(--site-content-inset-left) - var(--site-content-inset-right)
+  );
 }
 
 @theme inline {
@@ -24,6 +27,7 @@
 
 html {
   background: var(--background);
+  scroll-behavior: smooth;
   scrollbar-gutter: stable;
 }
 
@@ -31,11 +35,12 @@ body {
   --sb-track-color: #232e33;
   --sb-thumb-color: #0d0c1a;
   --sb-size: 2px;
-  min-height: 100vh;
+  min-height: 100dvh;
   background:
     radial-gradient(circle at top, rgba(23, 23, 23, 0.1), transparent 30%),
     var(--background);
   color: var(--foreground);
+  overflow-x: clip;
 }
 
 ::selection {
@@ -76,5 +81,10 @@ picture {
 
 .site-shell {
   width: min(calc(100% - (var(--site-gutter) * 2)), var(--site-max-width));
+  margin-inline: auto;
+}
+
+.site-content-shell {
+  width: min(100%, var(--site-content-width));
   margin-inline: auto;
 }

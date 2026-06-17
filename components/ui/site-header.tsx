@@ -175,7 +175,7 @@ export function SiteHeader() {
             </header>
           </div>
 
-          <a className={ctaClassName} href="#diferenciais" onClick={handleAnchorClick}>
+          <a className={ctaClassName} href="#sobre" onClick={handleAnchorClick}>
             <span className={styles.ctaLabel}>Solicitar amostra</span>
             <span className={styles.ctaIcon} aria-hidden="true">
               <ArrowUpRight size={14} />

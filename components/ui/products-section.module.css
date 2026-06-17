@@ -12,7 +12,7 @@
 .inner {
   position: relative;
   z-index: 1;
-  width: min(100%, calc(100% - clamp(120px, 15vw, 260px)));
+  width: min(100%, var(--site-content-width));
   margin-inline: auto;
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -22,7 +22,7 @@
 }
 
 .content {
-  grid-column: 1 / span 6;
+  grid-column: 1 / span 8;
   display: grid;
   gap: clamp(20px, 2vw, 28px);
 }
@@ -30,16 +30,16 @@
 .title {
   margin: 0;
   max-width: none;
-  white-space: nowrap;
   font-size: clamp(2.4rem, 4vw, 4.6rem);
   font-weight: 800;
   line-height: 0.93;
   letter-spacing: -0.055em;
+  white-space: nowrap;
 }
 
 .lead {
   margin: 0;
-  max-width: 43rem;
+  max-width: 47rem;
   color: rgba(34, 43, 88, 0.88);
   font-size: clamp(1.18rem, 1.5vw, 1.72rem);
   line-height: 1.76;
@@ -50,6 +50,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(12px, 1.5vw, 18px);
+  max-width: 44rem;
 }
 
 .card {
@@ -146,7 +147,7 @@
 
 .swatch:hover {
   transform: scale(1.5);
-  z-index: 99999;
+  z-index: 3;
 }
 
 .swatch:active::after {
@@ -155,22 +156,22 @@
 
 .swatch:hover + .swatch {
   transform: scale(1.3);
-  z-index: 9999;
+  z-index: 2;
 }
 
 .swatch:hover + .swatch + .swatch {
   transform: scale(1.15);
-  z-index: 999;
+  z-index: 1;
 }
 
 .swatch:has(+ .swatch:hover) {
   transform: scale(1.3);
-  z-index: 9999;
+  z-index: 2;
 }
 
 .swatch:has(+ .swatch + .swatch:hover) {
   transform: scale(1.15);
-  z-index: 999;
+  z-index: 1;
 }
 
 @keyframes swatch-sequence {
@@ -181,7 +182,7 @@
 
   45% {
     transform: scale(1.5);
-    z-index: 99999;
+    z-index: 3;
   }
 
   100% {
@@ -214,7 +215,7 @@
   top: 0;
   right: 0;
   bottom: 0;
-  width: min(42vw, 36rem);
+  width: min(36vw, 34rem);
 }
 
 .imageWrap {
@@ -223,8 +224,8 @@
 }
 
 .image {
-  object-fit: contain;
-  object-position: 100% 50%;
+  object-fit: cover;
+  object-position: left center;
 }
 
 @media (max-width: 1200px) {

@@ -1,0 +1,294 @@
+.section {
+  background: #222b58;
+  color: #e0f0f1;
+}
+
+.inner {
+  width: min(100%, var(--site-content-width));
+  margin-inline: auto;
+  display: grid;
+  gap: clamp(2.5rem, 4vw, 4rem);
+  padding: clamp(4.75rem, 8vw, 7rem) 0 clamp(5.25rem, 8vw, 7.5rem);
+}
+
+.header {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  align-items: start;
+}
+
+.headingBlock {
+  grid-column: 1 / span 7;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.title {
+  margin: 0;
+  max-width: 46rem;
+  font-size: clamp(1.95rem, 3.1vw, 3.2rem);
+  font-weight: 700;
+  line-height: 1.16;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+}
+
+.titleLine {
+  display: block;
+  will-change: transform, opacity;
+}
+
+.title span {
+  color: #62c3d1;
+}
+
+.resinList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.875rem 1.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.resinItem {
+  color: #62c3d1;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+
+.intro {
+  grid-column: 8 / -1;
+  max-width: 30rem;
+  margin: 0;
+  justify-self: end;
+  color: #62c3d1;
+  font-size: clamp(1.125rem, 1.6vw, 1.55rem);
+  line-height: 1.55;
+  letter-spacing: -0.025em;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.25rem, 1.8vw, 1.9rem);
+}
+
+.card {
+  position: relative;
+  isolation: isolate;
+  min-height: clamp(25.5rem, 30vw, 28rem);
+  overflow: hidden;
+  border-radius: 2rem;
+  box-shadow: 0 18px 42px rgba(7, 12, 35, 0.18);
+  transition: box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.card:hover {
+  box-shadow: 0 24px 48px rgba(7, 12, 35, 0.22);
+}
+
+.cardImage {
+  object-fit: cover;
+  object-position: var(--solution-image-position);
+}
+
+.cardOverlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(14, 17, 42, 0.1) 0%, rgba(14, 17, 42, 0.02) 26%, rgba(14, 17, 42, 0) 58%),
+    linear-gradient(180deg, rgba(8, 13, 36, 0.04) 0%, rgba(8, 13, 36, 0.18) 100%);
+}
+
+.cardContent {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  align-content: space-between;
+  min-height: 100%;
+  padding: clamp(1.85rem, 2.5vw, 2.35rem);
+}
+
+.cardTitle {
+  width: min(100%, var(--solution-title-width));
+  margin: 0 0 1.1rem;
+  font-family: var(--font-chillax), var(--font-process-sans), Arial, sans-serif;
+  font-size: clamp(2rem, 2.8vw, 3rem);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.045em;
+}
+
+.cardDescription {
+  width: min(100%, var(--solution-copy-width));
+  margin: 0;
+  font-size: clamp(1rem, 1.1vw, 1.15rem);
+  line-height: 1.36;
+  letter-spacing: -0.02em;
+  text-wrap: pretty;
+}
+
+.divider {
+  position: relative;
+  width: min(8.7rem, 42%);
+  height: 2px;
+  margin-top: auto;
+  margin-bottom: 1.55rem;
+}
+
+.dividerImage {
+  object-fit: fill;
+}
+
+.benefits {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+  align-items: start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.benefit {
+  display: grid;
+  justify-items: center;
+  gap: 0.7rem;
+  text-align: center;
+}
+
+.benefitIconWrap {
+  display: grid;
+  place-items: center;
+  min-height: 2.75rem;
+}
+
+.benefitIcon {
+  width: auto;
+  height: auto;
+  max-width: 2.65rem;
+  max-height: 2.65rem;
+  object-fit: contain;
+}
+
+.benefitLabel {
+  max-width: 6.2rem;
+  font-size: 0.7rem;
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+@media (max-width: 1180px) {
+  .headingBlock {
+    grid-column: 1 / span 8;
+  }
+
+  .intro {
+    grid-column: 9 / -1;
+  }
+
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .card:last-child .cardContent {
+    max-width: 28rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .inner {
+    width: 100%;
+  }
+
+  .header {
+    grid-template-columns: 1fr;
+  }
+
+  .headingBlock,
+  .intro {
+    grid-column: 1;
+    justify-self: start;
+    max-width: none;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .card,
+  .card:last-child {
+    grid-column: 1;
+  }
+
+  .card {
+    min-height: clamp(23.5rem, 82vw, 28rem);
+  }
+
+  .card:last-child .cardContent {
+    max-width: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .inner {
+    gap: 2.1rem;
+    padding: 4.5rem 0 5rem;
+  }
+
+  .title {
+    font-size: clamp(1.75rem, 7vw, 2.25rem);
+    line-height: 1.1;
+  }
+
+  .resinList {
+    gap: 0.55rem 1rem;
+  }
+
+  .resinItem {
+    font-size: 0.92rem;
+  }
+
+  .intro {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .card {
+    min-height: 24rem;
+    border-radius: 1.7rem;
+  }
+
+  .cardContent {
+    padding: 1.65rem 1.4rem 1.4rem;
+  }
+
+  .cardTitle {
+    margin-bottom: 0.95rem;
+    font-size: clamp(1.85rem, 8vw, 2.4rem);
+  }
+
+  .cardDescription {
+    width: min(100%, 16rem);
+    font-size: 0.98rem;
+  }
+
+  .benefits {
+    gap: 0.6rem;
+  }
+
+  .benefitLabel {
+    max-width: 5.2rem;
+    font-size: 0.62rem;
+  }
+}

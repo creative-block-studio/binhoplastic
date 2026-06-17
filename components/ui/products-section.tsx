@@ -6,6 +6,7 @@ import {
   useState,
   type CSSProperties,
 } from 'react';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 import { FlowButton } from '@/components/ui/flow-button';
@@ -44,6 +45,21 @@ const swatches = [
   '#7E59E6',
   '#A78BFA',
 ] as const;
+
+const sectionRevealEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
+const sectionRevealVariants = {
+  hidden: { opacity: 0, y: 22 },
+  visible: (delay: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay,
+      duration: 0.94,
+      ease: sectionRevealEase,
+    },
+  }),
+};
 
 function CountUpValue({
   active,
@@ -142,17 +158,30 @@ export function ProductsSection() {
         <div className={styles.shell}>
           <div className={styles.inner}>
             <div className={styles.content}>
-              <h2 id="products-section-title" className={styles.title}>
+              <motion.h2
+                id="products-section-title"
+                className={styles.title}
+                variants={sectionRevealVariants}
+                initial="hidden"
+                animate={sectionActive ? 'visible' : 'hidden'}
+                custom={0.22}
+              >
                 Produtos de Alta Performance
-              </h2>
+              </motion.h2>
 
-              <p className={styles.lead}>
+              <motion.p
+                className={styles.lead}
+                variants={sectionRevealVariants}
+                initial="hidden"
+                animate={sectionActive ? 'visible' : 'hidden'}
+                custom={0.54}
+              >
                 Nossa linha de masterbatches, pigmentos e aditivos é desenvolvida
                 para atender aos padrões mais rigorosos da indústria plástica.
                 Reunimos profundidade técnica, repertório cromático e suporte de
                 aplicação para encurtar o caminho entre teste, aprovação e
                 produção.
-              </p>
+              </motion.p>
 
               <div className={styles.highlights}>
                 {highlights.map((item) => (

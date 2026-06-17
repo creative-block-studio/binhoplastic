@@ -177,7 +177,7 @@ export function DiferenciaisSection() {
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
             transition={{ delay: 0.5, duration: 0.58, ease: revealEase }}
           >
-            <FlowHoverButton href="#sobre" className={styles.ctaButton}>
+            <FlowHoverButton href="#solucoes" className={styles.ctaButton}>
               Saiba mais
             </FlowHoverButton>
           </motion.div>
