@@ -1,4 +1,4 @@
-import wiresObject from '@/assets/images/process-wires-object-figma.png';
+import wiresObject from '@/assets/images/process-wires-object-figma.webp';
 import {
   ProcessDetailSection,
   defaultProcessAnnotationRects,
@@ -41,6 +41,7 @@ export function FiosCabosDetailSection() {
       ghostTitleColor="rgba(52, 57, 91, 0.82)"
       ghostTitleFontSize="clamp(50px, 5.2vw, 70px)"
       ctaHoverColor="#20284c"
+      showCta
       annotationPaths={fiosCabosAnnotationPaths}
       annotationRects={defaultProcessAnnotationRects}
     />

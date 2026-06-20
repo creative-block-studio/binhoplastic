@@ -1,4 +1,4 @@
-import extrusionObject from '@/assets/images/process-extrusion-object-figma.png';
+import extrusionObject from '@/assets/images/process-extrusion-object-figma.webp';
 import {
   ProcessDetailSection,
   defaultProcessAnnotationPaths,
@@ -9,7 +9,7 @@ export function ExtrusaoDetailSection() {
   return (
     <ProcessDetailSection
       backgroundColor="#20284c"
-      objectWidth="53%"
+      objectWidth="56%"
       objectImage={extrusionObject}
       objectAlt="Perfis e tubos do processo de extrusão"
       eyebrow="aplicação:"

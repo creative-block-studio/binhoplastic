@@ -1,4 +1,4 @@
-import filmObject from '@/assets/images/process-film-object-figma.png';
+import filmObject from '@/assets/images/process-film-object-figma.webp';
 import {
   ProcessDetailSection,
   defaultProcessAnnotationRects,

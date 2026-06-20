@@ -80,6 +80,7 @@ type ProcessDetailSectionProps = {
   ctaBorderColor?: string;
   ctaFillColor?: string;
   ctaHoverColor?: string;
+  showCta?: boolean;
   annotationPaths?: readonly AnnotationPath[];
   annotationRects?: readonly AnnotationRect[];
 };
@@ -120,10 +121,15 @@ export function ProcessDetailSection({
   ctaBorderColor,
   ctaFillColor,
   ctaHoverColor,
+  showCta = false,
   annotationPaths = defaultProcessAnnotationPaths,
   annotationRects = defaultProcessAnnotationRects,
 }: ProcessDetailSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
+  const resolvedObjectImageSizes =
+    objectWidth && objectWidth.endsWith('%')
+      ? `${Number.parseFloat(objectWidth)}vw`
+      : '32.56vw';
   const isSequenceActive = useInView(sectionRef, {
     once: true,
     amount: 0.5,
@@ -222,7 +228,8 @@ export function ProcessDetailSection({
                   src={objectImage}
                   alt={objectAlt}
                   fill
-                  sizes="32.56vw"
+                  sizes={resolvedObjectImageSizes}
+                  quality={100}
                   className={styles.object}
                 />
               </motion.div>
@@ -312,16 +319,18 @@ export function ProcessDetailSection({
               ))}
             </motion.div>
 
-            <motion.div
-              className={styles.cta}
-              initial={{ opacity: 0, y: 18 }}
-              animate={
-                isSequenceActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }
-              }
-              transition={{ delay: 1.86, duration: 0.58, ease: revealEase }}
-            >
-              <FlowButton text="VER MAIS CORES" />
-            </motion.div>
+            {showCta ? (
+              <motion.div
+                className={styles.cta}
+                initial={{ opacity: 0, y: 18 }}
+                animate={
+                  isSequenceActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }
+                }
+                transition={{ delay: 1.86, duration: 0.58, ease: revealEase }}
+              >
+                <FlowButton text="VER MAIS CORES" />
+              </motion.div>
+            ) : null}
 
             <svg
               className={styles.annotation}

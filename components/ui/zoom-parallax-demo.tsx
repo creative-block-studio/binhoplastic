@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Lenis from 'lenis';
 import heroBrandLockup from '@/assets/images/logo-hero-full.webp';
-import sectorsAutomotiveImage from '@/assets/images/sectors-automotive.webp';
 import sectorsConsumerGoodsImage from '@/assets/images/sectors-consumer-goods.webp';
 import sectorsConstructionImage from '@/assets/images/sectors-construction.webp';
 import sectorsFoodImage from '@/assets/images/sectors-food.webp';
@@ -26,11 +25,17 @@ import { SoproDetailSection } from '@/components/ui/sopro-detail-section';
 import { SolutionsSection } from '@/components/ui/solutions-section';
 import { ZoomParallax } from '@/components/ui/zoom-parallax';
 
+const automotiveFrames = Array.from(
+  { length: 60 },
+  (_, index) =>
+    `/assets/videos/0620-frames/frame-${String(index + 1).padStart(3, '0')}.webp`,
+);
+
 const images = [
   {
-    src: sectorsAutomotiveImage,
+    kind: 'frame-sequence' as const,
+    frames: automotiveFrames,
     alt: 'Componentes do setor automotivo',
-    label: 'Automotivo',
   },
   {
     src: sectorsConsumerGoodsImage,
@@ -49,8 +54,8 @@ const images = [
   },
   {
     src: sectorsConstructionImage,
-    alt: 'Construcao Civil',
-    label: 'Construcao Civil',
+    alt: 'Construção Civil',
+    label: 'Construção Civil',
   },
   {
     src: sectorsWiresCablesImage,
@@ -59,8 +64,8 @@ const images = [
   },
   {
     src: sectorsFoodImage,
-    alt: 'Alimenticios',
-    label: 'Alimenticios',
+    alt: 'Alimentícios',
+    label: 'Alimentícios',
   },
 ] as const;
 
@@ -188,7 +193,16 @@ export default function ZoomParallaxDemo() {
           </div>
         </div>
       </section>
-      <ZoomParallax images={images} />
+      <ZoomParallax
+        images={images}
+        finalReveal={{
+          eyebrow: 'APLICAÇÃO',
+          headlineTopPrefix: 'DO',
+          headlineTopEmphasis: 'MASTERBATCH',
+          headlineBottom: 'AO PRODUTO FINAL',
+          caption: 'conheça cada processo',
+        }}
+      />
       <section id="processos" data-nav-tone="dark">
         <ProcessSectionsStack
           sections={[
