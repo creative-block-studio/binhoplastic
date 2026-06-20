@@ -41,11 +41,11 @@
   align-items: center;
   width: clamp(288px, 24vw, 330px);
   height: 62px;
-  mask-image: url("../../assets/images/nav-combined-mask.svg");
+  mask-image: url("/assets/images/nav-combined-mask.svg");
   mask-position: center;
   mask-size: 100% 100%;
   mask-repeat: no-repeat;
-  -webkit-mask-image: url("../../assets/images/nav-combined-mask.svg");
+  -webkit-mask-image: url("/assets/images/nav-combined-mask.svg");
   -webkit-mask-position: center;
   -webkit-mask-size: 100% 100%;
   -webkit-mask-repeat: no-repeat;
