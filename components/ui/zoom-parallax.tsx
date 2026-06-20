@@ -38,27 +38,35 @@ interface ZoomParallaxProps {
 
 export function ZoomParallax({ images, finalReveal }: ZoomParallaxProps) {
   const container = useRef<HTMLDivElement | null>(null);
-  const frameImageRefs = useRef<(HTMLImageElement | null)[]>([]);
+  const frameCanvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
+  const frameCacheRefs = useRef<(HTMLImageElement[] | null)[]>([]);
   const frameIndexes = useRef<number[]>([]);
+  const frameRafRefs = useRef<number[]>([]);
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
   const { scrollYProgress } = useScroll({
     target: container,
     offset: ['start start', 'end end'],
   });
+  const animationProgress = useTransform(
+    scrollYProgress,
+    [0, 0.88, 1],
+    [0, 1, 1],
+  );
 
-  const scale4 = useTransform(scrollYProgress, [0, 1], [1, 4]);
-  const scale5 = useTransform(scrollYProgress, [0, 1], [1, 5]);
-  const scale6 = useTransform(scrollYProgress, [0, 1], [1, 6]);
-  const scale8 = useTransform(scrollYProgress, [0, 1], [1, 8]);
-  const scale9 = useTransform(scrollYProgress, [0, 1], [1, 9]);
+  const scale4 = useTransform(animationProgress, [0, 1], [1, 4]);
+  const scale5 = useTransform(animationProgress, [0, 1], [1, 5]);
+  const scale6 = useTransform(animationProgress, [0, 1], [1, 6]);
+  const scale8 = useTransform(animationProgress, [0, 1], [1, 8]);
+  const scale9 = useTransform(animationProgress, [0, 1], [1, 9]);
 
   const scales = [scale4, scale5, scale6, scale5, scale6, scale8, scale9];
   const supportingItemsOpacity = useTransform(
-    scrollYProgress,
+    animationProgress,
     [0.72, 0.86],
     [1, 0],
   );
   const finalOverlayOpacityRaw = useTransform(
-    scrollYProgress,
+    animationProgress,
     [0.76, 0.94],
     [0, 1],
   );
@@ -67,46 +75,181 @@ export function ZoomParallax({ images, finalReveal }: ZoomParallaxProps) {
     damping: 24,
     mass: 0.35,
   });
-  const finalTextY = useTransform(scrollYProgress, [0.78, 0.94], [48, 0]);
-  const focusedRadius = useTransform(scrollYProgress, [0.74, 0.92], [4, 0]);
+  const finalTextY = useTransform(animationProgress, [0.78, 0.94], [48, 0]);
+  const focusedRadius = useTransform(animationProgress, [0.74, 0.92], [4, 0]);
   const focusedClipPath = useTransform(
     focusedRadius,
     (radius) => `inset(0 round ${radius}px)`,
   );
-  const focusedImageScale = useTransform(scrollYProgress, [0.74, 1], [1.02, 1]);
+  const focusedImageScale = useTransform(
+    animationProgress,
+    [0.74, 1],
+    [1.02, 1],
+  );
 
   useEffect(() => {
-    images.forEach((item) => {
+    let cancelled = false;
+
+    const syncCanvasSize = (canvas: HTMLCanvasElement) => {
+      const ratio = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      const width = Math.max(1, Math.round(rect.width * ratio));
+      const height = Math.max(1, Math.round(rect.height * ratio));
+
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+      }
+    };
+
+    const drawFrameToCanvas = (index: number, frameIndex: number) => {
+      const canvas = frameCanvasRefs.current[index];
+      const frames = frameCacheRefs.current[index];
+      const frame = frames?.[frameIndex];
+
+      if (!canvas || !frame) return;
+
+      syncCanvasSize(canvas);
+
+      const context = canvas.getContext('2d');
+      if (!context) return;
+
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+      const frameWidth = frame.naturalWidth || frame.width;
+      const frameHeight = frame.naturalHeight || frame.height;
+
+      if (!frameWidth || !frameHeight) return;
+
+      const coverScale = Math.max(canvasWidth / frameWidth, canvasHeight / frameHeight);
+      const drawWidth = frameWidth * coverScale;
+      const drawHeight = frameHeight * coverScale;
+      const dx = (canvasWidth - drawWidth) / 2;
+      const dy = (canvasHeight - drawHeight) / 2;
+
+      context.clearRect(0, 0, canvasWidth, canvasHeight);
+      context.drawImage(frame, dx, dy, drawWidth, drawHeight);
+    };
+
+    const frameRafIds = frameRafRefs.current;
+
+    images.forEach((item, frameSequenceIndex) => {
       if (item.kind !== 'frame-sequence') return;
 
-      item.frames.forEach((src) => {
-        const image = new window.Image();
-        image.src = src;
+      const preloadFrames = async () => {
+        const decodedFrames = await Promise.all(
+          item.frames.map(async (src) => {
+            const image = new window.Image();
+            image.decoding = 'async';
+            image.src = src;
+
+            if (typeof image.decode === 'function') {
+              try {
+                await image.decode();
+              } catch {
+                await new Promise<void>((resolve) => {
+                  image.onload = () => resolve();
+                  image.onerror = () => resolve();
+                });
+              }
+            } else {
+              await new Promise<void>((resolve) => {
+                image.onload = () => resolve();
+                image.onerror = () => resolve();
+              });
+            }
+
+            return image;
+          }),
+        );
+
+        if (cancelled) return;
+
+        frameCacheRefs.current[frameSequenceIndex] = decodedFrames;
+        frameIndexes.current[frameSequenceIndex] = 0;
+        drawFrameToCanvas(frameSequenceIndex, 0);
+      };
+
+      void preloadFrames();
+    });
+
+    resizeObserverRef.current = new ResizeObserver(() => {
+      images.forEach((item, index) => {
+        if (item.kind !== 'frame-sequence') return;
+        drawFrameToCanvas(index, frameIndexes.current[index] ?? 0);
       });
     });
+
+    frameCanvasRefs.current.forEach((canvas) => {
+      if (!canvas) return;
+      resizeObserverRef.current?.observe(canvas);
+    });
+
+    return () => {
+      cancelled = true;
+      resizeObserverRef.current?.disconnect();
+      frameRafIds.forEach((frameId) => {
+        if (frameId) cancelAnimationFrame(frameId);
+      });
+    };
   }, [images]);
 
-  useMotionValueEvent(scrollYProgress, 'change', (latest) => {
+  useMotionValueEvent(scrollYProgress, 'change', () => {
     images.forEach((item, index) => {
       if (item.kind !== 'frame-sequence') return;
 
-      const image = frameImageRefs.current[index];
-      if (!image || item.frames.length === 0) return;
+      const frames = frameCacheRefs.current[index];
+      if (!frames || item.frames.length === 0) return;
 
       const nextIndex = Math.min(
         item.frames.length - 1,
-        Math.round(latest * (item.frames.length - 1)),
+        Math.round(animationProgress.get() * (item.frames.length - 1)),
       );
 
       if (frameIndexes.current[index] === nextIndex) return;
 
-      image.src = item.frames[nextIndex];
       frameIndexes.current[index] = nextIndex;
+      if (frameRafRefs.current[index]) {
+        cancelAnimationFrame(frameRafRefs.current[index]);
+      }
+
+      frameRafRefs.current[index] = requestAnimationFrame(() => {
+        const canvas = frameCanvasRefs.current[index];
+        const frame = frameCacheRefs.current[index]?.[nextIndex];
+
+        if (!canvas || !frame) return;
+
+        const context = canvas.getContext('2d');
+        if (!context) return;
+
+        const ratio = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        const width = Math.max(1, Math.round(rect.width * ratio));
+        const height = Math.max(1, Math.round(rect.height * ratio));
+
+        if (canvas.width !== width || canvas.height !== height) {
+          canvas.width = width;
+          canvas.height = height;
+        }
+
+        const frameWidth = frame.naturalWidth || frame.width;
+        const frameHeight = frame.naturalHeight || frame.height;
+        if (!frameWidth || !frameHeight) return;
+
+        const coverScale = Math.max(width / frameWidth, height / frameHeight);
+        const drawWidth = frameWidth * coverScale;
+        const drawHeight = frameHeight * coverScale;
+        const dx = (width - drawWidth) / 2;
+        const dy = (height - drawHeight) / 2;
+
+        context.clearRect(0, 0, width, height);
+        context.drawImage(frame, dx, dy, drawWidth, drawHeight);
+      });
     });
   });
 
   return (
-    <div ref={container} className="relative h-[300vh] bg-[#0D0C1A]">
+    <div ref={container} className="relative h-[345vh] bg-[#0D0C1A]">
       <div className="sticky top-0 h-screen overflow-hidden bg-[#0D0C1A]">
         {finalReveal && images[0]?.kind === 'frame-sequence' ? (
           <motion.div
@@ -171,15 +314,16 @@ export function ZoomParallax({ images, finalReveal }: ZoomParallaxProps) {
                   className="relative isolate h-[25vh] w-[25vw] overflow-hidden rounded-[4px] [backface-visibility:hidden] [clip-path:inset(0_round_4px)] [transform:translateZ(0)] will-change-transform"
                 >
                   {item.kind === 'frame-sequence' ? (
-                    <motion.img
+                    <motion.canvas
                       ref={(node) => {
-                        frameImageRefs.current[index] = node;
-                        frameIndexes.current[index] = 0;
+                        frameCanvasRefs.current[index] = node;
+                        if (node) {
+                          resizeObserverRef.current?.observe(node);
+                        }
                       }}
-                      src={item.frames[0]}
-                      alt={item.alt || `Parallax image ${index + 1}`}
-                      draggable={false}
-                      className="h-full w-full object-cover [backface-visibility:hidden] [transform:translateZ(0)] will-change-transform"
+                      role="img"
+                      aria-label={item.alt || `Parallax image ${index + 1}`}
+                      className="h-full w-full [backface-visibility:hidden] [transform:translateZ(0)] will-change-transform"
                       style={
                         isFocusedItem
                           ? { scale: focusedImageScale }

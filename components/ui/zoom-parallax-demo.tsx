@@ -26,7 +26,7 @@ import { SolutionsSection } from '@/components/ui/solutions-section';
 import { ZoomParallax } from '@/components/ui/zoom-parallax';
 
 const automotiveFrames = Array.from(
-  { length: 60 },
+  { length: 48 },
   (_, index) =>
     `/assets/videos/0620-frames/frame-${String(index + 1).padStart(3, '0')}.webp`,
 );
