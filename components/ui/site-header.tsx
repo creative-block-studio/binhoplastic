@@ -1,52 +1,76 @@
 'use client';
 
+import type { MouseEvent } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
 
 import navMark from '@/assets/images/nav-color-icon.webp';
 import styles from '@/components/ui/site-header.module.css';
 
-const links = [
+const LIGHT_LUMINANCE_THRESHOLD = 150;
+const navLinks = [
   { href: '#catalogo', label: 'Catálogo' },
   { href: '#sobre', label: 'Sobre' },
-  { href: '#contato', label: 'Contato' },
 ] as const;
 
-const LIGHT_LUMINANCE_THRESHOLD = 150;
-
 export function SiteHeader() {
+  const pathname = usePathname();
+  const dockRef = useRef<HTMLDivElement | null>(null);
   const barRef = useRef<HTMLElement | null>(null);
+  const ctaRef = useRef<HTMLElement | null>(null);
   const lastScrollYRef = useRef(0);
   const tickingRef = useRef(false);
-  const [isLight, setIsLight] = useState(false);
+  const [barIsLight, setBarIsLight] = useState(false);
+  const [ctaIsLight, setCtaIsLight] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
 
-  const handleAnchorClick = useCallback(
-    (event: React.MouseEvent<HTMLAnchorElement>) => {
-      const href = event.currentTarget.getAttribute('href');
-      if (!href?.startsWith('#')) return;
-
-      const target = document.querySelector<HTMLElement>(href);
-      if (!target) return;
-
-      event.preventDefault();
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      history.replaceState(null, '', href);
-    },
-    [],
+  const resolveAnchorHref = useCallback(
+    (href: `#${string}`) => (pathname === '/' ? href : `/${href}`),
+    [pathname],
   );
+
+  const handleAnchorClick = useCallback((event: MouseEvent<HTMLAnchorElement>) => {
+    const href = event.currentTarget.getAttribute('href');
+    if (!href?.startsWith('#')) return;
+    if (pathname !== '/') return;
+
+    const target = document.querySelector<HTMLElement>(href);
+    if (!target) return;
+
+    event.preventDefault();
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    history.replaceState(null, '', href);
+  }, [pathname]);
 
   useEffect(() => {
     const getLuminance = (r: number, g: number, b: number) =>
       0.2126 * r + 0.7152 * g + 0.0722 * b;
 
-    const isLightBackground = (element: Element | null) => {
-      if (!element) return false;
+    const readDeclaredTone = (element: Element | null) => {
+      if (!element) return null;
+
+      if (element instanceof HTMLElement) {
+        const declaredTone = element.dataset.navTone;
+        if (declaredTone === 'light') return true;
+        if (declaredTone === 'dark') return false;
+      }
+
+      return null;
+    };
+
+    const readBackgroundTone = (element: Element | null) => {
+      if (!element) return null;
 
       const backgroundColor = window.getComputedStyle(element).backgroundColor;
-      const match = backgroundColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-      if (!match) return false;
+      const match = backgroundColor.match(
+        /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([0-9.]+))?\)/,
+      );
+      if (!match) return null;
+
+      const alpha = match[4] ? Number(match[4]) : 1;
+      if (alpha < 0.08) return null;
 
       return (
         getLuminance(Number(match[1]), Number(match[2]), Number(match[3])) >
@@ -54,35 +78,82 @@ export function SiteHeader() {
       );
     };
 
-    const sampleBehindHeader = () => {
-      const header = barRef.current;
-      if (!header) return false;
+    const sampleTone = (element: HTMLElement | null) => {
+      if (!element) return false;
 
-      const rect = header.getBoundingClientRect();
-      const sampleX = rect.left + rect.width / 2;
-      const sampleY = rect.top + rect.height / 2;
+      const rect = element.getBoundingClientRect();
+      const samplePoints = [
+        [0.2, 0.5],
+        [0.4, 0.5],
+        [0.5, 0.5],
+        [0.6, 0.5],
+        [0.8, 0.5],
+      ] as const;
 
-      const previousVisibility = header.style.visibility;
-      const previousPointerEvents = header.style.pointerEvents;
-      header.style.pointerEvents = 'none';
-      header.style.visibility = 'hidden';
-      const behind = document.elementFromPoint(sampleX, sampleY);
-      header.style.visibility = previousVisibility;
-      header.style.pointerEvents = previousPointerEvents;
+      const dock = dockRef.current;
+      const visibilityTarget = dock ?? element;
+      const previousVisibility = visibilityTarget.style.visibility;
+      const previousPointerEvents = visibilityTarget.style.pointerEvents;
+      visibilityTarget.style.pointerEvents = 'none';
+      visibilityTarget.style.visibility = 'hidden';
 
-      let target = behind;
-      while (target && target !== document.documentElement) {
-        if (target instanceof HTMLElement) {
-          const declaredTone = target.dataset.navTone;
-          if (declaredTone === 'light') return true;
-          if (declaredTone === 'dark') return false;
+      let lightHits = 0;
+      let darkHits = 0;
+
+      for (const [xRatio, yRatio] of samplePoints) {
+        const sampleX = rect.left + rect.width * xRatio;
+        const sampleY = rect.top + rect.height * yRatio;
+        const stack = document.elementsFromPoint(sampleX, sampleY);
+        let resolvedDeclaredTone: boolean | null = null;
+        let resolvedBackgroundTone: boolean | null = null;
+
+        for (const stackedElement of stack) {
+          let target: Element | null = stackedElement;
+
+          while (target && target !== document.documentElement) {
+            const declaredTone = readDeclaredTone(target);
+            if (declaredTone !== null) {
+              resolvedDeclaredTone = declaredTone;
+              break;
+            }
+
+            target = target.parentElement;
+          }
+
+          if (resolvedDeclaredTone !== null) break;
         }
 
-        if (isLightBackground(target)) return true;
-        target = target.parentElement;
+        if (resolvedDeclaredTone === null) {
+          for (const stackedElement of stack) {
+            let target: Element | null = stackedElement;
+
+            while (target && target !== document.documentElement) {
+              const backgroundTone = readBackgroundTone(target);
+              if (backgroundTone !== null) {
+                resolvedBackgroundTone = backgroundTone;
+                break;
+              }
+
+              target = target.parentElement;
+            }
+
+            if (resolvedBackgroundTone !== null) break;
+          }
+        }
+
+        const resolvedTone = resolvedDeclaredTone ?? resolvedBackgroundTone;
+
+        if (resolvedTone === true) {
+          lightHits += 1;
+        } else if (resolvedTone === false) {
+          darkHits += 1;
+        }
       }
 
-      return false;
+      visibilityTarget.style.visibility = previousVisibility;
+      visibilityTarget.style.pointerEvents = previousPointerEvents;
+
+      return lightHits > darkHits;
     };
 
     const updateHeaderState = () => {
@@ -90,7 +161,8 @@ export function SiteHeader() {
       const previousScrollY = lastScrollYRef.current;
       const delta = currentScrollY - previousScrollY;
 
-      setIsLight(sampleBehindHeader());
+      setBarIsLight(sampleTone(barRef.current));
+      setCtaIsLight(sampleTone(ctaRef.current));
 
       if (currentScrollY < 40) {
         setIsHidden(false);
@@ -116,17 +188,59 @@ export function SiteHeader() {
     lastScrollYRef.current = Math.max(window.scrollY, 0);
     window.addEventListener('scroll', requestUpdate, { passive: true });
     window.addEventListener('resize', requestUpdate);
-    requestAnimationFrame(updateHeaderState);
+    window.addEventListener('load', requestUpdate);
+    window.addEventListener('pageshow', requestUpdate);
+
+    const mutationObserver = new MutationObserver(requestUpdate);
+    mutationObserver.observe(document.body, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeFilter: ['class', 'style', 'data-nav-tone'],
+    });
+
+    const resizeObserver = new ResizeObserver(requestUpdate);
+    resizeObserver.observe(document.body);
+
+    const initialFrames = [
+      requestAnimationFrame(updateHeaderState),
+      requestAnimationFrame(() => requestAnimationFrame(updateHeaderState)),
+      window.setTimeout(updateHeaderState, 0),
+      window.setTimeout(updateHeaderState, 120),
+      window.setTimeout(updateHeaderState, 320),
+      window.setTimeout(updateHeaderState, 700),
+    ];
+
+    const initialInterval = window.setInterval(updateHeaderState, 180);
+    const stopInitialInterval = window.setTimeout(() => {
+      clearInterval(initialInterval);
+    }, 1600);
+
+    void document.fonts?.ready.then(requestUpdate);
 
     return () => {
       window.removeEventListener('scroll', requestUpdate);
       window.removeEventListener('resize', requestUpdate);
+      window.removeEventListener('load', requestUpdate);
+      window.removeEventListener('pageshow', requestUpdate);
+      mutationObserver.disconnect();
+      resizeObserver.disconnect();
+      const [firstFrame, secondFrame, firstTimeout, secondTimeout, thirdTimeout, fourthTimeout] =
+        initialFrames;
+      cancelAnimationFrame(firstFrame);
+      cancelAnimationFrame(secondFrame);
+      clearTimeout(firstTimeout);
+      clearTimeout(secondTimeout);
+      clearTimeout(thirdTimeout);
+      clearTimeout(fourthTimeout);
+      clearInterval(initialInterval);
+      clearTimeout(stopInitialInterval);
     };
-  }, []);
+  }, [pathname]);
 
   const barClassName = [
     styles.bar,
-    isLight ? styles.light : '',
+    barIsLight ? styles.light : '',
     isHidden ? styles.hidden : '',
   ]
     .filter(Boolean)
@@ -134,21 +248,31 @@ export function SiteHeader() {
 
   const ctaClassName = [
     styles.cta,
-    isLight ? styles.ctaLight : '',
+    ctaIsLight ? styles.ctaLight : '',
     isHidden ? styles.hidden : '',
   ]
     .filter(Boolean)
     .join(' ');
 
+  const glassStyle = {
+    backdropFilter: 'blur(18px) saturate(155%)',
+    WebkitBackdropFilter: 'blur(18px) saturate(155%)',
+  } as const;
+
   return (
-    <div className={styles.dock}>
+    <div ref={dockRef} className={styles.dock}>
       <div className={styles.rail}>
         <div className={styles.row}>
           <div className={styles.cluster}>
-            <header ref={barRef} className={barClassName} aria-label="Navegação principal">
+            <header
+              ref={barRef}
+              className={barClassName}
+              style={glassStyle}
+              aria-label="Marca Binho Plastic"
+            >
               <a
                 className={styles.logo}
-                href="#inicio"
+                href={resolveAnchorHref('#inicio')}
                 aria-label="Binho Plastic"
                 onClick={handleAnchorClick}
               >
@@ -160,27 +284,35 @@ export function SiteHeader() {
                   sizes="46px"
                 />
               </a>
-
-              <nav className={styles.nav} aria-label="Seções do site">
-                <ul className={styles.navList}>
-                  {links.map((link) => (
-                    <li key={link.href}>
-                      <a className={styles.navLink} href={link.href} onClick={handleAnchorClick}>
-                        {link.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
             </header>
           </div>
 
-          <a className={ctaClassName} href="#sobre" onClick={handleAnchorClick}>
-            <span className={styles.ctaLabel}>Solicitar amostra</span>
-            <span className={styles.ctaIcon} aria-hidden="true">
-              <ArrowUpRight size={14} />
-            </span>
-          </a>
+          <nav
+            ref={ctaRef}
+            className={ctaClassName}
+            aria-label="Seções principais"
+            style={glassStyle}
+          >
+            <div className={styles.ctaNav}>
+              {navLinks.map((link) => (
+                <a
+                  key={link.href}
+                  className={styles.ctaNavLink}
+                  href={resolveAnchorHref(link.href)}
+                  onClick={handleAnchorClick}
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+
+            <a className={styles.ctaButton} href="/solicitar-amostra">
+              <span className={styles.ctaLabel}>Solicitar amostra</span>
+              <span className={styles.ctaIcon} aria-hidden="true">
+                <ArrowUpRight size={14} />
+              </span>
+            </a>
+          </nav>
         </div>
       </div>
     </div>

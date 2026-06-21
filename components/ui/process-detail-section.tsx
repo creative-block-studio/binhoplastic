@@ -179,6 +179,11 @@ export function ProcessDetailSection({
           },
         ];
 
+  const glassStyle = {
+    backdropFilter: 'blur(18px) saturate(155%)',
+    WebkitBackdropFilter: 'blur(18px) saturate(155%)',
+  } as const;
+
   return (
     <section ref={sectionRef} className={styles.section} style={sectionStyle}>
       <div className="site-shell">
@@ -270,7 +275,7 @@ export function ProcessDetailSection({
 
             <motion.span
               className={`${styles.chip} ${styles.chipTop}`}
-              style={chipTopStyle}
+              style={{ ...glassStyle, ...chipTopStyle }}
               initial={{ opacity: 0, y: 18 }}
               animate={
                 isSequenceActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }
@@ -282,7 +287,7 @@ export function ProcessDetailSection({
 
             <motion.span
               className={`${styles.chip} ${styles.chipBottom}`}
-              style={chipBottomStyle}
+              style={{ ...glassStyle, ...chipBottomStyle }}
               initial={{ opacity: 0, y: 18 }}
               animate={
                 isSequenceActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }

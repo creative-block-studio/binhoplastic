@@ -9,23 +9,23 @@ import {
 import styles from '@/components/ui/site-footer.module.css';
 
 const navigationLinks = [
-  { href: '#inicio', label: 'Home' },
-  { href: '#catalogo', label: 'Catálogo' },
-  { href: '#sobre', label: 'Sobre' },
-  { href: '#contato', label: 'Contato' },
+  { href: '/#inicio', label: 'Home' },
+  { href: '/#catalogo', label: 'Catálogo' },
+  { href: '/#sobre', label: 'Sobre' },
+  { href: '/#contato', label: 'Contato' },
 ] as const;
 
 const applicationLinks = [
-  { href: '#processo-injecao', label: 'Injeção' },
-  { href: '#processo-extrusao', label: 'Extrusão' },
-  { href: '#processo-sopro', label: 'Sopro' },
-  { href: '#processo-filme', label: 'Filme' },
-  { href: '#processo-fios-cabos', label: 'Fios e cabos' },
+  { href: '/#processo-injecao', label: 'Injeção' },
+  { href: '/#processo-extrusao', label: 'Extrusão' },
+  { href: '/#processo-sopro', label: 'Sopro' },
+  { href: '/#processo-filme', label: 'Filme' },
+  { href: '/#processo-fios-cabos', label: 'Fios e cabos' },
 ] as const;
 
 const socialLinks = [
-  { href: '#contato', label: 'Localização', icon: Target },
-  { href: '#contato', label: 'Compartilhar', icon: Share2 },
+  { href: '/#contato', label: 'Localização', icon: Target },
+  { href: '/#contato', label: 'Compartilhar', icon: Share2 },
 ] as const;
 
 export function SiteFooter() {
