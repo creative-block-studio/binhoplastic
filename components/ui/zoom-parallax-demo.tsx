@@ -128,7 +128,7 @@ export default function ZoomParallaxDemo() {
               paddingRight: 'var(--site-content-inset-right)',
             }}
           >
-            <div className="ml-auto flex w-full flex-col items-end">
+            <div className="ml-auto flex w-full flex-col items-end gap-[clamp(0.35rem,0.72vw,0.85rem)]">
               <motion.p
                 className="m-0 whitespace-nowrap text-right text-[clamp(1rem,2.08vw,2.8rem)] font-extralight leading-[1.08] tracking-[-0.045em] text-[#e0f0f1]"
                 variants={heroLineVariants}
@@ -138,7 +138,7 @@ export default function ZoomParallaxDemo() {
               >
                 A COR CERTA PARA O SEU PLÁSTICO
               </motion.p>
-              <div className="mt-1.5 flex flex-col items-end text-right text-[clamp(1.45rem,2.72vw,3.05rem)] font-bold leading-[1.03] tracking-[-0.05em] text-[#e0f0f1]">
+              <div className="flex flex-col items-end gap-[clamp(0.35rem,0.72vw,0.85rem)] text-right text-[clamp(1.45rem,2.72vw,3.05rem)] font-bold leading-[1.03] tracking-[-0.05em] text-[#e0f0f1]">
                 <motion.p
                   className="m-0 whitespace-nowrap"
                   variants={heroLineVariants}

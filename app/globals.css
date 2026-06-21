@@ -9,10 +9,10 @@
 :root {
   --background: #f4efe6;
   --foreground: #171717;
-  --site-gutter: clamp(12px, 1.6vw, 20px);
-  --site-max-width: 1640px;
-  --site-content-inset-left: clamp(16px, 3.2%, 44px);
-  --site-content-inset-right: clamp(16px, 3.2%, 44px);
+  --site-gutter: clamp(20px, 4vw, 56px);
+  --site-max-width: 1440px;
+  --site-content-inset-left: clamp(24px, 7.5%, 108px);
+  --site-content-inset-right: clamp(24px, 6.8%, 98px);
   --site-content-width: calc(
     100% - var(--site-content-inset-left) - var(--site-content-inset-right)
   );
