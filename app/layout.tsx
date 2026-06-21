@@ -20,7 +20,7 @@ const chillax = localFont({
 
 export const metadata: Metadata = {
   title: 'Binho Plastic',
-  description: 'Binho Plastic - Masterbatch, pigmentos e aditivos para plastico.',
+  description: 'Binho Plastic - Masterbatch, pigmentos e aditivos para plástico.',
   icons: {
     icon: [
       {

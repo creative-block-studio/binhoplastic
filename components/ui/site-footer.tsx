@@ -102,7 +102,7 @@ export function SiteFooter() {
         <div className={styles.shell}>
           <div className={styles.bottomInner}>
             <p className={styles.copyright}>
-              © 2024 BINHO PLASTIC. INDUSTRIAL PIGMENTS &amp; MASTERBATCHES.
+              © 2026 Creative Block Studio. Design e Desenvolvimento.
             </p>
           </div>
         </div>

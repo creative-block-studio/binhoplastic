@@ -128,9 +128,9 @@ export default function ZoomParallaxDemo() {
               paddingRight: 'var(--site-content-inset-right)',
             }}
           >
-            <div className="ml-auto w-full max-w-[min(100%,36.5rem)]">
+            <div className="ml-auto flex w-full flex-col items-end">
               <motion.p
-                className="text-right text-[clamp(1.25rem,2.35vw,2.8rem)] font-extralight leading-[1.08] tracking-[-0.045em] text-[#e0f0f1] [text-wrap:balance]"
+                className="m-0 whitespace-nowrap text-right text-[clamp(1rem,2.08vw,2.8rem)] font-extralight leading-[1.08] tracking-[-0.045em] text-[#e0f0f1]"
                 variants={heroLineVariants}
                 initial="hidden"
                 animate="visible"
@@ -138,9 +138,9 @@ export default function ZoomParallaxDemo() {
               >
                 A COR CERTA PARA O SEU PLÁSTICO
               </motion.p>
-              <div className="mt-1.5 text-right text-[clamp(1.7rem,3.2vw,3.05rem)] font-bold leading-[1.03] tracking-[-0.05em] text-[#e0f0f1] [text-wrap:balance]">
+              <div className="mt-1.5 flex flex-col items-end text-right text-[clamp(1.45rem,2.72vw,3.05rem)] font-bold leading-[1.03] tracking-[-0.05em] text-[#e0f0f1]">
                 <motion.p
-                  className="m-0"
+                  className="m-0 whitespace-nowrap"
                   variants={heroLineVariants}
                   initial="hidden"
                   animate="visible"
@@ -150,7 +150,7 @@ export default function ZoomParallaxDemo() {
                   <span className="text-[#62C3D1]">desenvolvimento</span>
                 </motion.p>
                 <motion.p
-                  className="m-0"
+                  className="m-0 whitespace-nowrap"
                   variants={heroLineVariants}
                   initial="hidden"
                   animate="visible"
