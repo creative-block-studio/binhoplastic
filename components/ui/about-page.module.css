@@ -1,0 +1,561 @@
+.page {
+  --about-bg: #d9d9d9;
+  --about-off-white: #e0f0f1;
+  --about-navy: #222b58;
+  --about-cyan: #62c3d1;
+  --about-ink: #111110;
+  --about-muted: #6b6b67;
+  --about-soft: #f2f1ee;
+  background: var(--about-bg);
+  color: var(--about-ink);
+}
+
+.hero {
+  background: var(--about-bg);
+  color: var(--about-ink);
+  padding: clamp(5.5rem, 8vw, 6.75rem) 0 clamp(1.75rem, 3vw, 2.25rem);
+}
+
+.heroInner,
+.storyInner,
+.metricsInner,
+.portraitInner,
+.developmentInner {
+  width: min(100%, var(--site-content-width));
+  margin-inline: auto;
+}
+
+.heroGrid,
+.storyGrid,
+.developmentGrid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(0.85rem, 1.5vw, 1.2rem);
+}
+
+.heroMedia {
+  margin-top: clamp(0.35rem, 0.8vw, 0.7rem);
+  margin-bottom: clamp(-1.45rem, -2.1vw, -0.9rem);
+  transform: translateY(clamp(-2.35rem, -3.4vw, -1.5rem));
+  overflow: hidden;
+  border-radius: 1rem;
+}
+
+.heroImage {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.heroHeadingBlock {
+  --hero-title-size: clamp(2.35rem, 3.5vw, 3.35rem);
+  --hero-title-line-height: 0.92;
+  --hero-title-letter-spacing: -0.06em;
+  grid-column: 1 / span 6;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: clamp(30rem, 40vw, 39rem);
+  align-self: start;
+  padding-top: 0;
+}
+
+.heroCopyBlock {
+  grid-column: 7 / -1;
+  min-width: 0;
+  justify-self: stretch;
+  align-self: start;
+  padding-top: clamp(0.1rem, 0.35vw, 0.3rem);
+}
+
+.developmentEyebrow,
+.cardEyebrow {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.developmentEyebrow {
+  color: var(--about-cyan);
+}
+
+.title {
+  margin: 0;
+  display: block;
+  max-width: 100%;
+  font-size: var(--hero-title-size);
+  font-weight: 700;
+  line-height: var(--hero-title-line-height);
+  letter-spacing: var(--hero-title-letter-spacing);
+  padding-bottom: clamp(2.1rem, 3.1vw, 2.85rem);
+}
+
+.titleOverflow {
+  display: inline-block;
+  position: absolute;
+  top: calc(100% - clamp(1.45rem, 2.35vw, 2rem));
+  left: 0;
+  font-size: var(--hero-title-size);
+  font-weight: 700;
+  line-height: var(--hero-title-line-height);
+  letter-spacing: var(--hero-title-letter-spacing);
+  white-space: nowrap;
+}
+
+.heroCopy {
+  margin: 0;
+  width: 100%;
+  max-width: none;
+  color: var(--about-muted);
+  font-size: clamp(1rem, 1.18vw, 1.2rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  text-wrap: pretty;
+}
+
+.story,
+.metricsBand,
+.portraitSection,
+.developmentSection {
+  background: var(--about-bg);
+}
+
+.story {
+  padding: clamp(2rem, 3.5vw, 3rem) 0 0;
+}
+
+.storyGrid {
+  align-items: stretch;
+}
+
+.storyLead {
+  grid-column: 1 / span 6;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: clamp(1rem, 1.5vw, 1.2rem);
+  height: 100%;
+}
+
+.quote {
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.quoteMark {
+  display: block;
+  margin-bottom: -1rem;
+  color: var(--about-navy);
+  font-size: clamp(3.2rem, 7vw, 5.2rem);
+  line-height: 0.7;
+  font-weight: 300;
+}
+
+.quoteText {
+  margin: 0;
+  max-width: 34ch;
+  color: var(--about-ink);
+  font-size: clamp(1.16rem, 1.85vw, 1.55rem);
+  font-weight: 300;
+  line-height: 1.22;
+  letter-spacing: -0.04em;
+  text-wrap: pretty;
+}
+
+.foundationButton {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: inherit;
+}
+
+.foundationButton:focus-visible {
+  outline: 2px solid rgba(34, 43, 88, 0.3);
+  outline-offset: 0.25rem;
+  border-radius: 1.2rem;
+}
+
+.foundationMedia {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  aspect-ratio: 600 / 158;
+  isolation: isolate;
+}
+
+.foundationMedia::after {
+  content: '';
+  position: absolute;
+  inset: -18% auto -18% -42%;
+  width: 34%;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.1) 38%,
+    rgba(255, 255, 255, 0.45) 50%,
+    rgba(255, 255, 255, 0.08) 62%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  opacity: 0;
+  transform: translateX(-135%) skewX(-18deg);
+  transition:
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.foundationImage,
+.portraitImage {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .foundationMedia:hover::after {
+    opacity: 1;
+    transform: translateX(470%) skewX(-18deg);
+  }
+
+  .foundationMedia:hover .foundationImage {
+    transform: scale(1.025);
+  }
+}
+
+.aboutCard {
+  grid-column: 7 / -1;
+  min-height: 0;
+  height: 100%;
+  padding: clamp(1.5rem, 2.25vw, 2rem);
+  border-radius: 1rem;
+  background: var(--about-navy);
+  color: var(--about-off-white);
+  display: grid;
+  align-content: center;
+  gap: 1rem;
+}
+
+.cardEyebrow {
+  margin-bottom: 0;
+  color: var(--about-cyan);
+  font-size: clamp(1.05rem, 1.6vw, 1.45rem);
+  letter-spacing: 0.12em;
+  line-height: 0.95;
+}
+
+.cardText {
+  margin: 0;
+  max-width: 28ch;
+  font-size: clamp(1.2rem, 1.95vw, 1.55rem);
+  font-weight: 300;
+  line-height: 1.24;
+  letter-spacing: -0.04em;
+  text-wrap: pretty;
+}
+
+.metricsBand {
+  padding: clamp(1.75rem, 3vw, 2.25rem) 0 0;
+}
+
+.metricsInner {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  align-items: center;
+  padding: clamp(1.4rem, 2.1vw, 1.9rem) clamp(1.5rem, 2.6vw, 2.9rem);
+  border: 1px solid rgba(224, 240, 241, 0.45);
+  border-radius: 0.9rem;
+  background: #bd3b5d;
+  color: var(--about-off-white);
+  box-shadow: 0 18px 42px rgba(17, 17, 16, 0.08);
+}
+
+.metricItem {
+  position: relative;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 clamp(0.75rem, 1.4vw, 1.2rem);
+}
+
+.metricValue {
+  flex: 0 0 auto;
+  font-size: clamp(2.3rem, 3.25vw, 3.5rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+
+.metricLabel {
+  margin: 0;
+  max-width: 6.6rem;
+  color: rgba(224, 240, 241, 0.9);
+  font-size: clamp(0.88rem, 0.98vw, 1rem);
+  line-height: 1.15;
+}
+
+.metricDivider {
+  flex: 0 0 auto;
+  width: 1px;
+  height: clamp(2.9rem, 4vw, 3.6rem);
+  margin-right: clamp(1.35rem, 2.4vw, 2.35rem);
+  background: rgba(224, 240, 241, 0.55);
+}
+
+.metricContent {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.55rem, 0.85vw, 0.95rem);
+}
+
+.portraitSection {
+  padding: clamp(2rem, 3vw, 2.5rem) 0 0;
+}
+
+.portraitFrame {
+  overflow: hidden;
+  border-radius: 1rem;
+  aspect-ratio: 1221 / 542;
+}
+
+.developmentSection {
+  padding: clamp(2rem, 3vw, 2.5rem) 0 clamp(3rem, 4vw, 3.75rem);
+}
+
+.developmentGrid {
+  align-items: stretch;
+}
+
+.developmentCopy {
+  grid-column: 1 / span 6;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding-top: 0.35rem;
+}
+
+.developmentTitle {
+  margin: 0;
+  max-width: 18ch;
+  color: var(--about-navy);
+  font-size: clamp(1.55rem, 2.45vw, 2.4rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+}
+
+.developmentText {
+  margin: 1rem 0 0;
+  max-width: 32rem;
+  color: var(--about-muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.developmentButton {
+  margin-top: auto;
+  align-self: flex-start;
+  min-height: 2.7rem;
+  border-radius: 0.7rem;
+  border-color: rgba(34, 43, 88, 0.15);
+  background: var(--about-navy);
+  color: var(--about-off-white);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.developmentButton:hover {
+  color: var(--about-off-white);
+  background: #1b2350;
+  border-color: rgba(34, 43, 88, 0.35);
+}
+
+.featureList {
+  grid-column: 8 / -1;
+  display: grid;
+  align-content: space-between;
+  gap: 0.7rem;
+  min-height: 100%;
+}
+
+.featureCard {
+  display: grid;
+  grid-template-columns: 2.6rem minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: start;
+  padding: 0.95rem;
+  border-radius: 0.9rem;
+  background: var(--about-soft);
+}
+
+.featureCard[data-tone='cyan'] .featureIcon {
+  background: rgba(98, 195, 209, 0.15);
+  color: var(--about-cyan);
+}
+
+.featureCard[data-tone='navy'] .featureIcon {
+  background: rgba(17, 17, 16, 0.06);
+  color: var(--about-navy);
+}
+
+.featureCard[data-tone='amber'] .featureIcon {
+  background: rgba(252, 206, 32, 0.2);
+  color: #9d6d00;
+}
+
+.featureIcon {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+}
+
+.featureBody {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.featureTitle {
+  margin: 0;
+  color: var(--about-ink);
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.featureDescription {
+  margin: 0;
+  color: var(--about-muted);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 1100px) {
+  .heroHeadingBlock,
+  .storyLead,
+  .developmentCopy {
+    grid-column: 1 / span 5;
+  }
+
+  .heroCopyBlock,
+  .aboutCard,
+  .featureList {
+    grid-column: 7 / -1;
+  }
+
+  .aboutCard {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 860px) {
+  .hero {
+    padding-top: 6.5rem;
+  }
+
+  .storyGrid,
+  .developmentGrid,
+  .metricsInner {
+    grid-template-columns: 1fr;
+  }
+
+  .storyLead,
+  .aboutCard,
+  .developmentCopy,
+  .featureList,
+  .metricItem {
+    grid-column: 1;
+  }
+
+  .quoteText,
+  .cardText {
+    max-width: none;
+  }
+
+  .metricsInner {
+    gap: 1rem;
+  }
+
+  .metricItem {
+    padding: 0;
+  }
+
+  .metricContent {
+    gap: 0.75rem;
+  }
+
+  .metricDivider {
+    display: none;
+  }
+
+  .portraitFrame {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+@media (max-width: 720px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heroHeadingBlock,
+  .heroCopyBlock {
+    grid-column: 1;
+    width: 100%;
+    max-width: none;
+    padding-top: 0;
+  }
+
+  .heroCopy {
+    max-width: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 6rem 0 2rem;
+  }
+
+  .heroHeadingBlock {
+    --hero-title-size: clamp(2rem, 9vw, 2.8rem);
+  }
+
+  .title {
+    padding-bottom: 1.7rem;
+  }
+
+  .heroCopy {
+    font-size: 0.92rem;
+    line-height: 1.35;
+  }
+
+  .story,
+  .metricsBand,
+  .portraitSection,
+  .developmentSection {
+    padding-top: 2rem;
+  }
+
+  .aboutCard,
+  .metricsInner {
+    padding: 1.35rem;
+  }
+
+  .developmentButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

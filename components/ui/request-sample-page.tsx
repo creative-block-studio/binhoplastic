@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import {
   Building2,
+  ChevronDown,
   ChevronRight,
   Clock3,
   Factory,
@@ -69,7 +70,7 @@ export function RequestSamplePage() {
                   />
                 </a>
 
-                <a className={styles.contactCard} href="tel:+5511910089499">
+                <div className={`${styles.contactCard} ${styles.contactCardStatic}`}>
                   <span className={styles.contactCardBody}>
                     <span className={styles.contactIconWrap} aria-hidden="true">
                       <Phone size={20} />
@@ -79,14 +80,9 @@ export function RequestSamplePage() {
                       <span className={styles.contactMeta}>(11) 91008-9499</span>
                     </span>
                   </span>
-                  <ChevronRight
-                    className={styles.contactCardArrow}
-                    size={22}
-                    aria-hidden="true"
-                  />
-                </a>
+                </div>
 
-                <a className={styles.contactCard} href="mailto:comercial@binhoplastic.com.br">
+                <div className={`${styles.contactCard} ${styles.contactCardStatic}`}>
                   <span className={styles.contactCardBody}>
                     <span className={styles.contactIconWrap} aria-hidden="true">
                       <Mail size={20} />
@@ -96,12 +92,7 @@ export function RequestSamplePage() {
                       <span className={styles.contactMeta}>comercial@binhoplastic.com.br</span>
                     </span>
                   </span>
-                  <ChevronRight
-                    className={styles.contactCardArrow}
-                    size={22}
-                    aria-hidden="true"
-                  />
-                </a>
+                </div>
               </div>
 
               <div className={styles.addressRow}>
@@ -223,6 +214,11 @@ export function RequestSamplePage() {
                           </option>
                         ))}
                       </select>
+                      <ChevronDown
+                        className={styles.fieldSelectChevron}
+                        size={16}
+                        aria-hidden="true"
+                      />
                     </div>
                   </div>
 
@@ -247,6 +243,11 @@ export function RequestSamplePage() {
                           </option>
                         ))}
                       </select>
+                      <ChevronDown
+                        className={styles.fieldSelectChevron}
+                        size={16}
+                        aria-hidden="true"
+                      />
                     </div>
                   </div>
                 </div>

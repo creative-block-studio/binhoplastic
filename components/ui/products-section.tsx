@@ -9,6 +9,7 @@ import {
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
+import { CountUpValue } from '@/components/ui/count-up-value';
 import { FlowButton } from '@/components/ui/flow-button';
 import productColorSamples from '@/assets/images/products-color-samples.webp';
 import styles from '@/components/ui/products-section.module.css';
@@ -60,51 +61,6 @@ const sectionRevealVariants = {
     },
   }),
 };
-
-function CountUpValue({
-  active,
-  suffix = '',
-  to,
-}: {
-  active: boolean;
-  suffix?: string;
-  to: number;
-}) {
-  const [value, setValue] = useState(0);
-  const hasAnimatedRef = useRef(false);
-
-  useEffect(() => {
-    if (!active || hasAnimatedRef.current) return;
-
-    hasAnimatedRef.current = true;
-    let frame = 0;
-    const duration = 1600;
-    const start = performance.now();
-
-    const tick = (now: number) => {
-      const progress = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setValue(Math.round(to * eased));
-
-      if (progress < 1) {
-        frame = requestAnimationFrame(tick);
-      } else {
-        setValue(to);
-      }
-    };
-
-    frame = requestAnimationFrame(tick);
-
-    return () => cancelAnimationFrame(frame);
-  }, [active, to]);
-
-  return (
-    <>
-      {value}
-      {suffix}
-    </>
-  );
-}
 
 export function ProductsSection() {
   const sectionRef = useRef<HTMLElement | null>(null);

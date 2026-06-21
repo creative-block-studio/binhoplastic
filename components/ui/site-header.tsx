@@ -12,7 +12,7 @@ import styles from '@/components/ui/site-header.module.css';
 const LIGHT_LUMINANCE_THRESHOLD = 150;
 const navLinks = [
   { href: '#catalogo', label: 'Catálogo' },
-  { href: '#sobre', label: 'Sobre' },
+  { href: '/sobre', label: 'Sobre' },
 ] as const;
 
 export function SiteHeader() {
@@ -31,18 +31,21 @@ export function SiteHeader() {
     [pathname],
   );
 
-  const handleAnchorClick = useCallback((event: MouseEvent<HTMLAnchorElement>) => {
-    const href = event.currentTarget.getAttribute('href');
-    if (!href?.startsWith('#')) return;
-    if (pathname !== '/') return;
+  const handleAnchorClick = useCallback(
+    (event: MouseEvent<HTMLAnchorElement>) => {
+      const href = event.currentTarget.getAttribute('href');
+      if (!href?.startsWith('#')) return;
+      if (pathname !== '/') return;
 
-    const target = document.querySelector<HTMLElement>(href);
-    if (!target) return;
+      const target = document.querySelector<HTMLElement>(href);
+      if (!target) return;
 
-    event.preventDefault();
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    history.replaceState(null, '', href);
-  }, [pathname]);
+      event.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      history.replaceState(null, '', href);
+    },
+    [pathname],
+  );
 
   useEffect(() => {
     const getLuminance = (r: number, g: number, b: number) =>
@@ -298,7 +301,7 @@ export function SiteHeader() {
                 <a
                   key={link.href}
                   className={styles.ctaNavLink}
-                  href={resolveAnchorHref(link.href)}
+                  href={link.href.startsWith('#') ? resolveAnchorHref(link.href) : link.href}
                   onClick={handleAnchorClick}
                 >
                   {link.label}
