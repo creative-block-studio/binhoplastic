@@ -49,7 +49,7 @@ export function SiteHeader() {
   );
 
   const handleLogoClick = useCallback(
-    (event: MouseEvent<HTMLAnchorElement>) => {
+    (event: MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
 
       if (typeof window === 'undefined') return;
