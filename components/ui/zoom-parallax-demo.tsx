@@ -1,9 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import Lenis from 'lenis';
 import heroBrandLockup from '@/assets/images/logo-hero-full.webp';
 import sectorsConsumerGoodsImage from '@/assets/images/sectors-consumer-goods.webp';
 import sectorsConstructionImage from '@/assets/images/sectors-construction.webp';
@@ -22,6 +20,7 @@ import { ProductsSection } from '@/components/ui/products-section';
 import { SiteFooter } from '@/components/ui/site-footer';
 import { SiteHeader } from '@/components/ui/site-header';
 import { SoproDetailSection } from '@/components/ui/sopro-detail-section';
+import { useLenisScroll } from '@/components/ui/use-lenis-scroll';
 import { SolutionsSection } from '@/components/ui/solutions-section';
 import { ZoomParallax } from '@/components/ui/zoom-parallax';
 
@@ -85,22 +84,7 @@ const heroLineVariants = {
 };
 
 export default function ZoomParallaxDemo() {
-  useEffect(() => {
-    const lenis = new Lenis();
-    let frame = 0;
-
-    function raf(time: number) {
-      lenis.raf(time);
-      frame = requestAnimationFrame(raf);
-    }
-
-    frame = requestAnimationFrame(raf);
-
-    return () => {
-      cancelAnimationFrame(frame);
-      lenis.destroy();
-    };
-  }, []);
+  useLenisScroll();
 
   return (
     <main id="inicio" className="min-h-[100dvh] w-full">
