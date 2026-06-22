@@ -1,18 +1,20 @@
 'use client';
 
 import type { CSSProperties } from 'react';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image, { type StaticImageData } from 'next/image';
-import { motion, useInView } from 'framer-motion';
+import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
 
 import consistenciaImage from '@/assets/images/diferenciais-consistencia.webp';
 import desenvolvimentoImage from '@/assets/images/diferenciais-desenvolvimento.webp';
-import { FlowHoverButton } from '@/components/ui/flow-hover-button';
+import { FlowButton } from '@/components/ui/flow-button';
 import laboratorioImage from '@/assets/images/diferenciais-laboratorio.webp';
 import suporteImage from '@/assets/images/diferenciais-suporte.webp';
 import styles from '@/components/ui/diferenciais-section.module.css';
 
 const revealEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const morphWords = ['desenvolvimento', 'controle', 'consistência'] as const;
+const widestMorphWord = 'desenvolvimento';
 
 type DiferencialCard = {
   title: string;
@@ -49,8 +51,7 @@ const cards: readonly DiferencialCard[] = [
   },
   {
     title: 'Laboratório próprio',
-    description:
-      'colorimetria e análise desde o desenvolvimento até o lote final',
+    description: 'colorimetria e análise desde o desenvolvimento até o lote final',
     image: laboratorioImage,
     imageAlt: 'Microscópio com frascos de laboratório.',
     background: '#00abc8',
@@ -65,8 +66,7 @@ const cards: readonly DiferencialCard[] = [
   },
   {
     title: 'Consistência lote a lote',
-    description:
-      'controle de processo e matéria-prima que elimina variação',
+    description: 'controle de processo e matéria-prima que elimina variação',
     image: consistenciaImage,
     imageAlt: 'Esteira com blocos coloridos em produção.',
     background: '#e70865',
@@ -81,8 +81,7 @@ const cards: readonly DiferencialCard[] = [
   },
   {
     title: 'Suporte técnico dedicado',
-    description:
-      'time disponível para otimizar aplicação e acelerar seu desenvolvimento',
+    description: 'time disponível para otimizar aplicação e acelerar seu desenvolvimento',
     image: suporteImage,
     imageAlt: 'Headset com ícone de suporte técnico.',
     background: '#ffc302',
@@ -95,11 +94,13 @@ const cards: readonly DiferencialCard[] = [
     mediaScale: '1.36',
     mediaShiftX: '0px',
   },
-];
+] as const;
 
 export function DiferenciaisSection() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const titleRef = useRef<HTMLHeadingElement | null>(null);
+  const [activeWordIndex, setActiveWordIndex] = useState(0);
+  const prefersReducedMotion = useReducedMotion();
   const isInView = useInView(sectionRef, {
     once: true,
     amount: 0.18,
@@ -111,6 +112,16 @@ export function DiferenciaisSection() {
     margin: '0px 0px -12% 0px',
   });
 
+  useEffect(() => {
+    if (!isTitleInView || prefersReducedMotion) return;
+
+    const interval = window.setInterval(() => {
+      setActiveWordIndex((current) => (current + 1) % morphWords.length);
+    }, 2200);
+
+    return () => window.clearInterval(interval);
+  }, [isTitleInView, prefersReducedMotion]);
+
   return (
     <section ref={sectionRef} className={styles.section}>
       <div className="site-shell">
@@ -119,10 +130,29 @@ export function DiferenciaisSection() {
             ref={titleRef}
             className={`${styles.title} ${isTitleInView ? styles.titleVisible : ''}`}
           >
-            Combinamos <span className={styles.titleAccent}>tecnologia</span>,{' '}
-            <span className={styles.titleAccent}>controle</span> e{' '}
-            <span className={styles.titleAccent}>suporte</span> para entregar
-            cor com <span className={styles.titleAccent}>precisão</span>
+            <span className={styles.titleLine}>
+              Combinamos{' '}
+              <span className={styles.titleWordSlot}>
+                <span className={styles.titleWordSizer} aria-hidden="true">
+                  {widestMorphWord}
+                </span>
+                <AnimatePresence mode="sync" initial={false}>
+                  <motion.span
+                    key={morphWords[activeWordIndex]}
+                    className={`${styles.titleAccent} ${styles.titleWord}`}
+                    initial={prefersReducedMotion ? { y: '0%', opacity: 1 } : { y: '72%', opacity: 0 }}
+                    animate={{ y: '0%', opacity: 1 }}
+                    exit={prefersReducedMotion ? { y: '0%', opacity: 1 } : { y: '-72%', opacity: 0 }}
+                    transition={{ duration: prefersReducedMotion ? 0 : 0.58, ease: revealEase }}
+                  >
+                    {morphWords[activeWordIndex]}
+                  </motion.span>
+                </AnimatePresence>
+              </span>
+            </span>
+            <span className={styles.titleLine}>
+              para entregar cor com <span className={styles.titleAccent}>precisão</span>
+            </span>
           </h2>
 
           <div className={styles.grid}>
@@ -144,9 +174,8 @@ export function DiferenciaisSection() {
                   } as CSSProperties
                 }
                 initial={{ opacity: 0, y: 36 }}
-                animate={
-                  isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 36 }
-                }
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 36 }}
+                whileHover={{ y: -5 }}
                 transition={{
                   delay: 0.12 + index * 0.1,
                   duration: 0.62,
@@ -177,9 +206,7 @@ export function DiferenciaisSection() {
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
             transition={{ delay: 0.5, duration: 0.58, ease: revealEase }}
           >
-            <FlowHoverButton href="#solucoes" className={styles.ctaButton}>
-              Saiba mais
-            </FlowHoverButton>
+            <FlowButton href="/sobre" className={styles.ctaButton} text="Saiba mais" />
           </motion.div>
         </div>
       </div>

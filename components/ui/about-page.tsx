@@ -3,13 +3,13 @@
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { motion, useInView } from 'framer-motion';
-import { ArrowUpRight, Beaker, Blend, FlaskConical } from 'lucide-react';
+import { Beaker, Blend, FlaskConical } from 'lucide-react';
 
 import foundationImage from '@/assets/images/about-foundation.webp';
 import heroCardsImage from '@/assets/images/about-hero-cards.png';
 import portraitImage from '@/assets/images/about-portrait.webp';
 import { CountUpValue } from '@/components/ui/count-up-value';
-import { FlowHoverButton } from '@/components/ui/flow-hover-button';
+import { FlowButton } from '@/components/ui/flow-button';
 import { SiteFooter } from '@/components/ui/site-footer';
 import { SiteHeader } from '@/components/ui/site-header';
 import { useLenisScroll } from '@/components/ui/use-lenis-scroll';
@@ -258,13 +258,11 @@ export function AboutPage() {
                     aprovação técnica e consistência garantida antes da produção.
                   </p>
 
-                  <FlowHoverButton
+                  <FlowButton
                     href="/solicitar-amostra"
                     className={styles.developmentButton}
-                    icon={<ArrowUpRight size={16} />}
-                  >
-                    Solicitar desenvolvimento de cor
-                  </FlowHoverButton>
+                    text="Solicitar desenvolvimento de cor"
+                  />
                 </div>
 
                 <div className={styles.featureList}>

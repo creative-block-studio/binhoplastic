@@ -367,8 +367,7 @@
   margin-top: auto;
   align-self: flex-start;
   min-height: 2.7rem;
-  border-radius: 0.7rem;
-  border-color: rgba(34, 43, 88, 0.15);
+  border-color: rgba(34, 43, 88, 0.28);
   background: var(--about-navy);
   color: var(--about-off-white);
   font-size: 0.88rem;
@@ -376,10 +375,37 @@
   letter-spacing: -0.02em;
 }
 
-.developmentButton:hover {
-  color: var(--about-off-white);
-  background: #1b2350;
-  border-color: rgba(34, 43, 88, 0.35);
+.developmentButton:hover,
+.developmentButton:focus-visible {
+  color: var(--about-ink);
+}
+
+.developmentButton :global(svg) {
+  stroke: #ffffff;
+}
+
+.developmentButton :global(span:nth-child(2)) {
+  transform: translateX(0);
+}
+
+.developmentButton:hover :global(span:nth-child(2)),
+.developmentButton:focus-visible :global(span:nth-child(2)) {
+  transform: translateX(0);
+}
+
+.developmentButton:hover :global(svg),
+.developmentButton:focus-visible :global(svg) {
+  stroke: var(--about-ink);
+}
+
+.developmentButton :global(span:nth-child(3)) {
+  background: var(--about-bg);
+}
+
+.developmentButton:hover :global(span:nth-child(3)),
+.developmentButton:focus-visible :global(span:nth-child(3)) {
+  width: 320px;
+  height: 320px;
 }
 
 .featureList {
