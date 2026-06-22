@@ -2,6 +2,7 @@
 
 import type { MouseEvent } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
@@ -45,6 +46,17 @@ export function SiteHeader() {
       history.replaceState(null, '', href);
     },
     [pathname],
+  );
+
+  const handleLogoClick = useCallback(
+    (event: MouseEvent<HTMLAnchorElement>) => {
+      event.preventDefault();
+
+      if (typeof window === 'undefined') return;
+
+      window.location.assign('/');
+    },
+    [],
   );
 
   useEffect(() => {
@@ -273,11 +285,11 @@ export function SiteHeader() {
               style={glassStyle}
               aria-label="Marca Binho Plastic"
             >
-              <a
+              <button
                 className={styles.logo}
-                href={resolveAnchorHref('#inicio')}
                 aria-label="Binho Plastic"
-                onClick={handleAnchorClick}
+                onClick={handleLogoClick}
+                type="button"
               >
                 <Image
                   src={navMark}
@@ -286,7 +298,7 @@ export function SiteHeader() {
                   className={styles.logoMark}
                   sizes="46px"
                 />
-              </a>
+              </button>
             </header>
           </div>
 
@@ -298,23 +310,23 @@ export function SiteHeader() {
           >
             <div className={styles.ctaNav}>
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.href}
                   className={styles.ctaNavLink}
                   href={link.href.startsWith('#') ? resolveAnchorHref(link.href) : link.href}
                   onClick={handleAnchorClick}
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
             </div>
 
-            <a className={styles.ctaButton} href="/solicitar-amostra">
+            <Link className={styles.ctaButton} href="/solicitar-amostra">
               <span className={styles.ctaLabel}>Solicitar amostra</span>
               <span className={styles.ctaIcon} aria-hidden="true">
                 <ArrowUpRight size={14} />
               </span>
-            </a>
+            </Link>
           </nav>
         </div>
       </div>

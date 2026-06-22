@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import localFont from 'next/font/local';
 
+import { LenisProvider } from '@/components/ui/lenis-provider';
+import { PageResetProvider } from '@/components/ui/page-reset-provider';
 import './globals.css';
 
 const processSans = Inter({
@@ -64,7 +66,11 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${processSans.variable} ${chillax.variable} h-full antialiased`}
     >
-      <body className="min-h-full font-sans">{children}</body>
+      <body className="min-h-full font-sans">
+        <PageResetProvider />
+        <LenisProvider />
+        {children}
+      </body>
     </html>
   );
 }

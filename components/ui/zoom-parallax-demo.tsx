@@ -20,7 +20,6 @@ import { ProductsSection } from '@/components/ui/products-section';
 import { SiteFooter } from '@/components/ui/site-footer';
 import { SiteHeader } from '@/components/ui/site-header';
 import { SoproDetailSection } from '@/components/ui/sopro-detail-section';
-import { useLenisScroll } from '@/components/ui/use-lenis-scroll';
 import { SolutionsSection } from '@/components/ui/solutions-section';
 import { ZoomParallax } from '@/components/ui/zoom-parallax';
 
@@ -84,13 +83,11 @@ const heroLineVariants = {
 };
 
 export default function ZoomParallaxDemo() {
-  useLenisScroll();
-
   return (
     <main id="inicio" className="min-h-[100dvh] w-full">
       <SiteHeader />
       <section
-        className="relative isolate min-h-[100dvh] w-full overflow-hidden bg-[#0D0C1A]"
+        className="relative isolate min-h-[100dvh] w-full overflow-hidden bg-[#0D0C1A] select-none"
         data-nav-tone="dark"
       >
         <video

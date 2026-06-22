@@ -2,9 +2,8 @@ import {
   Mail,
   MapPin,
   Phone,
-  Share2,
-  Target,
 } from 'lucide-react';
+import Link from 'next/link';
 
 import styles from '@/components/ui/site-footer.module.css';
 
@@ -24,8 +23,10 @@ const applicationLinks = [
 ] as const;
 
 const socialLinks = [
-  { href: '/#contato', label: 'Localização', icon: Target },
-  { href: '/#contato', label: 'Compartilhar', icon: Share2 },
+  {
+    href: 'https://www.instagram.com/binhoplastic/',
+    label: 'Instagram da Binho Plastic',
+  },
 ] as const;
 
 export function SiteFooter() {
@@ -42,14 +43,41 @@ export function SiteFooter() {
                 Soluções de cor para a indústria transformadora.
               </p>
               <div className={styles.socials}>
-                {socialLinks.map(({ href, label, icon: Icon }) => (
+                {socialLinks.map(({ href, label }) => (
                   <a
                     key={label}
                     href={href}
                     className={styles.socialLink}
                     aria-label={label}
+                    target="_blank"
+                    rel="noreferrer"
                   >
-                    <Icon size={18} strokeWidth={1.9} />
+                    <svg
+                      aria-hidden="true"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <rect
+                        x="3.25"
+                        y="3.25"
+                        width="17.5"
+                        height="17.5"
+                        rx="5.25"
+                        stroke="currentColor"
+                        strokeWidth="1.9"
+                      />
+                      <circle
+                        cx="12"
+                        cy="12"
+                        r="4.1"
+                        stroke="currentColor"
+                        strokeWidth="1.9"
+                      />
+                      <circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" />
+                    </svg>
                   </a>
                 ))}
               </div>
@@ -59,9 +87,9 @@ export function SiteFooter() {
               <h3 className={styles.sectionTitle}>Navegação</h3>
               <div className={styles.list}>
                 {navigationLinks.map((link) => (
-                  <a key={link.label} href={link.href} className={styles.link}>
+                  <Link key={link.label} href={link.href} className={styles.link}>
                     {link.label}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -70,9 +98,9 @@ export function SiteFooter() {
               <h3 className={styles.sectionTitle}>Aplicações</h3>
               <div className={styles.list}>
                 {applicationLinks.map((link) => (
-                  <a key={link.label} href={link.href} className={styles.link}>
+                  <Link key={link.label} href={link.href} className={styles.link}>
                     {link.label}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>

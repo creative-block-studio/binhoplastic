@@ -19,7 +19,6 @@ import {
 import { FlowButton } from '@/components/ui/flow-button';
 import { SiteFooter } from '@/components/ui/site-footer';
 import { SiteHeader } from '@/components/ui/site-header';
-import { useLenisScroll } from '@/components/ui/use-lenis-scroll';
 import styles from '@/components/ui/request-sample-page.module.css';
 import whatsappIcon from '@/public/assets/images/whatsapp-icon-figma-22.png';
 
@@ -28,8 +27,6 @@ const processOptions = ['Injeção', 'Sopro', 'Extrusão', 'Filme', 'Fios e cabo
 const resinOptions = ['PE', 'PP', 'PS', 'PVC', 'PET', 'ABS'] as const;
 
 export function RequestSamplePage() {
-  useLenisScroll();
-
   return (
     <>
       <SiteHeader />

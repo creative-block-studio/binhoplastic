@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import Lenis from 'lenis';
 
-export function useLenisScroll() {
-  useEffect(() => {
+export function LenisProvider() {
+  useLayoutEffect(() => {
     const lenis = new Lenis();
     let frame = 0;
 
@@ -20,4 +20,6 @@ export function useLenisScroll() {
       lenis.destroy();
     };
   }, []);
+
+  return null;
 }

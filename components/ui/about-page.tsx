@@ -12,7 +12,6 @@ import { CountUpValue } from '@/components/ui/count-up-value';
 import { FlowButton } from '@/components/ui/flow-button';
 import { SiteFooter } from '@/components/ui/site-footer';
 import { SiteHeader } from '@/components/ui/site-header';
-import { useLenisScroll } from '@/components/ui/use-lenis-scroll';
 import styles from '@/components/ui/about-page.module.css';
 
 const revealEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
@@ -58,8 +57,6 @@ const differentiators = [
 ] as const;
 
 export function AboutPage() {
-  useLenisScroll();
-
   const duckAudioRef = useRef<HTMLAudioElement | null>(null);
   const heroRef = useRef<HTMLElement | null>(null);
   const storyRef = useRef<HTMLElement | null>(null);

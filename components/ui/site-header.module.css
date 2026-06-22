@@ -59,6 +59,8 @@
     background-color 320ms ease,
     background-image 320ms ease;
   will-change: transform, opacity;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .bar::before {
@@ -100,6 +102,11 @@
   place-items: center;
   width: 100%;
   height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  appearance: none;
+  cursor: pointer;
 }
 
 .logoMark {
@@ -146,6 +153,8 @@
     background-image 320ms ease,
     color 220ms ease;
   will-change: transform, opacity;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .ctaNav {
