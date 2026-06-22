@@ -37,38 +37,8 @@
   transform: translate3d(0, 0, 0);
 }
 
-.titleLine {
-  display: block;
-}
-
 .titleAccent {
   color: #e70865;
-}
-
-.titleWordSlot {
-  position: relative;
-  display: inline-grid;
-  align-items: start;
-  overflow: hidden;
-  height: 1.08em;
-  padding-bottom: 0.08em;
-  vertical-align: baseline;
-}
-
-.titleWordSizer {
-  visibility: hidden;
-  display: inline-block;
-  line-height: 1.02;
-  white-space: nowrap;
-}
-
-.titleWord {
-  position: absolute;
-  inset: 0 auto auto 0;
-  display: inline-block;
-  line-height: 1.02;
-  white-space: nowrap;
-  will-change: transform, opacity;
 }
 
 .grid {

@@ -1,9 +1,9 @@
 'use client';
 
 import type { CSSProperties } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import Image, { type StaticImageData } from 'next/image';
-import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 
 import consistenciaImage from '@/assets/images/diferenciais-consistencia.webp';
 import desenvolvimentoImage from '@/assets/images/diferenciais-desenvolvimento.webp';
@@ -13,8 +13,6 @@ import suporteImage from '@/assets/images/diferenciais-suporte.webp';
 import styles from '@/components/ui/diferenciais-section.module.css';
 
 const revealEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
-const morphWords = ['desenvolvimento', 'controle', 'consistência'] as const;
-const widestMorphWord = 'desenvolvimento';
 
 type DiferencialCard = {
   title: string;
@@ -99,8 +97,6 @@ const cards: readonly DiferencialCard[] = [
 export function DiferenciaisSection() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const titleRef = useRef<HTMLHeadingElement | null>(null);
-  const [activeWordIndex, setActiveWordIndex] = useState(0);
-  const prefersReducedMotion = useReducedMotion();
   const isInView = useInView(sectionRef, {
     once: true,
     amount: 0.18,
@@ -112,16 +108,6 @@ export function DiferenciaisSection() {
     margin: '0px 0px -12% 0px',
   });
 
-  useEffect(() => {
-    if (!isTitleInView || prefersReducedMotion) return;
-
-    const interval = window.setInterval(() => {
-      setActiveWordIndex((current) => (current + 1) % morphWords.length);
-    }, 2200);
-
-    return () => window.clearInterval(interval);
-  }, [isTitleInView, prefersReducedMotion]);
-
   return (
     <section ref={sectionRef} className={styles.section}>
       <div className="site-shell">
@@ -130,29 +116,10 @@ export function DiferenciaisSection() {
             ref={titleRef}
             className={`${styles.title} ${isTitleInView ? styles.titleVisible : ''}`}
           >
-            <span className={styles.titleLine}>
-              Combinamos{' '}
-              <span className={styles.titleWordSlot}>
-                <span className={styles.titleWordSizer} aria-hidden="true">
-                  {widestMorphWord}
-                </span>
-                <AnimatePresence mode="sync" initial={false}>
-                  <motion.span
-                    key={morphWords[activeWordIndex]}
-                    className={`${styles.titleAccent} ${styles.titleWord}`}
-                    initial={prefersReducedMotion ? { y: '0%', opacity: 1 } : { y: '72%', opacity: 0 }}
-                    animate={{ y: '0%', opacity: 1 }}
-                    exit={prefersReducedMotion ? { y: '0%', opacity: 1 } : { y: '-72%', opacity: 0 }}
-                    transition={{ duration: prefersReducedMotion ? 0 : 0.58, ease: revealEase }}
-                  >
-                    {morphWords[activeWordIndex]}
-                  </motion.span>
-                </AnimatePresence>
-              </span>
-            </span>
-            <span className={styles.titleLine}>
-              para entregar cor com <span className={styles.titleAccent}>precisão</span>
-            </span>
+            Combinamos <span className={styles.titleAccent}>tecnologia</span>,{' '}
+            <span className={styles.titleAccent}>controle</span> e{' '}
+            <span className={styles.titleAccent}>suporte</span> para entregar cor com{' '}
+            <span className={styles.titleAccent}>precisão</span>
           </h2>
 
           <div className={styles.grid}>
