@@ -27,7 +27,7 @@ export function SiteHeader() {
   const [isHidden, setIsHidden] = useState(false);
 
   const resolveAnchorHref = useCallback(
-    (href: `#${string}`) => (pathname === '/' ? href : `/${href}`),
+    (href: string) => (pathname === '/' ? href : `/${href}`),
     [pathname],
   );
 
