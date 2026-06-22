@@ -185,7 +185,7 @@ export function ProductsSection() {
                 </div>
 
                 <FlowButton
-                  href="#processos"
+                  href="/catalogo"
                   text="VER CATÁLOGO"
                   className={styles.ctaButton}
                 />

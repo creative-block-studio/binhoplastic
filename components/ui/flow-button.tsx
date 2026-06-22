@@ -26,7 +26,7 @@ export function FlowButton({
         {text}
       </span>
 
-      <span className="absolute top-1/2 left-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-[50%] bg-[#111111] opacity-0 transition-all duration-[800ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:h-[220px] group-hover:w-[220px] group-hover:opacity-100" />
+      <span className="absolute inset-0 z-0 scale-x-[0.28] rounded-[100px] bg-[#222B58] opacity-0 transition-all duration-[800ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-x-100 group-hover:rounded-[12px] group-hover:opacity-100" />
 
       <ArrowRight className="absolute right-4 z-[9] h-4 w-4 fill-none stroke-[#111111] transition-all duration-[800ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:right-[-25%] group-hover:stroke-white" />
     </>

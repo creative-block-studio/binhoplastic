@@ -12,7 +12,7 @@ import styles from '@/components/ui/site-header.module.css';
 
 const LIGHT_LUMINANCE_THRESHOLD = 150;
 const navLinks = [
-  { href: '#catalogo', label: 'Catálogo' },
+  { href: '/catalogo', label: 'Catalogo' },
   { href: '/sobre', label: 'Sobre' },
 ] as const;
 
@@ -44,6 +44,16 @@ export function SiteHeader() {
       event.preventDefault();
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       history.replaceState(null, '', href);
+    },
+    [pathname],
+  );
+
+  const handlePageResetNavigation = useCallback(
+    (event: MouseEvent<HTMLAnchorElement>, href: string) => {
+      if (pathname !== href) return;
+
+      event.preventDefault();
+      window.location.assign(href);
     },
     [pathname],
   );
@@ -314,14 +324,25 @@ export function SiteHeader() {
                   key={link.href}
                   className={styles.ctaNavLink}
                   href={link.href.startsWith('#') ? resolveAnchorHref(link.href) : link.href}
-                  onClick={handleAnchorClick}
+                  onClick={(event) => {
+                    if (link.href.startsWith('#')) {
+                      handleAnchorClick(event);
+                      return;
+                    }
+
+                    handlePageResetNavigation(event, link.href);
+                  }}
                 >
                   {link.label}
                 </Link>
               ))}
             </div>
 
-            <Link className={styles.ctaButton} href="/solicitar-amostra">
+            <Link
+              className={styles.ctaButton}
+              href="/solicitar-amostra"
+              onClick={(event) => handlePageResetNavigation(event, '/solicitar-amostra')}
+            >
               <span className={styles.ctaLabel}>Solicitar amostra</span>
               <span className={styles.ctaIcon} aria-hidden="true">
                 <ArrowUpRight size={14} />

@@ -9,7 +9,7 @@ import styles from '@/components/ui/site-footer.module.css';
 
 const navigationLinks = [
   { href: '/#inicio', label: 'Home' },
-  { href: '/#catalogo', label: 'Catálogo' },
+  { href: '/catalogo', label: 'Catálogo' },
   { href: '/sobre', label: 'Sobre' },
   { href: '/#contato', label: 'Contato' },
 ] as const;

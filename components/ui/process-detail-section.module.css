@@ -249,6 +249,7 @@
   z-index: 4;
 }
 
+.cta :global(a),
 .cta :global(button) {
   width: clamp(176px, 13vw, 196px);
   justify-content: center;
@@ -259,23 +260,28 @@
   white-space: nowrap;
 }
 
+.cta :global(a:hover),
 .cta :global(button:hover) {
   color: var(--process-cta-hover-color, var(--process-background, #20284c));
 }
 
+.cta :global(a > svg),
 .cta :global(button > svg) {
   stroke: var(--process-cta-color, #ffffff);
 }
 
+.cta :global(a > span:nth-child(2)),
 .cta :global(button > span:nth-child(2)) {
   letter-spacing: 0.01em;
   white-space: nowrap;
 }
 
+.cta :global(a > span:nth-child(3)),
 .cta :global(button > span:nth-child(3)) {
   background: var(--process-cta-fill-color, #ffffff);
 }
 
+.cta :global(a:hover > svg),
 .cta :global(button:hover > svg) {
   stroke: var(--process-cta-hover-color, var(--process-background, #20284c));
 }

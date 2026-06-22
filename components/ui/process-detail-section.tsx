@@ -333,7 +333,7 @@ export function ProcessDetailSection({
                 }
                 transition={{ delay: 1.86, duration: 0.58, ease: revealEase }}
               >
-                <FlowButton text="VER MAIS CORES" />
+                <FlowButton href="/catalogo" text="VER MAIS CORES" />
               </motion.div>
             ) : null}
 
