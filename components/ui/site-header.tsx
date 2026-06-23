@@ -2,7 +2,6 @@
 
 import type { MouseEvent } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
@@ -50,12 +49,10 @@ export function SiteHeader() {
 
   const handlePageResetNavigation = useCallback(
     (event: MouseEvent<HTMLAnchorElement>, href: string) => {
-      if (pathname !== href) return;
-
       event.preventDefault();
       window.location.assign(href);
     },
-    [pathname],
+    [],
   );
 
   const handleLogoClick = useCallback(
@@ -318,27 +315,27 @@ export function SiteHeader() {
             aria-label="Seções principais"
             style={glassStyle}
           >
-            <div className={styles.ctaNav}>
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  className={styles.ctaNavLink}
-                  href={link.href.startsWith('#') ? resolveAnchorHref(link.href) : link.href}
-                  onClick={(event) => {
-                    if (link.href.startsWith('#')) {
-                      handleAnchorClick(event);
-                      return;
-                    }
+              <div className={styles.ctaNav}>
+                {navLinks.map((link) => (
+                  <a
+                    key={link.href}
+                    className={styles.ctaNavLink}
+                    href={link.href.startsWith('#') ? resolveAnchorHref(link.href) : link.href}
+                    onClick={(event) => {
+                      if (link.href.startsWith('#')) {
+                        handleAnchorClick(event);
+                        return;
+                      }
 
-                    handlePageResetNavigation(event, link.href);
-                  }}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
+                      handlePageResetNavigation(event, link.href);
+                    }}
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
 
-            <Link
+            <a
               className={styles.ctaButton}
               href="/solicitar-amostra"
               onClick={(event) => handlePageResetNavigation(event, '/solicitar-amostra')}
@@ -347,7 +344,7 @@ export function SiteHeader() {
               <span className={styles.ctaIcon} aria-hidden="true">
                 <ArrowUpRight size={14} />
               </span>
-            </Link>
+            </a>
           </nav>
         </div>
       </div>
