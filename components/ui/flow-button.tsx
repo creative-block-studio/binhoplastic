@@ -1,8 +1,10 @@
 import { ArrowRight } from 'lucide-react';
+import type { CSSProperties } from 'react';
 
 type FlowButtonProps = {
   className?: string;
   href?: string;
+  style?: CSSProperties;
   text: string;
 };
 
@@ -13,6 +15,7 @@ export function FlowButton({
   text,
   href,
   className = '',
+  style,
 }: FlowButtonProps) {
   const mergedClassName = className
     ? `${baseClassName} ${className}`
@@ -34,14 +37,14 @@ export function FlowButton({
 
   if (href) {
     return (
-      <a href={href} className={mergedClassName}>
+      <a href={href} className={mergedClassName} style={style}>
         {content}
       </a>
     );
   }
 
   return (
-    <button type="button" className={mergedClassName}>
+    <button type="button" className={mergedClassName} style={style}>
       {content}
     </button>
   );
