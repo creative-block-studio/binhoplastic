@@ -2,6 +2,9 @@
 
 import {
   type CSSProperties,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   type WheelEvent,
@@ -9,6 +12,8 @@ import {
 import Image from 'next/image';
 import {
   AlertTriangle,
+  ChevronDown,
+  ChevronUp,
   Check,
   Construction,
   Download,
@@ -115,12 +120,23 @@ function getSpecIcon(icon: SpecIcon) {
 }
 
 export function ColorCatalogPage() {
+  const filterDrawerAnimationMs = 240;
   const [activeProcess, setActiveProcess] = useState<ProcessKey>('todos');
   const [selectedColorId, setSelectedColorId] = useState(defaultSelectedColorId);
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
+  const [isFilterDrawerMounted, setIsFilterDrawerMounted] = useState(false);
+  const [isDetailExpanded, setIsDetailExpanded] = useState(false);
   const [selectedPolymers, setSelectedPolymers] = useState<string[]>([]);
   const [heavyMetalFilter, setHeavyMetalFilter] = useState<'todos' | 'livre' | 'contem'>('todos');
+  const detailPanelRef = useRef<HTMLDivElement | null>(null);
+  const detailHeroRef = useRef<HTMLDivElement | null>(null);
   const detailScrollableRef = useRef<HTMLDivElement | null>(null);
+  const detailCtaRef = useRef<HTMLDivElement | null>(null);
+  const filterDrawerCloseTimeoutRef = useRef<number | null>(null);
+  const [detailHeights, setDetailHeights] = useState({
+    collapsed: 0,
+    expanded: 0,
+  });
 
   const processFilteredColors =
     activeProcess === 'todos'
@@ -143,10 +159,15 @@ export function ColorCatalogPage() {
   const selectedColor = catalogColorById.get(selectedColorId) ?? catalogColors[0];
   const activeDrawerFilterCount =
     selectedPolymers.length + (heavyMetalFilter === 'todos' ? 0 : 1);
+  const selectedDetailKey = useMemo(
+    () => `${selectedColor.id}-${selectedColor.technicalSpecs.length}-${selectedColor.applications.length}`,
+    [selectedColor],
+  );
+  const canExpandDetail = detailHeights.expanded - detailHeights.collapsed > 12;
 
   const handleDetailWheel = (event: WheelEvent<HTMLDivElement>) => {
     const container = detailScrollableRef.current;
-    if (!container) return;
+    if (!container || isDetailExpanded) return;
 
     event.preventDefault();
     event.stopPropagation();
@@ -157,6 +178,54 @@ export function ColorCatalogPage() {
     const nextScrollTop = Math.max(0, Math.min(container.scrollTop + event.deltaY, maxScrollTop));
     container.scrollTop = nextScrollTop;
   };
+
+  useLayoutEffect(() => {
+    const measureDetailHeights = () => {
+      const panel = detailPanelRef.current;
+      const hero = detailHeroRef.current;
+      const scrollable = detailScrollableRef.current;
+      const cta = detailCtaRef.current;
+
+      if (!panel || !hero || !scrollable || !cta || typeof window === 'undefined') {
+        return;
+      }
+
+      const panelTop = panel.getBoundingClientRect().top;
+      const viewportLimit = window.innerHeight - 1.25 * 16;
+      const maxPanelHeight = Math.min(46 * 16, viewportLimit - panelTop);
+      const heroHeight = hero.getBoundingClientRect().height;
+      const ctaHeight = cta.getBoundingClientRect().height;
+      const availableContentHeight = Math.max(14 * 16, maxPanelHeight - heroHeight - ctaHeight);
+      const expandedContentHeight = scrollable.scrollHeight;
+
+      setDetailHeights({
+        collapsed: Math.min(availableContentHeight, expandedContentHeight),
+        expanded: expandedContentHeight,
+      });
+    };
+
+    measureDetailHeights();
+
+    window.addEventListener('resize', measureDetailHeights);
+
+    return () => {
+      window.removeEventListener('resize', measureDetailHeights);
+    };
+  }, [selectedDetailKey]);
+
+  useEffect(() => {
+    if (!isDetailExpanded && detailScrollableRef.current) {
+      detailScrollableRef.current.scrollTop = 0;
+    }
+  }, [selectedColorId, isDetailExpanded]);
+
+  useEffect(() => {
+    return () => {
+      if (filterDrawerCloseTimeoutRef.current !== null) {
+        window.clearTimeout(filterDrawerCloseTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const primaryCtaStyle = {
     '--catalog-primary-cta-color': selectedColor.swatch,
@@ -176,6 +245,36 @@ export function ColorCatalogPage() {
   const clearDrawerFilters = () => {
     setSelectedPolymers([]);
     setHeavyMetalFilter('todos');
+  };
+
+  const closeFilterDrawer = () => {
+    if (filterDrawerCloseTimeoutRef.current !== null) {
+      window.clearTimeout(filterDrawerCloseTimeoutRef.current);
+    }
+
+    setIsFilterDrawerOpen(false);
+
+    filterDrawerCloseTimeoutRef.current = window.setTimeout(() => {
+      setIsFilterDrawerMounted(false);
+      filterDrawerCloseTimeoutRef.current = null;
+    }, filterDrawerAnimationMs);
+  };
+
+  const toggleFilterDrawer = () => {
+    if (!isFilterDrawerOpen) {
+      if (filterDrawerCloseTimeoutRef.current !== null) {
+        window.clearTimeout(filterDrawerCloseTimeoutRef.current);
+        filterDrawerCloseTimeoutRef.current = null;
+      }
+
+      setIsFilterDrawerMounted(true);
+      window.requestAnimationFrame(() => {
+        setIsFilterDrawerOpen(true);
+      });
+      return;
+    }
+
+    closeFilterDrawer();
   };
 
   return (
@@ -230,7 +329,7 @@ export function ColorCatalogPage() {
                 className={styles.filterMeta}
                 aria-expanded={isFilterDrawerOpen}
                 aria-controls="catalog-filter-drawer"
-                onClick={() => setIsFilterDrawerOpen((current) => !current)}
+                onClick={toggleFilterDrawer}
               >
                 <Filter size={16} strokeWidth={1.8} />
                 <span>Filtrar</span>
@@ -240,16 +339,36 @@ export function ColorCatalogPage() {
               </button>
             </div>
 
-            {isFilterDrawerOpen ? (
+            <div className={styles.catalogAlert}>
+              <span className={styles.alertBar} aria-hidden="true" />
+              <span className={styles.alertIcon} aria-hidden="true">
+                <AlertTriangle size={18} strokeWidth={2} />
+              </span>
+              <p className={styles.alertText}>
+                Cores sofrem variação em telas. Solicite uma amostra física antes de aprovar.
+              </p>
+            </div>
+
+            {isFilterDrawerMounted ? (
               <>
                 <button
                   type="button"
                   className={styles.filterDrawerBackdrop}
+                  data-state={isFilterDrawerOpen ? 'open' : 'closed'}
                   aria-label="Fechar filtros"
-                  onClick={() => setIsFilterDrawerOpen(false)}
+                  onClick={closeFilterDrawer}
                 />
 
-                <div id="catalog-filter-drawer" className={styles.filterDrawer}>
+                <div
+                  id="catalog-filter-drawer"
+                  className={styles.filterDrawer}
+                  data-state={isFilterDrawerOpen ? 'open' : 'closed'}
+                  style={
+                    {
+                      '--filter-drawer-duration': `${filterDrawerAnimationMs}ms`,
+                    } as CSSProperties
+                  }
+                >
                   <div className={styles.filterDrawerHeader}>
                     <div className={styles.filterDrawerTitleBlock}>
                       <p className={styles.filterDrawerEyebrow}>Filtro do catálogo</p>
@@ -260,7 +379,7 @@ export function ColorCatalogPage() {
                       type="button"
                       className={styles.filterDrawerClose}
                       aria-label="Fechar filtros"
-                      onClick={() => setIsFilterDrawerOpen(false)}
+                      onClick={closeFilterDrawer}
                     >
                       <X size={16} strokeWidth={2} />
                     </button>
@@ -460,8 +579,13 @@ export function ColorCatalogPage() {
               </div>
 
               <aside className={styles.detailColumn}>
-                <div className={styles.detailPanel}>
+                <div
+                  ref={detailPanelRef}
+                  className={styles.detailPanel}
+                  data-expanded={isDetailExpanded ? 'true' : 'false'}
+                >
                   <div
+                    ref={detailHeroRef}
                     className={styles.detailHero}
                     style={{
                       backgroundColor: selectedColor.swatch,
@@ -478,20 +602,34 @@ export function ColorCatalogPage() {
                     ref={detailScrollableRef}
                     className={styles.detailScrollable}
                     onWheelCapture={handleDetailWheel}
+                    style={
+                      detailHeights.collapsed > 0
+                        ? {
+                            maxHeight: `${isDetailExpanded ? detailHeights.expanded : detailHeights.collapsed}px`,
+                          }
+                        : undefined
+                    }
                   >
-                    <div className={styles.alertBox}>
-                      <span className={styles.alertBar} aria-hidden="true" />
-                      <span className={styles.alertIcon} aria-hidden="true">
-                        <AlertTriangle size={18} strokeWidth={2} />
-                      </span>
-                      <p className={styles.alertText}>
-                        Cores sofrem variação em telas. Solicite uma amostra física antes de aprovar.
-                      </p>
-                    </div>
-
                     <div className={styles.detailStack}>
                       <section className={styles.detailSection}>
-                        <h3 className={styles.detailSectionTitle}>Especificações Técnicas</h3>
+                        <div className={styles.detailSectionHeader}>
+                          <h3 className={styles.detailSectionTitle}>Especificações Técnicas</h3>
+                          {canExpandDetail || isDetailExpanded ? (
+                            <button
+                              type="button"
+                              className={styles.detailSectionToggle}
+                              aria-expanded={isDetailExpanded}
+                              onClick={() => setIsDetailExpanded((current) => !current)}
+                            >
+                              {isDetailExpanded ? (
+                                <ChevronUp size={14} strokeWidth={2} />
+                              ) : (
+                                <ChevronDown size={14} strokeWidth={2} />
+                              )}
+                              <span>{isDetailExpanded ? 'Recolher' : 'Expandir'}</span>
+                            </button>
+                          ) : null}
+                        </div>
                         <div className={styles.specList}>
                           {selectedColor.technicalSpecs.map((item) => (
                             <article key={item.label} className={styles.specItem}>
@@ -544,7 +682,7 @@ export function ColorCatalogPage() {
                     </div>
                   </div>
 
-                  <div className={styles.ctaStack}>
+                  <div ref={detailCtaRef} className={styles.ctaStack}>
                     <FlowButton
                       href={`/solicitar-amostra?cor=${encodeURIComponent(selectedColor.name)}&codigo=${encodeURIComponent(selectedColor.code)}`}
                       className={styles.primaryCta}
