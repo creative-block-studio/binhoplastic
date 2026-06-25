@@ -11,7 +11,7 @@ const navigationLinks = [
   { href: '/#inicio', label: 'Home' },
   { href: '/catalogo', label: 'Catálogo' },
   { href: '/sobre', label: 'Sobre' },
-  { href: '/#contato', label: 'Contato' },
+  { href: 'https://wa.me/5511910089499', label: 'Contato' },
 ] as const;
 
 const applicationLinks = [
@@ -87,9 +87,21 @@ export function SiteFooter() {
               <h3 className={styles.sectionTitle}>Navegação</h3>
               <div className={styles.list}>
                 {navigationLinks.map((link) => (
-                  <Link key={link.label} href={link.href} className={styles.link}>
-                    {link.label}
-                  </Link>
+                  link.href.startsWith('https://') ? (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      className={styles.link}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link key={link.label} href={link.href} className={styles.link}>
+                      {link.label}
+                    </Link>
+                  )
                 ))}
               </div>
             </div>
