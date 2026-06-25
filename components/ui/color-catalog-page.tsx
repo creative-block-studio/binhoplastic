@@ -46,6 +46,22 @@ import styles from '@/components/ui/color-catalog-page.module.css';
 const catalogColorById = new Map(catalogColors.map((color) => [color.id, color]));
 const polymerOptions = Array.from(new Set(catalogColors.flatMap((color) => color.polymers))).sort();
 
+function buildSampleRequestMessage(
+  colors: Array<{
+    code: string;
+  }>,
+) {
+  if (colors.length === 0) {
+    return '';
+  }
+
+  const listedColors = colors.map((color) => color.code).join(', ');
+
+  return colors.length === 1
+    ? `Gostaria de solicitar uma amostra da seguinte cor: ${listedColors}.`
+    : `Gostaria de solicitar amostras das seguintes cores: ${listedColors}.`;
+}
+
 function formatSpecValue(value: string, icon: SpecIcon) {
   if (icon === 'temperature') {
     return value.replace(/(\d+)\s*C/g, '$1°C');
@@ -126,6 +142,7 @@ export function ColorCatalogPage() {
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
   const [isFilterDrawerMounted, setIsFilterDrawerMounted] = useState(false);
   const [isDetailExpanded, setIsDetailExpanded] = useState(false);
+  const [selectedRequestColorIds, setSelectedRequestColorIds] = useState<string[]>([]);
   const [selectedPolymers, setSelectedPolymers] = useState<string[]>([]);
   const [heavyMetalFilter, setHeavyMetalFilter] = useState<'todos' | 'livre' | 'contem'>('todos');
   const detailPanelRef = useRef<HTMLDivElement | null>(null);
@@ -159,11 +176,24 @@ export function ColorCatalogPage() {
   const selectedColor = catalogColorById.get(selectedColorId) ?? catalogColors[0];
   const activeDrawerFilterCount =
     selectedPolymers.length + (heavyMetalFilter === 'todos' ? 0 : 1);
+  const selectedRequestColors = selectedRequestColorIds
+    .map((colorId) => catalogColorById.get(colorId))
+    .filter((color): color is NonNullable<typeof color> => Boolean(color));
   const selectedDetailKey = useMemo(
     () => `${selectedColor.id}-${selectedColor.technicalSpecs.length}-${selectedColor.applications.length}`,
     [selectedColor],
   );
   const canExpandDetail = detailHeights.expanded - detailHeights.collapsed > 12;
+  const singleRequestHref = `/solicitar-amostra?message=${encodeURIComponent(
+    buildSampleRequestMessage([{ code: selectedColor.code }]),
+  )}`;
+  const multipleRequestHref = `/solicitar-amostra?message=${encodeURIComponent(
+    buildSampleRequestMessage(
+      selectedRequestColors.map((color) => ({
+        code: color.code,
+      })),
+    ),
+  )}`;
 
   const handleDetailWheel = (event: WheelEvent<HTMLDivElement>) => {
     const container = detailScrollableRef.current;
@@ -245,6 +275,18 @@ export function ColorCatalogPage() {
   const clearDrawerFilters = () => {
     setSelectedPolymers([]);
     setHeavyMetalFilter('todos');
+  };
+
+  const toggleRequestColor = (colorId: string) => {
+    setSelectedRequestColorIds((current) =>
+      current.includes(colorId)
+        ? current.filter((item) => item !== colorId)
+        : [...current, colorId],
+    );
+  };
+
+  const clearSelectedRequestColors = () => {
+    setSelectedRequestColorIds([]);
   };
 
   const closeFilterDrawer = () => {
@@ -348,6 +390,41 @@ export function ColorCatalogPage() {
                 Cores sofrem variação em telas. Solicite uma amostra física antes de aprovar.
               </p>
             </div>
+
+            {selectedRequestColors.length > 0 ? (
+              <div className={styles.requestSelectionBar}>
+                <div className={styles.requestSelectionCopy}>
+                  <p className={styles.requestSelectionTitle}>
+                    {selectedRequestColors.length}{' '}
+                    {selectedRequestColors.length === 1
+                      ? 'cor selecionada para amostra'
+                      : 'cores selecionadas para amostra'}
+                  </p>
+                  <p className={styles.requestSelectionCodes}>
+                    {selectedRequestColors.map((color) => color.code).join(', ')}
+                  </p>
+                </div>
+
+                <div className={styles.requestSelectionActions}>
+                  <button
+                    type="button"
+                    className={styles.requestSelectionClear}
+                    onClick={clearSelectedRequestColors}
+                  >
+                    Limpar
+                  </button>
+                  <FlowButton
+                    href={multipleRequestHref}
+                    className={styles.requestSelectionCta}
+                    text={
+                      selectedRequestColors.length === 1
+                        ? 'Solicitar amostra'
+                        : 'Solicitar amostras'
+                    }
+                  />
+                </div>
+              </div>
+            ) : null}
 
             {isFilterDrawerMounted ? (
               <>
@@ -502,16 +579,21 @@ export function ColorCatalogPage() {
               <div className={styles.cardsColumn}>
                 <div className={styles.cardsGrid}>
                   {filteredColors.map((color) => {
-                    const isSelected = color.id === selectedColor.id;
+                    const isActiveCard = color.id === selectedColor.id;
+                    const isRequestSelected = selectedRequestColorIds.includes(color.id);
 
                     return (
-                      <button
+                      <article
                         key={color.id}
-                        type="button"
-                        className={isSelected ? styles.cardSelected : styles.card}
-                        onClick={() => setSelectedColorId(color.id)}
-                        style={isSelected ? { borderColor: color.swatch } : undefined}
+                        className={isActiveCard ? styles.cardSelected : styles.card}
+                        data-request-selected={isRequestSelected ? 'true' : 'false'}
+                        style={isActiveCard ? { borderColor: color.swatch } : undefined}
                       >
+                        <button
+                          type="button"
+                          className={styles.cardMainButton}
+                          onClick={() => setSelectedColorId(color.id)}
+                        >
                         <div
                           className={styles.cardSwatch}
                           style={{
@@ -538,6 +620,24 @@ export function ColorCatalogPage() {
                             <span className={styles.cardSectionLabel}>Polímeros</span>
                             <p className={styles.cardSectionValue}>{color.polymers.join(', ')}</p>
                           </div>
+                        </div>
+                        </button>
+
+                        <div className={styles.cardActionRow}>
+                          <button
+                            type="button"
+                            className={
+                              isRequestSelected
+                                ? styles.cardSelectChipActive
+                                : styles.cardSelectChip
+                            }
+                            aria-pressed={isRequestSelected}
+                            onClick={() => toggleRequestColor(color.id)}
+                          >
+                            {isRequestSelected
+                              ? 'Selecionada para amostra'
+                              : '+ Selecionar para amostra'}
+                          </button>
 
                           <div className={styles.cardStatusRow}>
                             <span
@@ -556,7 +656,7 @@ export function ColorCatalogPage() {
                             </span>
                           </div>
                         </div>
-                      </button>
+                      </article>
                     );
                   })}
                 </div>
@@ -684,7 +784,7 @@ export function ColorCatalogPage() {
 
                   <div ref={detailCtaRef} className={styles.ctaStack}>
                     <FlowButton
-                      href={`/solicitar-amostra?cor=${encodeURIComponent(selectedColor.name)}&codigo=${encodeURIComponent(selectedColor.code)}`}
+                      href={singleRequestHref}
                       className={styles.primaryCta}
                       style={primaryCtaStyle}
                       text="Solicitar amostra desta cor"

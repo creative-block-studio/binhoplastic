@@ -97,6 +97,64 @@
   border-radius: 0.75rem;
 }
 
+.requestSelectionBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: min(100%, var(--site-content-width));
+  margin: 0 auto 1.4rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid rgba(34, 43, 88, 0.14);
+  border-radius: 0.9rem;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 0.9rem 2rem rgba(17, 17, 16, 0.05);
+}
+
+.requestSelectionCopy {
+  display: grid;
+  gap: 0.16rem;
+}
+
+.requestSelectionTitle,
+.requestSelectionCodes {
+  margin: 0;
+}
+
+.requestSelectionTitle {
+  color: #111110;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.requestSelectionCodes {
+  color: #666761;
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.requestSelectionActions {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.requestSelectionClear {
+  min-height: 2.45rem;
+  padding: 0.52rem 0.82rem;
+  border: 1px solid rgba(144, 146, 145, 0.28);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #4b4b47;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.requestSelectionCta {
+  justify-content: center;
+}
+
 .filtersRow {
   display: flex;
   flex-wrap: wrap;
@@ -422,6 +480,21 @@
     border-color 220ms ease;
 }
 
+.card[data-request-selected='true'],
+.cardSelected[data-request-selected='true'] {
+  border-color: rgba(34, 43, 88, 0.3);
+  box-shadow: 0 1.35rem 2.6rem rgba(17, 17, 16, 0.1);
+}
+
+.cardMainButton {
+  display: grid;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  text-align: left;
+}
+
 .card:hover,
 .card:focus-visible,
 .cardSelected {
@@ -469,6 +542,47 @@
   display: grid;
   gap: 0.8rem;
   padding: 0.88rem;
+}
+
+.cardActionRow {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0 0.88rem 0.88rem;
+}
+
+.cardSelectChip,
+.cardSelectChipActive {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-height: 2rem;
+  padding: 0.34rem 0.7rem;
+  border: 1px solid rgba(34, 43, 88, 0.16);
+  border-radius: 999px;
+  background: rgba(34, 43, 88, 0.03);
+  color: #222b58;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.2;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.cardSelectChip:hover,
+.cardSelectChip:focus-visible,
+.cardSelectChipActive:hover,
+.cardSelectChipActive:focus-visible {
+  transform: translateY(-1px);
+}
+
+.cardSelectChipActive {
+  border-color: rgba(34, 43, 88, 0.26);
+  background: rgba(34, 43, 88, 0.1);
+  color: #111110;
 }
 
 .cardPills {
@@ -882,6 +996,15 @@
 
   .catalogAlert {
     margin-bottom: 1.2rem;
+  }
+
+  .requestSelectionBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .requestSelectionActions {
+    justify-content: space-between;
   }
 
   .filterMeta {

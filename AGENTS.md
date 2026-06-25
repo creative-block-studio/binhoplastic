@@ -58,6 +58,20 @@ These rules apply to all future edits in this project.
 - The navbar logo is a reset action: it should return the experience to its initial state from the top.
 - Re-clicking the current top-level page link in the navbar should reload that page from its initial state.
 - Prevent accidental text selection in intentionally non-selectable UI such as the main hero and navbar text, unless a task explicitly requires selection there.
+- Dropdowns, drawers, and expandable panels should animate in the direction of travel:
+  - opening content that appears below should enter from top to bottom
+  - closing that same content should return upward cleanly
+- Scrollable areas inside cards, dropdowns, panels, and text fields must keep wheel scrolling trapped inside the component, including when the scroll reaches the top or bottom.
+- Custom scroll areas should use subtle scrollbar styling that matches the UI and avoids heavy visual weight.
+
+## Forms And Catalog Behavior
+
+- Prefer concise, direct field microcopy. Avoid long placeholder sentences when a shorter label communicates the same intent more cleanly.
+- When a form field supports selecting multiple items, keep the interaction explicit:
+  - allow multiple selections
+  - enforce at least one selection when the field is required
+  - include an `Outro` option when it is relevant to the field's purpose
+- When the catalog sends a sample request to the contact form, prefill the message with color codes only, not color names.
 
 ## Editing Behavior
 

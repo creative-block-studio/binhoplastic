@@ -1,6 +1,19 @@
 'use client';
 
+import {
+  type CSSProperties,
+  type Dispatch,
+  type FormEvent,
+  type RefObject,
+  type SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type WheelEvent,
+} from 'react';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 import {
   Building2,
   ChevronDown,
@@ -8,6 +21,7 @@ import {
   Clock3,
   Factory,
   FlaskConical,
+  type LucideIcon,
   Mail,
   MapPin,
   MessageSquareText,
@@ -16,17 +30,320 @@ import {
   UserRound,
 } from 'lucide-react';
 
-import { FlowButton } from '@/components/ui/flow-button';
 import { SiteFooter } from '@/components/ui/site-footer';
 import { SiteHeader } from '@/components/ui/site-header';
 import styles from '@/components/ui/request-sample-page.module.css';
 import whatsappIcon from '@/public/assets/images/whatsapp-icon-figma-22.png';
 
-const processOptions = ['Injeção', 'Sopro', 'Extrusão', 'Filme', 'Fios e cabos'] as const;
+const processOptions = ['Injeção', 'Sopro', 'Extrusão', 'Filme', 'Fios e cabos', 'Outro'] as const;
 
-const resinOptions = ['PE', 'PP', 'PS', 'PVC', 'PET', 'ABS'] as const;
+const resinOptions = ['PE', 'PP', 'PS', 'PVC', 'PET', 'ABS', 'Outro'] as const;
+
+const dropdownAnimationMs = 220;
+
+type DropdownKey = 'process' | 'resin';
+
+type MultiSelectFieldProps = {
+  fieldRef: RefObject<HTMLDivElement | null>;
+  optionsRef: RefObject<HTMLDivElement | null>;
+  labelId: string;
+  label: string;
+  errorMessage: string;
+  emptyLabel: string;
+  singularLabel: string;
+  pluralLabel: string;
+  options: readonly string[];
+  selectedValues: string[];
+  isOpen: boolean;
+  isMounted: boolean;
+  hasError: boolean;
+  panelId: string;
+  Icon: LucideIcon;
+  onToggle: () => void;
+  onWheel: (event: WheelEvent<HTMLDivElement>, container: HTMLDivElement | null) => void;
+  onSelect: (value: string) => void;
+  getSelectionSummary: (
+    values: string[],
+    emptyText: string,
+    singularText: string,
+    pluralText: string,
+  ) => string;
+};
+
+function MultiSelectField({
+  fieldRef,
+  optionsRef,
+  labelId,
+  label,
+  errorMessage,
+  emptyLabel,
+  singularLabel,
+  pluralLabel,
+  options,
+  selectedValues,
+  isOpen,
+  isMounted,
+  hasError,
+  panelId,
+  Icon,
+  onToggle,
+  onWheel,
+  onSelect,
+  getSelectionSummary,
+}: MultiSelectFieldProps) {
+  return (
+    <div className={styles.fieldGroup} ref={fieldRef}>
+      <label className={styles.fieldLabel} id={labelId}>
+        {label} <span className={styles.requiredMark}>*</span>
+      </label>
+      <div
+        className={`${styles.multiSelectField} ${hasError ? styles.multiSelectFieldError : ''}`}
+        aria-labelledby={labelId}
+      >
+        <button
+          type="button"
+          className={styles.multiSelectTrigger}
+          aria-expanded={isOpen}
+          aria-controls={panelId}
+          onClick={onToggle}
+        >
+          <span className={styles.multiSelectTriggerMain}>
+            <Icon className={styles.multiSelectIcon} size={16} aria-hidden="true" />
+            <span className={styles.multiSelectSummary}>
+              {getSelectionSummary(selectedValues, emptyLabel, singularLabel, pluralLabel)}
+            </span>
+          </span>
+          <ChevronDown
+            className={isOpen ? styles.multiSelectChevronOpen : styles.multiSelectChevron}
+            size={16}
+            aria-hidden="true"
+          />
+        </button>
+
+        {isMounted ? (
+          <div
+            id={panelId}
+            className={styles.multiSelectPanel}
+            data-state={isOpen ? 'open' : 'closed'}
+            style={
+              {
+                '--dropdown-duration': `${dropdownAnimationMs}ms`,
+              } as CSSProperties
+            }
+          >
+            <div
+              ref={optionsRef}
+              className={styles.multiSelectOptions}
+              onWheelCapture={(event) => onWheel(event, optionsRef.current)}
+            >
+              {options.map((option) => {
+                const isActive = selectedValues.includes(option);
+
+                return (
+                  <label key={option} className={styles.multiSelectOptionRow}>
+                    <input
+                      type="checkbox"
+                      className={styles.multiSelectCheckbox}
+                      checked={isActive}
+                      onChange={() => onSelect(option)}
+                    />
+                    <span className={styles.multiSelectOptionLabel}>{option}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+        ) : null}
+      </div>
+      {hasError ? <p className={styles.fieldError}>{errorMessage}</p> : null}
+    </div>
+  );
+}
 
 export function RequestSamplePage() {
+  const searchParams = useSearchParams();
+  const prefilledMessage = searchParams.get('message') ?? '';
+  const [selectedProcesses, setSelectedProcesses] = useState<string[]>([]);
+  const [selectedResins, setSelectedResins] = useState<string[]>([]);
+  const [openDropdown, setOpenDropdown] = useState<DropdownKey | null>(null);
+  const [mountedDropdowns, setMountedDropdowns] = useState<Record<DropdownKey, boolean>>({
+    process: false,
+    resin: false,
+  });
+  const [showSelectionErrors, setShowSelectionErrors] = useState(false);
+  const processFieldRef = useRef<HTMLDivElement | null>(null);
+  const resinFieldRef = useRef<HTMLDivElement | null>(null);
+  const processOptionsRef = useRef<HTMLDivElement | null>(null);
+  const resinOptionsRef = useRef<HTMLDivElement | null>(null);
+  const messageFieldRef = useRef<HTMLTextAreaElement | null>(null);
+  const dropdownCloseTimeoutsRef = useRef<Record<DropdownKey, number | null>>({
+    process: null,
+    resin: null,
+  });
+
+  const processSelectionError = showSelectionErrors && selectedProcesses.length === 0;
+  const resinSelectionError = showSelectionErrors && selectedResins.length === 0;
+
+  const toggleSelection = (
+    value: string,
+    setSelectedValues: Dispatch<SetStateAction<string[]>>,
+  ) => {
+    setSelectedValues((current) =>
+      current.includes(value)
+        ? current.filter((item) => item !== value)
+        : [...current, value],
+    );
+  };
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const hasProcess = selectedProcesses.length > 0;
+    const hasResin = selectedResins.length > 0;
+
+    if (!hasProcess || !hasResin) {
+      event.preventDefault();
+      setShowSelectionErrors(true);
+
+      if (!hasProcess) {
+        processFieldRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      resinFieldRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    event.preventDefault();
+  };
+
+  const getSelectionSummary = (
+    values: string[],
+    emptyLabel: string,
+    singularLabel: string,
+    pluralLabel: string,
+  ) => {
+    if (values.length === 0) {
+      return emptyLabel;
+    }
+
+    if (values.length === 1) {
+      return `1 ${singularLabel} selecionado`;
+    }
+
+    return `${values.length} ${pluralLabel} selecionados`;
+  };
+
+  const handleOptionsWheel = (
+    event: WheelEvent<HTMLDivElement>,
+    container: HTMLDivElement | null,
+  ) => {
+    if (!container) return;
+
+    const maxScrollTop = container.scrollHeight - container.clientHeight;
+    if (maxScrollTop <= 0) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const nextScrollTop = Math.max(0, Math.min(container.scrollTop + event.deltaY, maxScrollTop));
+    container.scrollTop = nextScrollTop;
+  };
+
+  const handleTextareaWheel = (
+    event: WheelEvent<HTMLTextAreaElement>,
+    container: HTMLTextAreaElement | null,
+  ) => {
+    if (!container) return;
+
+    const maxScrollTop = container.scrollHeight - container.clientHeight;
+    if (maxScrollTop <= 0) return;
+
+    const nextScrollTop = Math.max(0, Math.min(container.scrollTop + event.deltaY, maxScrollTop));
+    if (nextScrollTop === container.scrollTop) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    container.scrollTop = nextScrollTop;
+  };
+
+  const clearDropdownCloseTimeout = useCallback((key: DropdownKey) => {
+    const timeoutId = dropdownCloseTimeoutsRef.current[key];
+
+    if (timeoutId !== null) {
+      window.clearTimeout(timeoutId);
+      dropdownCloseTimeoutsRef.current[key] = null;
+    }
+  }, []);
+
+  const closeDropdown = useCallback(
+    (key: DropdownKey) => {
+      if (openDropdown !== key && !mountedDropdowns[key]) {
+        return;
+      }
+
+      clearDropdownCloseTimeout(key);
+      setOpenDropdown((current) => (current === key ? null : current));
+      dropdownCloseTimeoutsRef.current[key] = window.setTimeout(() => {
+        setMountedDropdowns((current) => ({ ...current, [key]: false }));
+        dropdownCloseTimeoutsRef.current[key] = null;
+      }, dropdownAnimationMs);
+    },
+    [clearDropdownCloseTimeout, mountedDropdowns, openDropdown],
+  );
+
+  const openDropdownPanel = useCallback(
+    (key: DropdownKey) => {
+      const otherKey: DropdownKey = key === 'process' ? 'resin' : 'process';
+
+      clearDropdownCloseTimeout(key);
+      setMountedDropdowns((current) => ({ ...current, [key]: true }));
+      closeDropdown(otherKey);
+
+      window.requestAnimationFrame(() => {
+        setOpenDropdown(key);
+      });
+    },
+    [clearDropdownCloseTimeout, closeDropdown],
+  );
+
+  const toggleDropdown = useCallback(
+    (key: DropdownKey) => {
+      if (openDropdown === key) {
+        closeDropdown(key);
+        return;
+      }
+
+      openDropdownPanel(key);
+    },
+    [closeDropdown, openDropdown, openDropdownPanel],
+  );
+
+  useEffect(() => {
+    const handlePointerDown = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      if (processFieldRef.current && !processFieldRef.current.contains(target)) {
+        closeDropdown('process');
+      }
+
+      if (resinFieldRef.current && !resinFieldRef.current.contains(target)) {
+        closeDropdown('resin');
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+    };
+  }, [closeDropdown]);
+
+  useEffect(() => {
+    return () => {
+      clearDropdownCloseTimeout('process');
+      clearDropdownCloseTimeout('resin');
+    };
+  }, [clearDropdownCloseTimeout]);
+
   return (
     <>
       <SiteHeader />
@@ -127,7 +444,7 @@ export function RequestSamplePage() {
                 </span>
               </div>
 
-              <form className={styles.form}>
+              <form className={styles.form} onSubmit={handleSubmit} noValidate>
                 <div className={styles.fieldGroup}>
                   <label className={styles.fieldLabel} htmlFor="full-name">
                     Nome completo <span className={styles.requiredMark}>*</span>
@@ -193,63 +510,49 @@ export function RequestSamplePage() {
                 </div>
 
                 <div className={styles.rowFields}>
-                  <div className={styles.fieldGroup}>
-                    <label className={styles.fieldLabel} htmlFor="process">
-                      Processo <span className={styles.requiredMark}>*</span>
-                    </label>
-                    <div className={styles.fieldBox}>
-                      <Factory className={styles.fieldIcon} size={16} aria-hidden="true" />
-                      <select
-                        id="process"
-                        name="process"
-                        className={styles.fieldControl}
-                        defaultValue=""
-                      >
-                        <option value="" disabled>
-                          Selecione
-                        </option>
-                        {processOptions.map((option) => (
-                          <option key={option} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown
-                        className={styles.fieldSelectChevron}
-                        size={16}
-                        aria-hidden="true"
-                      />
-                    </div>
-                  </div>
+                  <MultiSelectField
+                    fieldRef={processFieldRef}
+                    optionsRef={processOptionsRef}
+                    labelId="process-group-label"
+                    label="Processo"
+                    errorMessage="Selecione pelo menos um processo."
+                    emptyLabel="Selecione os processos"
+                    singularLabel="processo"
+                    pluralLabel="processos"
+                    options={processOptions}
+                    selectedValues={selectedProcesses}
+                    isOpen={openDropdown === 'process'}
+                    isMounted={mountedDropdowns.process}
+                    hasError={processSelectionError}
+                    panelId="process-options-panel"
+                    Icon={Factory}
+                    onToggle={() => toggleDropdown('process')}
+                    onWheel={handleOptionsWheel}
+                    onSelect={(value) => toggleSelection(value, setSelectedProcesses)}
+                    getSelectionSummary={getSelectionSummary}
+                  />
 
-                  <div className={styles.fieldGroup}>
-                    <label className={styles.fieldLabel} htmlFor="resin">
-                      Resina <span className={styles.requiredMark}>*</span>
-                    </label>
-                    <div className={styles.fieldBox}>
-                      <FlaskConical className={styles.fieldIcon} size={16} aria-hidden="true" />
-                      <select
-                        id="resin"
-                        name="resin"
-                        className={styles.fieldControl}
-                        defaultValue=""
-                      >
-                        <option value="" disabled>
-                          Selecione
-                        </option>
-                        {resinOptions.map((option) => (
-                          <option key={option} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown
-                        className={styles.fieldSelectChevron}
-                        size={16}
-                        aria-hidden="true"
-                      />
-                    </div>
-                  </div>
+                  <MultiSelectField
+                    fieldRef={resinFieldRef}
+                    optionsRef={resinOptionsRef}
+                    labelId="resin-group-label"
+                    label="Resina"
+                    errorMessage="Selecione pelo menos uma resina."
+                    emptyLabel="Selecione as resinas"
+                    singularLabel="resina"
+                    pluralLabel="resinas"
+                    options={resinOptions}
+                    selectedValues={selectedResins}
+                    isOpen={openDropdown === 'resin'}
+                    isMounted={mountedDropdowns.resin}
+                    hasError={resinSelectionError}
+                    panelId="resin-options-panel"
+                    Icon={FlaskConical}
+                    onToggle={() => toggleDropdown('resin')}
+                    onWheel={handleOptionsWheel}
+                    onSelect={(value) => toggleSelection(value, setSelectedResins)}
+                    getSelectionSummary={getSelectionSummary}
+                  />
                 </div>
 
                 <div className={styles.fieldGroup}>
@@ -263,9 +566,14 @@ export function RequestSamplePage() {
                       aria-hidden="true"
                     />
                     <textarea
+                      ref={messageFieldRef}
                       id="message"
                       name="message"
                       className={styles.fieldTextarea}
+                      defaultValue={prefilledMessage}
+                      onWheelCapture={(event) =>
+                        handleTextareaWheel(event, messageFieldRef.current)
+                      }
                       placeholder="Conte mais sobre sua necessidade, aplicação, volumes ou outros detalhes importantes para ajudarmos você."
                     />
                   </div>
@@ -281,7 +589,9 @@ export function RequestSamplePage() {
                       </p>
                     </div>
                   </div>
-                  <FlowButton className={styles.submitButton} text="Enviar solicitação" />
+                  <button type="submit" className={styles.submitButton}>
+                    Enviar solicitação
+                  </button>
                 </div>
               </form>
             </section>
