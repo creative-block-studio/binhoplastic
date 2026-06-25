@@ -582,6 +582,9 @@ export function RequestSamplePage() {
                       placeholder="(00) 00000-0000"
                       inputMode="numeric"
                       maxLength={15}
+                      onInput={(event) => {
+                        event.currentTarget.value = event.currentTarget.value.replace(/\D/g, '');
+                      }}
                       required
                     />
                   </div>
