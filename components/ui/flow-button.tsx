@@ -2,6 +2,7 @@ import { ArrowRight } from 'lucide-react';
 import type { CSSProperties } from 'react';
 
 type FlowButtonProps = {
+  buttonType?: 'button' | 'submit' | 'reset';
   className?: string;
   href?: string;
   style?: CSSProperties;
@@ -12,6 +13,7 @@ const baseClassName =
   'group relative flex cursor-pointer items-center gap-1 overflow-hidden rounded-[100px] border-[1.5px] border-[#333333]/40 bg-transparent px-8 py-3 text-sm font-semibold text-[#111111] transition-all duration-[600ms] ease-[cubic-bezier(0.23,1,0.32,1)] hover:rounded-[12px] hover:border-transparent hover:text-white active:scale-[0.95]';
 
 export function FlowButton({
+  buttonType = 'button',
   text,
   href,
   className = '',
@@ -44,7 +46,7 @@ export function FlowButton({
   }
 
   return (
-    <button type="button" className={mergedClassName} style={style}>
+    <button type={buttonType} className={mergedClassName} style={style}>
       {content}
     </button>
   );

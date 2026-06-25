@@ -30,6 +30,7 @@ import {
   UserRound,
 } from 'lucide-react';
 
+import { FlowButton } from '@/components/ui/flow-button';
 import { SiteFooter } from '@/components/ui/site-footer';
 import { SiteHeader } from '@/components/ui/site-header';
 import styles from '@/components/ui/request-sample-page.module.css';
@@ -589,9 +590,11 @@ export function RequestSamplePage() {
                       </p>
                     </div>
                   </div>
-                  <button type="submit" className={styles.submitButton}>
-                    Enviar solicitação
-                  </button>
+                  <FlowButton
+                    buttonType="submit"
+                    className={styles.submitButton}
+                    text="Enviar solicitação"
+                  />
                 </div>
               </form>
             </section>

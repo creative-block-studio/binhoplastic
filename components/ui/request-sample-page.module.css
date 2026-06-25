@@ -538,31 +538,47 @@
 }
 
 .submitButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  align-self: center;
   min-height: 3.1rem;
-  padding: 0.8rem 1.3rem;
-  border: 1px solid rgba(34, 43, 88, 0.28);
-  border-radius: 999px;
   border-color: rgba(34, 43, 88, 0.28);
   background: var(--contact-hero);
-  color: #ffffff;
+  color: var(--contact-surface-strong);
   font-size: 0.92rem;
   font-weight: 700;
-  line-height: 1.2;
-  transition:
-    background-color 180ms ease,
-    color 180ms ease,
-    transform 180ms ease,
-    border-color 180ms ease;
+  letter-spacing: -0.02em;
 }
 
 .submitButton:hover,
 .submitButton:focus-visible {
-  border-color: transparent;
   color: var(--contact-text);
-  transform: translateY(-1px);
+}
+
+.submitButton :global(svg) {
+  stroke: #ffffff;
+}
+
+.submitButton :global(span:nth-child(2)) {
+  transform: translateX(0);
+}
+
+.submitButton:hover :global(span:nth-child(2)),
+.submitButton:focus-visible :global(span:nth-child(2)) {
+  transform: translateX(0);
+}
+
+.submitButton:hover :global(svg),
+.submitButton:focus-visible :global(svg) {
+  stroke: var(--contact-text);
+}
+
+.submitButton :global(span:nth-child(3)) {
+  background: var(--contact-surface-strong);
+}
+
+.submitButton:hover :global(span:nth-child(3)),
+.submitButton:focus-visible :global(span:nth-child(3)) {
+  width: 320px;
+  height: 320px;
 }
 
 @media (max-width: 1100px) {
