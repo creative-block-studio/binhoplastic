@@ -71,6 +71,7 @@
 }
 
 .catalogSection {
+  position: relative;
   padding: 1.35rem 0 5.5rem;
 }
 
@@ -127,10 +128,172 @@
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
+  min-height: 2.4rem;
+  padding: 0.52rem 0.86rem;
+  border: 1px solid rgba(144, 146, 145, 0.32);
+  border-radius: 0.72rem;
+  background: #ffffff;
   color: #6f706a;
   font-size: 0.8rem;
   font-weight: 500;
   white-space: nowrap;
+}
+
+.filterMetaCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  min-height: 1.25rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: #222b58;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.filterDrawerBackdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: transparent;
+}
+
+.filterDrawer {
+  position: absolute;
+  top: calc(1.35rem + 3.4rem);
+  right: max(var(--site-gutter), calc((100% - var(--site-content-width)) / 2));
+  z-index: 5;
+  width: min(100%, 23rem);
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid rgba(144, 146, 145, 0.24);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 1.5rem 3rem rgba(17, 17, 16, 0.1);
+}
+
+.filterDrawerHeader,
+.filterDrawerFooter {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.filterDrawerTitleBlock,
+.filterDrawerSectionHead {
+  display: grid;
+  gap: 0.22rem;
+}
+
+.filterDrawerEyebrow,
+.filterDrawerTitle,
+.filterDrawerSectionTitle,
+.filterDrawerSectionText,
+.filterDrawerResult {
+  margin: 0;
+}
+
+.filterDrawerEyebrow {
+  color: #222b58;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.filterDrawerTitle {
+  color: #111110;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.filterDrawerClose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid rgba(144, 146, 145, 0.24);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #4b4b47;
+}
+
+.filterDrawerBody {
+  display: grid;
+  gap: 1rem;
+}
+
+.filterDrawerSection {
+  display: grid;
+  gap: 0.72rem;
+}
+
+.filterDrawerSectionTitle {
+  color: #111110;
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.filterDrawerSectionText {
+  color: #6d6d69;
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.filterDrawerOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.filterDrawerOption,
+.filterDrawerOptionActive {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.2rem;
+  padding: 0.45rem 0.72rem;
+  border: 1px solid rgba(144, 146, 145, 0.24);
+  border-radius: 0.72rem;
+  background: #ffffff;
+  color: #4b4b47;
+  font-size: 0.78rem;
+  font-weight: 600;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.filterDrawerOptionActive {
+  border-color: rgba(34, 43, 88, 0.18);
+  background: rgba(34, 43, 88, 0.06);
+  color: #222b58;
+}
+
+.filterDrawerReset {
+  min-height: 2.2rem;
+  padding: 0.45rem 0.72rem;
+  border: 1px solid #222b58;
+  border-radius: 0.72rem;
+  background: #222b58;
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.filterDrawerResult {
+  align-self: center;
+  color: #6d6d69;
+  font-size: 0.78rem;
+  line-height: 1.4;
 }
 
 .catalogGrid {
@@ -346,6 +509,7 @@
   display: flex;
   flex-direction: column;
   height: min(var(--catalog-detail-panel-height), calc(100vh - 7.5rem));
+  max-height: min(var(--catalog-detail-panel-height), calc(100vh - 7.5rem));
   border: 1px solid rgba(144, 146, 145, 0.24);
   border-radius: 1rem;
   background: rgba(255, 255, 255, 0.94);
@@ -360,6 +524,28 @@
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
   scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(109, 109, 105, 0.72) transparent;
+  transition: opacity 180ms ease;
+}
+
+.detailScrollable::-webkit-scrollbar {
+  width: 0.4rem;
+}
+
+.detailScrollable::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.detailScrollable::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(109, 109, 105, 0.72);
+}
+
+.detailScrollable::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .detailHero {
@@ -609,6 +795,7 @@
   .detailPanel {
     position: static;
     height: var(--catalog-detail-panel-height);
+    max-height: var(--catalog-detail-panel-height);
   }
 }
 
@@ -648,6 +835,12 @@
 
   .catalogClosingNotice {
     grid-template-columns: 1fr;
+  }
+
+  .filterDrawer {
+    right: var(--site-gutter);
+    left: var(--site-gutter);
+    width: auto;
   }
 }
 

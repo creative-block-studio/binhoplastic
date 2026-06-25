@@ -1,9 +1,15 @@
 'use client';
 
-import { useRef, useState, type CSSProperties, type WheelEvent } from 'react';
+import {
+  type CSSProperties,
+  useRef,
+  useState,
+  type WheelEvent,
+} from 'react';
 import Image from 'next/image';
 import {
   AlertTriangle,
+  Check,
   Construction,
   Download,
   Droplets,
@@ -12,6 +18,7 @@ import {
   Percent,
   ShieldAlert,
   ShieldCheck,
+  X,
   SunMedium,
   Thermometer,
 } from 'lucide-react';
@@ -32,6 +39,7 @@ import { SiteHeader } from '@/components/ui/site-header';
 import styles from '@/components/ui/color-catalog-page.module.css';
 
 const catalogColorById = new Map(catalogColors.map((color) => [color.id, color]));
+const polymerOptions = Array.from(new Set(catalogColors.flatMap((color) => color.polymers))).sort();
 
 function formatSpecValue(value: string, icon: SpecIcon) {
   if (icon === 'temperature') {
@@ -109,14 +117,32 @@ function getSpecIcon(icon: SpecIcon) {
 export function ColorCatalogPage() {
   const [activeProcess, setActiveProcess] = useState<ProcessKey>('todos');
   const [selectedColorId, setSelectedColorId] = useState(defaultSelectedColorId);
+  const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
+  const [selectedPolymers, setSelectedPolymers] = useState<string[]>([]);
+  const [heavyMetalFilter, setHeavyMetalFilter] = useState<'todos' | 'livre' | 'contem'>('todos');
   const detailScrollableRef = useRef<HTMLDivElement | null>(null);
 
-  const filteredColors =
+  const processFilteredColors =
     activeProcess === 'todos'
       ? catalogColors
       : catalogColors.filter((color) => color.processes.includes(activeProcess));
 
+  const filteredColors = processFilteredColors.filter((color) => {
+    const matchesPolymers =
+      selectedPolymers.length === 0 ||
+      selectedPolymers.some((polymer) => color.polymers.includes(polymer));
+
+    const matchesHeavyMetals =
+      heavyMetalFilter === 'todos' ||
+      (heavyMetalFilter === 'livre' && color.heavyMetalsFree) ||
+      (heavyMetalFilter === 'contem' && !color.heavyMetalsFree);
+
+    return matchesPolymers && matchesHeavyMetals;
+  });
+
   const selectedColor = catalogColorById.get(selectedColorId) ?? catalogColors[0];
+  const activeDrawerFilterCount =
+    selectedPolymers.length + (heavyMetalFilter === 'todos' ? 0 : 1);
 
   const handleDetailWheel = (event: WheelEvent<HTMLDivElement>) => {
     const container = detailScrollableRef.current;
@@ -138,6 +164,19 @@ export function ColorCatalogPage() {
     '--catalog-primary-cta-text': getReadableColor(selectedColor.swatch),
     '--catalog-primary-cta-hover-text': getReadableTextOnSurface(selectedColor.swatch, '#FFFFFF'),
   } as CSSProperties;
+
+  const togglePolymer = (polymer: string) => {
+    setSelectedPolymers((current) =>
+      current.includes(polymer)
+        ? current.filter((item) => item !== polymer)
+        : [...current, polymer],
+    );
+  };
+
+  const clearDrawerFilters = () => {
+    setSelectedPolymers([]);
+    setHeavyMetalFilter('todos');
+  };
 
   return (
     <>
@@ -186,11 +225,159 @@ export function ColorCatalogPage() {
                 ))}
               </div>
 
-              <div className={styles.filterMeta}>
+              <button
+                type="button"
+                className={styles.filterMeta}
+                aria-expanded={isFilterDrawerOpen}
+                aria-controls="catalog-filter-drawer"
+                onClick={() => setIsFilterDrawerOpen((current) => !current)}
+              >
                 <Filter size={16} strokeWidth={1.8} />
-                <span>{filteredColors.length} cores visíveis</span>
-              </div>
+                <span>Filtrar</span>
+                {activeDrawerFilterCount > 0 ? (
+                  <span className={styles.filterMetaCount}>{activeDrawerFilterCount}</span>
+                ) : null}
+              </button>
             </div>
+
+            {isFilterDrawerOpen ? (
+              <>
+                <button
+                  type="button"
+                  className={styles.filterDrawerBackdrop}
+                  aria-label="Fechar filtros"
+                  onClick={() => setIsFilterDrawerOpen(false)}
+                />
+
+                <div id="catalog-filter-drawer" className={styles.filterDrawer}>
+                  <div className={styles.filterDrawerHeader}>
+                    <div className={styles.filterDrawerTitleBlock}>
+                      <p className={styles.filterDrawerEyebrow}>Filtro do catálogo</p>
+                      <h2 className={styles.filterDrawerTitle}>Refine as cores visíveis</h2>
+                    </div>
+
+                    <button
+                      type="button"
+                      className={styles.filterDrawerClose}
+                      aria-label="Fechar filtros"
+                      onClick={() => setIsFilterDrawerOpen(false)}
+                    >
+                      <X size={16} strokeWidth={2} />
+                    </button>
+                  </div>
+
+                  <div className={styles.filterDrawerBody}>
+                    <section className={styles.filterDrawerSection}>
+                      <div className={styles.filterDrawerSectionHead}>
+                        <h3 className={styles.filterDrawerSectionTitle}>Processo</h3>
+                      </div>
+
+                      <div className={styles.filterDrawerOptions}>
+                        {processKeys
+                          .filter((process) => process !== 'todos')
+                          .map((process) => {
+                            const isActive = activeProcess === process;
+
+                            return (
+                              <button
+                                key={process}
+                                type="button"
+                                className={
+                                  isActive ? styles.filterDrawerOptionActive : styles.filterDrawerOption
+                                }
+                                aria-pressed={isActive}
+                                onClick={() => setActiveProcess(process)}
+                              >
+                                <span>{processLabels[process]}</span>
+                                {isActive ? <Check size={14} strokeWidth={2} /> : null}
+                              </button>
+                            );
+                          })}
+                      </div>
+                    </section>
+
+                    <section className={styles.filterDrawerSection}>
+                      <div className={styles.filterDrawerSectionHead}>
+                        <h3 className={styles.filterDrawerSectionTitle}>Polímeros</h3>
+                        <p className={styles.filterDrawerSectionText}>
+                          Selecione uma ou mais resinas.
+                        </p>
+                      </div>
+
+                      <div className={styles.filterDrawerOptions}>
+                        {polymerOptions.map((polymer) => {
+                          const isActive = selectedPolymers.includes(polymer);
+
+                          return (
+                            <button
+                              key={polymer}
+                              type="button"
+                              className={
+                                isActive ? styles.filterDrawerOptionActive : styles.filterDrawerOption
+                              }
+                              aria-pressed={isActive}
+                              onClick={() => togglePolymer(polymer)}
+                            >
+                              <span>{polymer}</span>
+                              {isActive ? <Check size={14} strokeWidth={2} /> : null}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </section>
+
+                    <section className={styles.filterDrawerSection}>
+                      <div className={styles.filterDrawerSectionHead}>
+                        <h3 className={styles.filterDrawerSectionTitle}>Metais pesados</h3>
+                        <p className={styles.filterDrawerSectionText}>
+                          Filtre por conformidade do composto.
+                        </p>
+                      </div>
+
+                      <div className={styles.filterDrawerOptions}>
+                        {[
+                          { key: 'todos', label: 'Todos' },
+                          { key: 'livre', label: 'Livre de metais pesados' },
+                          { key: 'contem', label: 'Contém metais pesados' },
+                        ].map((option) => {
+                          const isActive = heavyMetalFilter === option.key;
+
+                          return (
+                            <button
+                              key={option.key}
+                              type="button"
+                              className={
+                                isActive ? styles.filterDrawerOptionActive : styles.filterDrawerOption
+                              }
+                              aria-pressed={isActive}
+                              onClick={() =>
+                                setHeavyMetalFilter(option.key as 'todos' | 'livre' | 'contem')
+                              }
+                            >
+                              <span>{option.label}</span>
+                              {isActive ? <Check size={14} strokeWidth={2} /> : null}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </section>
+                  </div>
+
+                  <div className={styles.filterDrawerFooter}>
+                    <button
+                      type="button"
+                      className={styles.filterDrawerReset}
+                      onClick={clearDrawerFilters}
+                    >
+                      Limpar filtros
+                    </button>
+                    <p className={styles.filterDrawerResult}>
+                      {filteredColors.length} cores visíveis
+                    </p>
+                  </div>
+                </div>
+              </>
+            ) : null}
 
             <div className={styles.catalogGrid}>
               <div className={styles.cardsColumn}>
