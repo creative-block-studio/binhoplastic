@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 
 import { RequestSamplePage } from '@/components/ui/request-sample-page';
 
@@ -9,5 +10,9 @@ export const metadata: Metadata = {
 };
 
 export default function SolicitarAmostraPage() {
-  return <RequestSamplePage />;
+  return (
+    <Suspense fallback={null}>
+      <RequestSamplePage />
+    </Suspense>
+  );
 }
