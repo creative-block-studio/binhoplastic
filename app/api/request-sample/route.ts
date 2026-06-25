@@ -67,6 +67,10 @@ function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
+function normalizePhoneDigits(value: string) {
+  return value.replace(/\D/g, '');
+}
+
 function getClientIp(request: NextRequest) {
   const forwardedFor = request.headers.get('x-forwarded-for');
   if (forwardedFor) {
@@ -194,6 +198,7 @@ export async function POST(request: NextRequest) {
   const companyWebsite = normalizeText(payload.companyWebsite);
   const processes = normalizeSelection(payload.processes, processOptions);
   const resins = normalizeSelection(payload.resins, resinOptions);
+  const phoneDigits = normalizePhoneDigits(phone);
 
   if (companyWebsite) {
     return NextResponse.json({ message: 'Solicitacao recebida.' }, { status: 200 });
@@ -205,6 +210,13 @@ export async function POST(request: NextRequest) {
 
   if (!isValidEmail(email)) {
     return NextResponse.json({ error: 'Informe um e-mail valido.' }, { status: 400 });
+  }
+
+  if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+    return NextResponse.json(
+      { error: 'Informe um telefone valido com DDD.' },
+      { status: 400 },
+    );
   }
 
   if (processes.length === 0 || resins.length === 0) {

@@ -580,6 +580,8 @@ export function RequestSamplePage() {
                       type="tel"
                       autoComplete="tel"
                       placeholder="(00) 00000-0000"
+                      inputMode="numeric"
+                      maxLength={15}
                       required
                     />
                   </div>
