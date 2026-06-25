@@ -44,6 +44,11 @@ const dropdownAnimationMs = 220;
 
 type DropdownKey = 'process' | 'resin';
 
+type SubmissionState =
+  | { kind: 'idle'; message: string }
+  | { kind: 'success'; message: string }
+  | { kind: 'error'; message: string };
+
 type MultiSelectFieldProps = {
   fieldRef: RefObject<HTMLDivElement | null>;
   optionsRef: RefObject<HTMLDivElement | null>;
@@ -164,6 +169,7 @@ function MultiSelectField({
 export function RequestSamplePage() {
   const searchParams = useSearchParams();
   const prefilledMessage = searchParams.get('message') ?? '';
+  const formRef = useRef<HTMLFormElement | null>(null);
   const [selectedProcesses, setSelectedProcesses] = useState<string[]>([]);
   const [selectedResins, setSelectedResins] = useState<string[]>([]);
   const [openDropdown, setOpenDropdown] = useState<DropdownKey | null>(null);
@@ -177,6 +183,11 @@ export function RequestSamplePage() {
   const processOptionsRef = useRef<HTMLDivElement | null>(null);
   const resinOptionsRef = useRef<HTMLDivElement | null>(null);
   const messageFieldRef = useRef<HTMLTextAreaElement | null>(null);
+  const [submissionState, setSubmissionState] = useState<SubmissionState>({
+    kind: 'idle',
+    message: '',
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const dropdownCloseTimeoutsRef = useRef<Record<DropdownKey, number | null>>({
     process: null,
     resin: null,
@@ -197,11 +208,25 @@ export function RequestSamplePage() {
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const fullName = String(formData.get('fullName') ?? '').trim();
+    const company = String(formData.get('company') ?? '').trim();
+    const phone = String(formData.get('phone') ?? '').trim();
+    const email = String(formData.get('email') ?? '').trim();
+    const message = String(formData.get('message') ?? '').trim();
+    const companyWebsite = String(formData.get('companyWebsite') ?? '').trim();
     const hasProcess = selectedProcesses.length > 0;
     const hasResin = selectedResins.length > 0;
 
+    event.preventDefault();
+    setSubmissionState({ kind: 'idle', message: '' });
+
+    if (!form.reportValidity()) {
+      return;
+    }
+
     if (!hasProcess || !hasResin) {
-      event.preventDefault();
       setShowSelectionErrors(true);
 
       if (!hasProcess) {
@@ -213,7 +238,67 @@ export function RequestSamplePage() {
       return;
     }
 
-    event.preventDefault();
+    void (async () => {
+      setIsSubmitting(true);
+
+      try {
+        const response = await fetch('/api/request-sample', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            fullName,
+            company,
+            phone,
+            email,
+            message,
+            processes: selectedProcesses,
+            resins: selectedResins,
+            companyWebsite,
+          }),
+        });
+
+        const result = (await response.json().catch(() => null)) as
+          | { error?: string; message?: string }
+          | null;
+
+        if (!response.ok) {
+          setSubmissionState({
+            kind: 'error',
+            message:
+              result?.error ??
+              'Nao foi possivel enviar sua solicitacao agora. Tente novamente em instantes.',
+          });
+          return;
+        }
+
+        formRef.current?.reset();
+        if (messageFieldRef.current) {
+          messageFieldRef.current.value = '';
+        }
+
+        setSelectedProcesses([]);
+        setSelectedResins([]);
+        setShowSelectionErrors(false);
+        setOpenDropdown(null);
+        setMountedDropdowns({ process: false, resin: false });
+        setSubmissionState({
+          kind: 'success',
+          message:
+            result?.message ??
+            'Solicitacao enviada com sucesso. Nosso time retorna em breve.',
+        });
+      } catch {
+        setSubmissionState({
+          kind: 'error',
+          message:
+            'Nao foi possivel enviar sua solicitacao agora. Tente novamente em instantes.',
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
+    })();
   };
 
   const getSelectionSummary = (
@@ -445,7 +530,7 @@ export function RequestSamplePage() {
                 </span>
               </div>
 
-              <form className={styles.form} onSubmit={handleSubmit} noValidate>
+              <form ref={formRef} className={styles.form} onSubmit={handleSubmit}>
                 <div className={styles.fieldGroup}>
                   <label className={styles.fieldLabel} htmlFor="full-name">
                     Nome completo <span className={styles.requiredMark}>*</span>
@@ -454,10 +539,12 @@ export function RequestSamplePage() {
                     <UserRound className={styles.fieldIcon} size={16} aria-hidden="true" />
                     <input
                       id="full-name"
-                      name="full-name"
+                      name="fullName"
                       className={styles.fieldControl}
                       type="text"
+                      autoComplete="name"
                       placeholder="Seu nome completo"
+                      required
                     />
                   </div>
                 </div>
@@ -473,7 +560,9 @@ export function RequestSamplePage() {
                       name="company"
                       className={styles.fieldControl}
                       type="text"
+                      autoComplete="organization"
                       placeholder="Nome da empresa"
+                      required
                     />
                   </div>
                 </div>
@@ -489,7 +578,9 @@ export function RequestSamplePage() {
                       name="phone"
                       className={styles.fieldControl}
                       type="tel"
+                      autoComplete="tel"
                       placeholder="(00) 00000-0000"
+                      required
                     />
                   </div>
                 </div>
@@ -505,7 +596,9 @@ export function RequestSamplePage() {
                       name="email"
                       className={styles.fieldControl}
                       type="email"
+                      autoComplete="email"
                       placeholder="seu@email.com"
+                      required
                     />
                   </div>
                 </div>
@@ -580,6 +673,17 @@ export function RequestSamplePage() {
                   </div>
                 </div>
 
+                <div className={styles.honeypotField} aria-hidden="true">
+                  <label htmlFor="company-website">Site da empresa</label>
+                  <input
+                    id="company-website"
+                    name="companyWebsite"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
+                </div>
+
                 <div className={styles.submitRow}>
                   <div className={styles.privacyNote}>
                     <div className={styles.privacyText}>
@@ -590,11 +694,26 @@ export function RequestSamplePage() {
                       </p>
                     </div>
                   </div>
-                  <FlowButton
-                    buttonType="submit"
-                    className={styles.submitButton}
-                    text="Enviar solicitação"
-                  />
+                  <div className={styles.submitActions}>
+                    {submissionState.kind !== 'idle' ? (
+                      <p
+                        className={`${styles.submitStatus} ${
+                          submissionState.kind === 'success'
+                            ? styles.submitStatusSuccess
+                            : styles.submitStatusError
+                        }`}
+                        role={submissionState.kind === 'error' ? 'alert' : 'status'}
+                      >
+                        {submissionState.message}
+                      </p>
+                    ) : null}
+                    <FlowButton
+                      buttonType="submit"
+                      className={styles.submitButton}
+                      disabled={isSubmitting}
+                      text={isSubmitting ? 'Enviando...' : 'Enviar solicitação'}
+                    />
+                  </div>
                 </div>
               </form>
             </section>

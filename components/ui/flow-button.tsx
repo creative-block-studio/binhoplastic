@@ -4,6 +4,7 @@ import type { CSSProperties } from 'react';
 type FlowButtonProps = {
   buttonType?: 'button' | 'submit' | 'reset';
   className?: string;
+  disabled?: boolean;
   href?: string;
   style?: CSSProperties;
   text: string;
@@ -17,11 +18,11 @@ export function FlowButton({
   text,
   href,
   className = '',
+  disabled = false,
   style,
 }: FlowButtonProps) {
-  const mergedClassName = className
-    ? `${baseClassName} ${className}`
-    : baseClassName;
+  const stateClassName = disabled ? 'pointer-events-none opacity-60' : '';
+  const mergedClassName = [baseClassName, className, stateClassName].filter(Boolean).join(' ');
 
   const content = (
     <>
@@ -46,7 +47,7 @@ export function FlowButton({
   }
 
   return (
-    <button type={buttonType} className={mergedClassName} style={style}>
+    <button type={buttonType} className={mergedClassName} style={style} disabled={disabled}>
       {content}
     </button>
   );
