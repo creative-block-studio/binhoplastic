@@ -10,6 +10,95 @@ import {
 import Image, { type StaticImageData } from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
+type FrameAsset = HTMLImageElement | ImageBitmap;
+type FrameCache = Array<FrameAsset | null>;
+
+const canUseCreateImageBitmap = () =>
+  typeof window !== 'undefined' && typeof window.createImageBitmap === 'function';
+
+const supportsRequestIdleCallback = () =>
+  typeof window !== 'undefined' && 'requestIdleCallback' in window;
+
+const waitForImageLoad = (image: HTMLImageElement) =>
+  new Promise<void>((resolve) => {
+    image.onload = () => resolve();
+    image.onerror = () => resolve();
+  });
+
+const yieldToMainThread = async () => {
+  const schedulerWithYield = (window as Window & {
+    scheduler?: { yield?: () => Promise<void> };
+  }).scheduler;
+
+  if (typeof schedulerWithYield?.yield === 'function') {
+    await schedulerWithYield.yield();
+    return;
+  }
+
+  await new Promise<void>((resolve) => {
+    window.setTimeout(resolve, 0);
+  });
+};
+
+const runWhenIdle = (callback: () => void) => {
+  if (supportsRequestIdleCallback()) {
+    const idleId = window.requestIdleCallback(callback, { timeout: 800 });
+
+    return () => window.cancelIdleCallback(idleId);
+  }
+
+  const timeoutId = window.setTimeout(callback, 32);
+
+  return () => window.clearTimeout(timeoutId);
+};
+
+const disposeFrameAsset = (asset: FrameAsset | null) => {
+  if (asset && 'close' in asset) {
+    asset.close();
+  }
+};
+
+const getFrameAssetSize = (asset: FrameAsset) => {
+  if ('naturalWidth' in asset) {
+    return {
+      width: asset.naturalWidth || asset.width,
+      height: asset.naturalHeight || asset.height,
+    };
+  }
+
+  return {
+    width: asset.width,
+    height: asset.height,
+  };
+};
+
+const decodeFrameAsset = async (src: string): Promise<FrameAsset> => {
+  if (canUseCreateImageBitmap()) {
+    const response = await fetch(src, { cache: 'force-cache' });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch frame: ${src}`);
+    }
+    const blob = await response.blob();
+    return window.createImageBitmap(blob);
+  }
+
+  const image = new window.Image();
+  image.decoding = 'async';
+  image.src = src;
+
+  if (typeof image.decode === 'function') {
+    try {
+      await image.decode();
+    } catch {
+      await waitForImageLoad(image);
+    }
+  } else {
+    await waitForImageLoad(image);
+  }
+
+  return image;
+};
+
 type MediaItem = {
   alt?: string;
   label?: string;
@@ -39,7 +128,8 @@ interface ZoomParallaxProps {
 export function ZoomParallax({ images, finalReveal }: ZoomParallaxProps) {
   const container = useRef<HTMLDivElement | null>(null);
   const frameCanvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
-  const frameCacheRefs = useRef<(HTMLImageElement[] | null)[]>([]);
+  const frameContextRefs = useRef<(CanvasRenderingContext2D | null)[]>([]);
+  const frameCacheRefs = useRef<(FrameCache | null)[]>([]);
   const frameIndexes = useRef<number[]>([]);
   const frameRafRefs = useRef<number[]>([]);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
@@ -112,13 +202,27 @@ export function ZoomParallax({ images, finalReveal }: ZoomParallaxProps) {
     if (!isPrimed) return;
 
     let cancelled = false;
+    const idleCleanupRefs: Array<(() => void) | undefined> = [];
+    const frameCaches = frameCacheRefs.current;
 
-    const syncCanvasSize = (canvas: HTMLCanvasElement) => {
+    const getCanvasRenderSize = (canvas: HTMLCanvasElement, index: number) => {
       const ratio = window.devicePixelRatio || 1;
-      const rect = canvas.getBoundingClientRect();
-      const width = Math.max(1, Math.round(rect.width * ratio));
-      const height = Math.max(1, Math.round(rect.height * ratio));
+      const layoutWidth = canvas.clientWidth;
+      const layoutHeight = canvas.clientHeight;
+      const width = Math.max(
+        1,
+        Math.round((index === 0 ? Math.max(layoutWidth, window.innerWidth) : layoutWidth) * ratio),
+      );
+      const height = Math.max(
+        1,
+        Math.round((index === 0 ? Math.max(layoutHeight, window.innerHeight) : layoutHeight) * ratio),
+      );
 
+      return { width, height };
+    };
+
+    const syncCanvasSize = (canvas: HTMLCanvasElement, index: number) => {
+      const { width, height } = getCanvasRenderSize(canvas, index);
       if (canvas.width !== width || canvas.height !== height) {
         canvas.width = width;
         canvas.height = height;
@@ -127,20 +231,19 @@ export function ZoomParallax({ images, finalReveal }: ZoomParallaxProps) {
 
     const drawFrameToCanvas = (index: number, frameIndex: number) => {
       const canvas = frameCanvasRefs.current[index];
+      const context =
+        frameContextRefs.current[index] ?? canvas?.getContext('2d') ?? null;
       const frames = frameCacheRefs.current[index];
       const frame = frames?.[frameIndex];
 
-      if (!canvas || !frame) return;
+      if (!canvas || !context || !frame) return;
 
-      syncCanvasSize(canvas);
-
-      const context = canvas.getContext('2d');
-      if (!context) return;
+      frameContextRefs.current[index] = context;
+      syncCanvasSize(canvas, index);
 
       const canvasWidth = canvas.width;
       const canvasHeight = canvas.height;
-      const frameWidth = frame.naturalWidth || frame.width;
-      const frameHeight = frame.naturalHeight || frame.height;
+      const { width: frameWidth, height: frameHeight } = getFrameAssetSize(frame);
 
       if (!frameWidth || !frameHeight) return;
 
@@ -165,37 +268,51 @@ export function ZoomParallax({ images, finalReveal }: ZoomParallaxProps) {
       }
 
       const preloadFrames = async () => {
-        const decodedFrames = await Promise.all(
-          item.frames.map(async (src) => {
-            const image = new window.Image();
-            image.decoding = 'async';
-            image.src = src;
-
-            if (typeof image.decode === 'function') {
-              try {
-                await image.decode();
-              } catch {
-                await new Promise<void>((resolve) => {
-                  image.onload = () => resolve();
-                  image.onerror = () => resolve();
-                });
-              }
-            } else {
-              await new Promise<void>((resolve) => {
-                image.onload = () => resolve();
-                image.onerror = () => resolve();
-              });
-            }
-
-            return image;
-          }),
-        );
-
-        if (cancelled) return;
-
-        frameCacheRefs.current[mediaIndex] = decodedFrames;
+        const decodedFrames: FrameCache = new Array(item.frames.length).fill(null);
+        frameCaches[mediaIndex] = decodedFrames;
         frameIndexes.current[mediaIndex] = 0;
+
+        const firstFrame = await decodeFrameAsset(item.frames[0]);
+        if (cancelled) {
+          disposeFrameAsset(firstFrame);
+          return;
+        }
+
+        decodedFrames[0] = firstFrame;
         drawFrameToCanvas(mediaIndex, 0);
+
+        const disposeIdleTask = runWhenIdle(() => {
+          void (async () => {
+            const maxConcurrentLoads = 2;
+            let nextFrameIndex = 1;
+
+            const loadNextFrame = async () => {
+              while (!cancelled && nextFrameIndex < item.frames.length) {
+                const currentFrameIndex = nextFrameIndex++;
+                const decodedFrame = await decodeFrameAsset(item.frames[currentFrameIndex]);
+
+                if (cancelled) {
+                  disposeFrameAsset(decodedFrame);
+                  return;
+                }
+
+                decodedFrames[currentFrameIndex] = decodedFrame;
+
+                if ((frameIndexes.current[mediaIndex] ?? 0) === currentFrameIndex) {
+                  drawFrameToCanvas(mediaIndex, currentFrameIndex);
+                }
+
+                await yieldToMainThread();
+              }
+            };
+
+            await Promise.all(
+              Array.from({ length: maxConcurrentLoads }, () => loadNextFrame()),
+            );
+          })();
+        });
+
+        idleCleanupRefs[mediaIndex] = disposeIdleTask;
       };
 
       void preloadFrames();
@@ -216,8 +333,12 @@ export function ZoomParallax({ images, finalReveal }: ZoomParallaxProps) {
     return () => {
       cancelled = true;
       resizeObserverRef.current?.disconnect();
+      idleCleanupRefs.forEach((cleanup) => cleanup?.());
       frameRafIds.forEach((frameId) => {
         if (frameId) cancelAnimationFrame(frameId);
+      });
+      frameCaches.forEach((frames) => {
+        frames?.forEach((frame) => disposeFrameAsset(frame));
       });
     };
   }, [images, isPrimed]);
@@ -244,24 +365,18 @@ export function ZoomParallax({ images, finalReveal }: ZoomParallaxProps) {
       frameRafRefs.current[index] = requestAnimationFrame(() => {
         const canvas = frameCanvasRefs.current[index];
         const frame = frameCacheRefs.current[index]?.[nextIndex];
+        const context =
+          frameContextRefs.current[index] ?? canvas?.getContext('2d') ?? null;
 
-        if (!canvas || !frame) return;
+        if (!canvas || !frame || !context) return;
+        frameContextRefs.current[index] = context;
 
-        const context = canvas.getContext('2d');
-        if (!context) return;
+        const width = canvas.width;
+        const height = canvas.height;
 
-        const ratio = window.devicePixelRatio || 1;
-        const rect = canvas.getBoundingClientRect();
-        const width = Math.max(1, Math.round(rect.width * ratio));
-        const height = Math.max(1, Math.round(rect.height * ratio));
+        if (!width || !height) return;
 
-        if (canvas.width !== width || canvas.height !== height) {
-          canvas.width = width;
-          canvas.height = height;
-        }
-
-        const frameWidth = frame.naturalWidth || frame.width;
-        const frameHeight = frame.naturalHeight || frame.height;
+        const { width: frameWidth, height: frameHeight } = getFrameAssetSize(frame);
         if (!frameWidth || !frameHeight) return;
 
         const coverScale = Math.max(width / frameWidth, height / frameHeight);
