@@ -1,9 +1,11 @@
+'use client';
+
+import type { MouseEvent } from 'react';
 import {
   Mail,
   MapPin,
   Phone,
 } from 'lucide-react';
-import Link from 'next/link';
 
 import styles from '@/components/ui/site-footer.module.css';
 
@@ -30,6 +32,11 @@ const socialLinks = [
 ] as const;
 
 export function SiteFooter() {
+  const handlePageResetNavigation = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
+    event.preventDefault();
+    window.location.assign(href);
+  };
+
   return (
     <footer className={styles.footer} data-nav-tone="dark">
       <div className={styles.shell}>
@@ -98,9 +105,14 @@ export function SiteFooter() {
                       {link.label}
                     </a>
                   ) : (
-                    <Link key={link.label} href={link.href} className={styles.link}>
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      className={styles.link}
+                      onClick={(event) => handlePageResetNavigation(event, link.href)}
+                    >
                       {link.label}
-                    </Link>
+                    </a>
                   )
                 ))}
               </div>
@@ -110,9 +122,14 @@ export function SiteFooter() {
               <h3 className={styles.sectionTitle}>Aplicações</h3>
               <div className={styles.list}>
                 {applicationLinks.map((link) => (
-                  <Link key={link.label} href={link.href} className={styles.link}>
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    className={styles.link}
+                    onClick={(event) => handlePageResetNavigation(event, link.href)}
+                  >
                     {link.label}
-                  </Link>
+                  </a>
                 ))}
               </div>
             </div>

@@ -175,8 +175,36 @@
   transition: color 220ms ease;
 }
 
+.ctaNavLink::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -7px;
+  height: 1.5px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0;
+  transform: scaleX(0.35);
+  transform-origin: center;
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease;
+}
+
 .ctaNavLink:hover,
 .ctaNavLink:focus-visible {
+  color: var(--nav-text-hover);
+}
+
+.ctaNavLink:hover::after,
+.ctaNavLink:focus-visible::after,
+.ctaNavLinkActive::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.ctaNavLinkActive {
   color: var(--nav-text-hover);
 }
 

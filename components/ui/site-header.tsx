@@ -26,27 +26,6 @@ export function SiteHeader() {
   const [ctaIsLight, setCtaIsLight] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
 
-  const resolveAnchorHref = useCallback(
-    (href: string) => (pathname === '/' ? href : `/${href}`),
-    [pathname],
-  );
-
-  const handleAnchorClick = useCallback(
-    (event: MouseEvent<HTMLAnchorElement>) => {
-      const href = event.currentTarget.getAttribute('href');
-      if (!href?.startsWith('#')) return;
-      if (pathname !== '/') return;
-
-      const target = document.querySelector<HTMLElement>(href);
-      if (!target) return;
-
-      event.preventDefault();
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      history.replaceState(null, '', href);
-    },
-    [pathname],
-  );
-
   const handlePageResetNavigation = useCallback(
     (event: MouseEvent<HTMLAnchorElement>, href: string) => {
       event.preventDefault();
@@ -281,6 +260,8 @@ export function SiteHeader() {
     WebkitBackdropFilter: 'blur(18px) saturate(155%)',
   } as const;
 
+  const isLinkActive = (href: string) => pathname === href;
+
   return (
     <div ref={dockRef} className={styles.dock}>
       <div className={styles.rail}>
@@ -319,16 +300,14 @@ export function SiteHeader() {
                 {navLinks.map((link) => (
                   <a
                     key={link.href}
-                    className={styles.ctaNavLink}
-                    href={link.href.startsWith('#') ? resolveAnchorHref(link.href) : link.href}
-                    onClick={(event) => {
-                      if (link.href.startsWith('#')) {
-                        handleAnchorClick(event);
-                        return;
-                      }
-
-                      handlePageResetNavigation(event, link.href);
-                    }}
+                    className={[
+                      styles.ctaNavLink,
+                      isLinkActive(link.href) ? styles.ctaNavLinkActive : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' ')}
+                    href={link.href}
+                    onClick={(event) => handlePageResetNavigation(event, link.href)}
                   >
                     {link.label}
                   </a>

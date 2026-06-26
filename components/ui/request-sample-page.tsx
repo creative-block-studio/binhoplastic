@@ -581,9 +581,11 @@ export function RequestSamplePage() {
                       autoComplete="tel"
                       placeholder="(00) 00000-0000"
                       inputMode="numeric"
-                      maxLength={15}
+                      maxLength={11}
                       onInput={(event) => {
-                        event.currentTarget.value = event.currentTarget.value.replace(/\D/g, '');
+                        event.currentTarget.value = event.currentTarget.value
+                          .replace(/\D/g, '')
+                          .slice(0, 11);
                       }}
                       required
                     />
