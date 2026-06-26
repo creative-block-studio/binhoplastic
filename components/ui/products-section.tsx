@@ -125,6 +125,8 @@ export function ProductsSection() {
                 Produtos de Alta Performance
               </motion.h2>
 
+              <div className={styles.titleRule} aria-hidden="true" />
+
               <motion.p
                 className={styles.lead}
                 variants={sectionRevealVariants}

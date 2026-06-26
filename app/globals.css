@@ -28,6 +28,8 @@
 html {
   background: var(--background);
   scrollbar-gutter: stable;
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 html.lenis,
@@ -48,11 +50,25 @@ body {
   --sb-thumb-color: #0d0c1a;
   --sb-size: 2px;
   min-height: 100dvh;
+  max-width: 100%;
   background:
     radial-gradient(circle at top, rgba(23, 23, 23, 0.1), transparent 30%),
     var(--background);
   color: var(--foreground);
   overflow-x: clip;
+}
+
+@supports not (overflow: clip) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+}
+
+@media (max-width: 640px) {
+  html {
+    scrollbar-gutter: auto;
+  }
 }
 
 ::selection {

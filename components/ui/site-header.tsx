@@ -20,15 +20,18 @@ export function SiteHeader() {
   const dockRef = useRef<HTMLDivElement | null>(null);
   const barRef = useRef<HTMLElement | null>(null);
   const ctaRef = useRef<HTMLElement | null>(null);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement | null>(null);
   const lastScrollYRef = useRef(0);
   const tickingRef = useRef(false);
   const [barIsLight, setBarIsLight] = useState(false);
   const [ctaIsLight, setCtaIsLight] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handlePageResetNavigation = useCallback(
     (event: MouseEvent<HTMLAnchorElement>, href: string) => {
       event.preventDefault();
+      setIsMobileMenuOpen(false);
       window.location.assign(href);
     },
     [],
@@ -40,6 +43,7 @@ export function SiteHeader() {
 
       if (typeof window === 'undefined') return;
 
+      setIsMobileMenuOpen(false);
       window.location.assign('/');
     },
     [],
@@ -162,8 +166,17 @@ export function SiteHeader() {
       const previousScrollY = lastScrollYRef.current;
       const delta = currentScrollY - previousScrollY;
 
+      const toneTarget =
+        window.innerWidth <= 640 ? mobileMenuButtonRef.current : ctaRef.current;
+
       setBarIsLight(sampleTone(barRef.current));
-      setCtaIsLight(sampleTone(ctaRef.current));
+      setCtaIsLight(sampleTone(toneTarget));
+
+      if (isMobileMenuOpen && window.innerWidth <= 640) {
+        setIsHidden(false);
+        lastScrollYRef.current = currentScrollY;
+        return;
+      }
 
       if (currentScrollY < 40) {
         setIsHidden(false);
@@ -237,7 +250,29 @@ export function SiteHeader() {
       clearInterval(initialInterval);
       clearTimeout(stopInitialInterval);
     };
-  }, [pathname]);
+  }, [isMobileMenuOpen, pathname]);
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    const handleResize = () => {
+      if (window.innerWidth > 640) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleEscape);
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('keydown', handleEscape);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const barClassName = [
     styles.bar,
@@ -251,6 +286,24 @@ export function SiteHeader() {
     styles.cta,
     ctaIsLight ? styles.ctaLight : '',
     isHidden ? styles.hidden : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  const mobileMenuButtonClassName = [
+    styles.bar,
+    styles.mobileMenuButton,
+    ctaIsLight ? styles.light : '',
+    isHidden ? styles.hidden : '',
+    isMobileMenuOpen ? styles.mobileMenuButtonOpen : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  const mobileMenuPanelClassName = [
+    styles.mobileMenuPanel,
+    ctaIsLight ? styles.ctaLight : '',
+    isMobileMenuOpen ? styles.mobileMenuPanelOpen : '',
   ]
     .filter(Boolean)
     .join(' ');
@@ -290,29 +343,46 @@ export function SiteHeader() {
             </header>
           </div>
 
+          <button
+            ref={mobileMenuButtonRef}
+            className={mobileMenuButtonClassName}
+            aria-controls="site-mobile-menu"
+            aria-expanded={isMobileMenuOpen}
+            aria-label={isMobileMenuOpen ? 'Fechar menu' : 'Abrir menu'}
+            onClick={() => setIsMobileMenuOpen((current) => !current)}
+            style={glassStyle}
+            type="button"
+          >
+            <span className={styles.mobileMenuIcon} aria-hidden="true">
+              <span className={styles.mobileMenuLine} />
+              <span className={styles.mobileMenuLine} />
+              <span className={styles.mobileMenuLine} />
+            </span>
+          </button>
+
           <nav
             ref={ctaRef}
             className={ctaClassName}
             aria-label="Seções principais"
             style={glassStyle}
           >
-              <div className={styles.ctaNav}>
-                {navLinks.map((link) => (
-                  <a
-                    key={link.href}
-                    className={[
-                      styles.ctaNavLink,
-                      isLinkActive(link.href) ? styles.ctaNavLinkActive : '',
-                    ]
-                      .filter(Boolean)
-                      .join(' ')}
-                    href={link.href}
-                    onClick={(event) => handlePageResetNavigation(event, link.href)}
-                  >
-                    {link.label}
-                  </a>
-                ))}
-              </div>
+            <div className={styles.ctaNav}>
+              {navLinks.map((link) => (
+                <a
+                  key={link.href}
+                  className={[
+                    styles.ctaNavLink,
+                    isLinkActive(link.href) ? styles.ctaNavLinkActive : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
+                  href={link.href}
+                  onClick={(event) => handlePageResetNavigation(event, link.href)}
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
 
             <a
               className={styles.ctaButton}
@@ -326,6 +396,42 @@ export function SiteHeader() {
             </a>
           </nav>
         </div>
+
+        <nav
+          id="site-mobile-menu"
+          className={mobileMenuPanelClassName}
+          aria-label="Seções principais mobile"
+          style={glassStyle}
+        >
+          <div className={styles.mobileMenuLinks}>
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                className={[
+                  styles.mobileMenuLink,
+                  isLinkActive(link.href) ? styles.mobileMenuLinkActive : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+                href={link.href}
+                onClick={(event) => handlePageResetNavigation(event, link.href)}
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+
+          <a
+            className={styles.mobileMenuCta}
+            href="/solicitar-amostra"
+            onClick={(event) => handlePageResetNavigation(event, '/solicitar-amostra')}
+          >
+            <span>Solicitar amostra</span>
+            <span className={styles.mobileMenuCtaIcon} aria-hidden="true">
+              <ArrowUpRight size={16} />
+            </span>
+          </a>
+        </nav>
       </div>
     </div>
   );

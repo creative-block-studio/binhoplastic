@@ -37,6 +37,19 @@
   white-space: nowrap;
 }
 
+.titleRule {
+  width: min(100%, 28.5rem);
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    #14154F 0%,
+    #21C7D3 29%,
+    #6848B5 61%,
+    #F5368F 77%,
+    #FBE860 100%
+  );
+}
+
 .lead {
   margin: 0;
   max-width: 47rem;
@@ -282,9 +295,17 @@
     padding: 56px 0 60px;
   }
 
+  .media {
+    display: none;
+  }
+
   .title {
     font-size: clamp(2.05rem, 8.8vw, 3rem);
     white-space: normal;
+  }
+
+  .titleRule {
+    width: 100%;
   }
 
   .lead {
@@ -292,18 +313,51 @@
     line-height: 1.62;
   }
 
+  .highlights {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
   .card {
     padding: 20px 18px;
     border-radius: 18px;
+    min-height: 0;
+    height: 100%;
+  }
+
+  .card:last-child {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+    align-items: start;
+    gap: 14px;
+  }
+
+  .card:last-child .cardValue {
+    margin-bottom: 0;
+    align-self: center;
+    justify-self: center;
+    padding-left: 10px;
   }
 
   .footer {
     align-items: flex-start;
     flex-direction: column;
-    gap: 14px;
+    gap: 30px;
   }
 
-  .media {
-    min-height: 260px;
+  .ctaButton {
+    border-color: transparent;
+    color: #f4efe6;
+  }
+
+  .ctaButton :global(svg) {
+    stroke: #f4efe6;
+  }
+
+  .ctaButton :global(span:nth-child(3)) {
+    scale: 1 1;
+    border-radius: 12px;
+    opacity: 1;
   }
 }

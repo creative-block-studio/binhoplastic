@@ -103,15 +103,15 @@ export default function ZoomParallaxDemo() {
         </video>
         <div className="site-shell pointer-events-none absolute inset-0 z-10">
           <div
-            className="flex min-h-[100dvh] flex-col justify-between pb-10 pt-28 sm:pb-12 sm:pt-32 lg:pb-14 lg:pt-36"
+            className="flex min-h-[100dvh] flex-col justify-end pb-12 pt-28 sm:justify-between sm:pb-12 sm:pt-32 lg:pb-14 lg:pt-36"
             style={{
               paddingLeft: 'var(--site-content-inset-left)',
               paddingRight: 'var(--site-content-inset-right)',
             }}
           >
-            <div className="ml-auto flex w-full flex-col items-end gap-[clamp(0.35rem,0.72vw,0.85rem)]">
+            <div className="mb-[clamp(3.5rem,12vw,6.5rem)] ml-auto flex w-full flex-col items-end gap-[clamp(0.45rem,1vw,0.85rem)] sm:mb-0 sm:gap-[clamp(0.35rem,0.72vw,0.85rem)]">
               <motion.p
-                className="m-0 whitespace-nowrap text-right text-[clamp(1rem,2.08vw,2.8rem)] font-extralight leading-[1.08] tracking-[-0.045em] text-[#e0f0f1]"
+                className="m-0 whitespace-nowrap text-right text-[clamp(1.25rem,4.6vw,2.8rem)] font-extralight leading-[1.08] tracking-[-0.045em] text-[#e0f0f1] sm:text-[clamp(1rem,2.08vw,2.8rem)]"
                 variants={heroLineVariants}
                 initial="hidden"
                 animate="visible"
@@ -119,7 +119,7 @@ export default function ZoomParallaxDemo() {
               >
                 A COR CERTA PARA O SEU PLÁSTICO
               </motion.p>
-              <div className="flex flex-col items-end gap-[clamp(0.35rem,0.72vw,0.85rem)] text-right text-[clamp(1.45rem,2.72vw,3.05rem)] font-bold leading-[1.03] tracking-[-0.05em] text-[#e0f0f1]">
+              <div className="flex flex-col items-end gap-[clamp(0.45rem,1vw,0.85rem)] text-right text-[clamp(2rem,7.2vw,3.05rem)] font-bold leading-[1.03] tracking-[-0.05em] text-[#e0f0f1] sm:gap-[clamp(0.35rem,0.72vw,0.85rem)] sm:text-[clamp(1.45rem,2.72vw,3.05rem)]">
                 <motion.p
                   className="m-0 whitespace-nowrap"
                   variants={heroLineVariants}
@@ -143,7 +143,7 @@ export default function ZoomParallaxDemo() {
               </div>
             </div>
 
-            <div className="w-[clamp(13rem,29vw,33rem)] max-w-[72vw]">
+            <div className="hidden w-[clamp(13rem,29vw,33rem)] max-w-[72vw] sm:block">
               <Image
                 src={heroBrandLockup}
                 alt="Binho Plastic - Masterbatch, pigmentos e aditivos"

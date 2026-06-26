@@ -29,6 +29,24 @@ These rules apply to all future edits in this project.
 - Layouts must adapt cleanly across desktop, tablet, and mobile without breaking hierarchy.
 - If a composition from Figma does not translate well directly, preserve the intent and recompose it for the viewport.
 
+## Mobile Implementation
+
+- Mobile in this project is an adaptation of the existing site, not a separate version.
+- Reuse the same components, markup structure, assets, and interaction logic whenever possible instead of creating parallel mobile-only components.
+- The primary strategy for mobile is viewport-based responsive behavior using CSS media queries, not device detection.
+- Prefer changing layout, spacing, sizing, alignment, and visibility through breakpoints instead of duplicating sections for mobile.
+- Treat mobile breakpoints as layout decisions based on available width, not as assumptions about phone models or operating systems.
+- Keep the desktop implementation as the base and layer mobile adjustments on top of it progressively.
+- When a mobile interaction needs a different state pattern, keep the shared component and only swap the presentation or controls at the relevant breakpoint.
+- Use JavaScript for mobile only when CSS alone is not enough, such as menu open/close state, scroll locking, escape handling, or viewport-specific interaction state.
+- When implementing mobile-specific behavior, prefer shared root-cause fixes in the component itself over page-level overrides.
+- Mobile changes must still respect the same site grid tokens, gutters, and content-box logic already used on desktop.
+- If a request is explicitly for a mobile-only addition or change, implement it exclusively at mobile breakpoints by default.
+- Do not let mobile-only additions leak into tablet or desktop unless the user explicitly asks for that extension.
+- This applies to added assets, new visual effects, extra dividers or lines, button state changes, and any other new mobile-specific embellishment or behavior.
+- If a desktop element should disappear on mobile, hide or reposition it through responsive rules instead of removing the underlying structure entirely unless there is a clear performance reason.
+- Any new mobile styling should be written so another chat can continue the work by extending the same shared component and breakpoint logic, not by starting a parallel mobile rebuild.
+
 ## Performance
 
 - Prefer lightweight solutions.
