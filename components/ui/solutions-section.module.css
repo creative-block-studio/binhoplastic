@@ -165,14 +165,13 @@
 .benefitIconWrap {
   display: grid;
   place-items: center;
+  width: 2.65rem;
   min-height: 2.75rem;
 }
 
 .benefitIcon {
-  width: auto;
+  width: 100%;
   height: auto;
-  max-width: 2.65rem;
-  max-height: 2.65rem;
   object-fit: contain;
 }
 

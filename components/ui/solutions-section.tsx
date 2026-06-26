@@ -209,8 +209,8 @@ export function SolutionsSection() {
                           <Image
                             src={benefit.icon}
                             alt=""
-                            width={42}
-                            height={42}
+                            width={benefit.icon.width}
+                            height={benefit.icon.height}
                             className={styles.benefitIcon}
                           />
                         </div>
