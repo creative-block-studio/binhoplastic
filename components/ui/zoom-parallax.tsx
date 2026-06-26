@@ -8,7 +8,7 @@ import {
   useTransform,
 } from 'framer-motion';
 import Image, { type StaticImageData } from 'next/image';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type MediaItem = {
   alt?: string;
@@ -43,6 +43,7 @@ export function ZoomParallax({ images, finalReveal }: ZoomParallaxProps) {
   const frameIndexes = useRef<number[]>([]);
   const frameRafRefs = useRef<number[]>([]);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
+  const [isPrimed, setIsPrimed] = useState(false);
   const { scrollYProgress } = useScroll({
     target: container,
     offset: ['start start', 'end end'],
@@ -88,6 +89,28 @@ export function ZoomParallax({ images, finalReveal }: ZoomParallaxProps) {
   );
 
   useEffect(() => {
+    const target = container.current;
+    if (!target || isPrimed) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setIsPrimed(true);
+        observer.disconnect();
+      },
+      {
+        rootMargin: '1200px 0px',
+      },
+    );
+
+    observer.observe(target);
+
+    return () => observer.disconnect();
+  }, [isPrimed]);
+
+  useEffect(() => {
+    if (!isPrimed) return;
+
     let cancelled = false;
 
     const syncCanvasSize = (canvas: HTMLCanvasElement) => {
@@ -133,8 +156,13 @@ export function ZoomParallax({ images, finalReveal }: ZoomParallaxProps) {
 
     const frameRafIds = frameRafRefs.current;
 
-    images.forEach((item, frameSequenceIndex) => {
-      if (item.kind !== 'frame-sequence') return;
+    images.forEach((item, mediaIndex) => {
+      if (item.kind !== 'frame-sequence') {
+        const preloadImage = new window.Image();
+        preloadImage.decoding = 'async';
+        preloadImage.src = typeof item.src === 'string' ? item.src : item.src.src;
+        return;
+      }
 
       const preloadFrames = async () => {
         const decodedFrames = await Promise.all(
@@ -165,9 +193,9 @@ export function ZoomParallax({ images, finalReveal }: ZoomParallaxProps) {
 
         if (cancelled) return;
 
-        frameCacheRefs.current[frameSequenceIndex] = decodedFrames;
-        frameIndexes.current[frameSequenceIndex] = 0;
-        drawFrameToCanvas(frameSequenceIndex, 0);
+        frameCacheRefs.current[mediaIndex] = decodedFrames;
+        frameIndexes.current[mediaIndex] = 0;
+        drawFrameToCanvas(mediaIndex, 0);
       };
 
       void preloadFrames();
@@ -192,7 +220,7 @@ export function ZoomParallax({ images, finalReveal }: ZoomParallaxProps) {
         if (frameId) cancelAnimationFrame(frameId);
       });
     };
-  }, [images]);
+  }, [images, isPrimed]);
 
   useMotionValueEvent(scrollYProgress, 'change', () => {
     images.forEach((item, index) => {
@@ -336,6 +364,8 @@ export function ZoomParallax({ images, finalReveal }: ZoomParallaxProps) {
                       alt={item.alt || `Parallax image ${index + 1}`}
                       fill
                       sizes="(max-width: 768px) 100vw, 25vw"
+                      loading={isPrimed ? 'eager' : 'lazy'}
+                      fetchPriority={isPrimed ? 'high' : 'auto'}
                       draggable={false}
                       className="scale-[1.02] object-cover [backface-visibility:hidden] [transform:translateZ(0)] will-change-transform"
                     />
