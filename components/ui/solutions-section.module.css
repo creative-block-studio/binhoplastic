@@ -1,6 +1,8 @@
 .section {
+  position: relative;
   background: #222b58;
   color: #e0f0f1;
+  overflow: clip;
 }
 
 .inner {
@@ -18,7 +20,7 @@
   align-items: start;
 }
 
-.headingBlock {
+.titleBlock {
   grid-column: 1 / span 7;
   display: grid;
   gap: 1.5rem;
@@ -39,11 +41,12 @@
   will-change: transform, opacity;
 }
 
-.title span {
+.titleAccent {
   color: #62c3d1;
 }
 
 .resinList {
+  grid-column: 1 / span 7;
   display: flex;
   flex-wrap: wrap;
   gap: 0.875rem 1.4rem;
@@ -184,12 +187,16 @@
 }
 
 @media (max-width: 1180px) {
-  .headingBlock {
+  .titleBlock {
     grid-column: 1 / span 8;
   }
 
   .intro {
     grid-column: 9 / -1;
+  }
+
+  .resinList {
+    grid-column: 1 / span 8;
   }
 
   .cards {
@@ -214,11 +221,15 @@
     grid-template-columns: 1fr;
   }
 
-  .headingBlock,
   .intro {
     grid-column: 1;
     justify-self: start;
     max-width: none;
+  }
+
+  .titleBlock,
+  .resinList {
+    grid-column: 1;
   }
 
   .cards {
@@ -240,54 +251,112 @@
 }
 
 @media (max-width: 640px) {
+  .section {
+    background: #0d0c1a;
+    box-shadow: inset -1px 0 0 #0d0c1a;
+  }
+
   .inner {
-    gap: 2.1rem;
-    padding: 4.5rem 0 5rem;
+    gap: 1.9rem;
+    padding: 3.05rem 0 2.2rem;
   }
 
   .title {
-    font-size: clamp(1.75rem, 7vw, 2.25rem);
-    line-height: 1.1;
+    max-width: none;
+    font-size: clamp(1.625rem, 6.95vw, 2rem);
+    line-height: 1.3;
+    letter-spacing: -0.04em;
+    color: #e0f0f1;
+    text-wrap: auto;
+  }
+
+  .titleLine {
+    display: inline;
+  }
+
+  .titleLine + .titleLine::before {
+    content: " ";
   }
 
   .resinList {
-    gap: 0.55rem 1rem;
+    gap: 0.45rem 0.65rem;
   }
 
   .resinItem {
-    font-size: 0.92rem;
+    font-size: 1rem;
+    line-height: 1.62;
+    letter-spacing: -0.01em;
   }
 
   .intro {
+    max-width: 21.5rem;
+    color: #62c3d1;
     font-size: 1rem;
-    line-height: 1.5;
+    line-height: 1.62;
+    letter-spacing: -0.015em;
   }
 
   .card {
-    min-height: 24rem;
-    border-radius: 1.7rem;
+    min-height: 11.375rem;
+    border-radius: 1rem;
   }
 
   .cardContent {
-    padding: 1.65rem 1.4rem 1.4rem;
+    padding: 1.45rem 1.15rem 1.1rem;
   }
 
   .cardTitle {
-    margin-bottom: 0.95rem;
-    font-size: clamp(1.85rem, 8vw, 2.4rem);
+    width: min(100%, 8.5rem);
+    margin-bottom: 0.55rem;
+    font-size: clamp(1.45rem, 5.35vw, 1.7rem);
+    line-height: 1.08;
   }
 
   .cardDescription {
-    width: min(100%, 16rem);
-    font-size: 0.98rem;
+    width: min(100%, 13.4rem);
+    font-size: 0.62rem;
+    line-height: 1.34;
+    letter-spacing: -0.01em;
+  }
+
+  .divider {
+    display: none;
   }
 
   .benefits {
-    gap: 0.6rem;
+    gap: 0.2rem;
+    align-self: end;
   }
 
   .benefitLabel {
-    max-width: 5.2rem;
-    font-size: 0.62rem;
+    max-width: 2.95rem;
+    font-size: 0.42rem;
+    line-height: 1.18;
+  }
+
+  .benefit {
+    gap: 0.28rem;
+  }
+
+  .benefitIconWrap {
+    width: 1.4rem;
+    min-height: 1.45rem;
+  }
+
+  .cardImage {
+    object-position: 72% center;
+  }
+
+  .card:nth-child(2) .cardImage {
+    object-position: 78% center;
+  }
+
+  .card:nth-child(3) .cardImage {
+    object-position: 82% center;
+  }
+
+  .titleBlock {
+    gap: 0;
+    width: 100%;
   }
 }

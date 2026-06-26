@@ -27,7 +27,6 @@
 
 html {
   background: var(--background);
-  scrollbar-gutter: stable;
   max-width: 100%;
   overflow-x: clip;
 }
@@ -62,12 +61,6 @@ body {
   html,
   body {
     overflow-x: hidden;
-  }
-}
-
-@media (max-width: 640px) {
-  html {
-    scrollbar-gutter: auto;
   }
 }
 

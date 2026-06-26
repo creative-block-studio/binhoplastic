@@ -115,7 +115,7 @@ export function SolutionsSection() {
       <div className="site-shell">
         <div className={styles.inner}>
           <div className={styles.header}>
-            <div className={styles.headingBlock}>
+            <div className={styles.titleBlock}>
               <h2 id="solutions-section-title" className={styles.title}>
                 <motion.span
                   className={styles.titleLine}
@@ -124,7 +124,7 @@ export function SolutionsSection() {
                   animate={isInView ? 'visible' : 'hidden'}
                   custom={0.18}
                 >
-                  Soluções que dão&nbsp;<span>cor</span> às ideias e
+                  Soluções que dão <span className={styles.titleAccent}>cor</span> às ideias e
                 </motion.span>
                 <motion.span
                   className={styles.titleLine}
@@ -133,23 +133,9 @@ export function SolutionsSection() {
                   animate={isInView ? 'visible' : 'hidden'}
                   custom={0.48}
                 >
-                  <span>performance</span> ao processo
+                  <span className={styles.titleAccent}>performance</span> ao processo
                 </motion.span>
               </h2>
-
-              <motion.ul
-                className={styles.resinList}
-                aria-label="Resinas atendidas"
-                initial={{ opacity: 0, y: 22 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 22 }}
-                transition={{ delay: 0.76, duration: 0.7, ease: revealEase }}
-              >
-                {resinTags.map((tag) => (
-                  <li key={tag} className={styles.resinItem}>
-                    {tag}
-                  </li>
-                ))}
-              </motion.ul>
             </div>
 
             <motion.p
@@ -158,9 +144,23 @@ export function SolutionsSection() {
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
               transition={{ delay: 0.12, duration: 0.7, ease: revealEase }}
             >
-              Um portfólio completo para desenvolver, proteger e otimizar cada
-              detalhe da sua produção, com consistência tecnológica.
+              Um portfólio completo para desenvolver, proteger e otimizar cada detalhe da sua
+              produção, com consistência tecnológica.
             </motion.p>
+
+            <motion.ul
+              className={styles.resinList}
+              aria-label="Resinas atendidas"
+              initial={{ opacity: 0, y: 22 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 22 }}
+              transition={{ delay: 0.76, duration: 0.7, ease: revealEase }}
+            >
+              {resinTags.map((tag) => (
+                <li key={tag} className={styles.resinItem}>
+                  {tag}
+                </li>
+              ))}
+            </motion.ul>
           </div>
 
           <div className={styles.cards}>
