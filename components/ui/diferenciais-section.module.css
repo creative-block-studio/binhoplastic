@@ -261,22 +261,44 @@
     gap: 24px;
   }
 
+  .grid {
+    gap: 1rem;
+  }
+
   .card {
+    grid-column: 1 / -1;
     grid-template-columns: 1fr;
-    justify-items: start;
+    grid-template-rows: auto 1fr;
+    align-items: start;
+    justify-items: center;
+    width: 100%;
+    min-height: 17.5rem;
     padding: 24px;
     row-gap: 16px;
   }
 
   .media {
     grid-column: 1;
-    width: min(100%, 11rem);
-    justify-self: start;
+    width: min(100%, 9.75rem);
+    justify-self: center;
+    transform: none;
   }
 
   .copy {
     grid-column: 1;
+    align-self: end;
+    justify-items: center;
     gap: 12px;
+    text-align: center;
+  }
+
+  .cardTitle {
+    font-size: 1.85rem;
+  }
+
+  .cardDescription {
+    font-size: 0.96rem;
+    line-height: 1.16;
   }
 
   .cardDescription {

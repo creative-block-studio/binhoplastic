@@ -244,6 +244,14 @@
   color: var(--process-mobile-fg, #ffffff);
 }
 
+.applicationIcon {
+  width: 100%;
+  height: auto;
+  max-width: 2.15rem;
+  max-height: 2.15rem;
+  object-fit: contain;
+}
+
 .applicationLabel {
   color: var(--process-mobile-muted, rgba(255, 255, 255, 0.54));
   font-size: 0.67rem;

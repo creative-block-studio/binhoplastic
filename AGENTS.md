@@ -28,6 +28,9 @@ These rules apply to all future edits in this project.
 - Do not build fixed desktop-only compositions copied from design tools.
 - Layouts must adapt cleanly across desktop, tablet, and mobile without breaking hierarchy.
 - If a composition from Figma does not translate well directly, preserve the intent and recompose it for the viewport.
+- On small screens, important content must stay inside the site grid with no accidental horizontal overflow or visual leaking past the content box.
+- When content would otherwise exceed the available width, make it flexible inside the same component instead of letting it break the grid or overflow by default.
+- Keep the mobile experience as visually consistent as possible across different phones; prefer controlled scaling and reflow over large composition changes.
 
 ## Mobile Implementation
 
@@ -46,6 +49,14 @@ These rules apply to all future edits in this project.
 - This applies to added assets, new visual effects, extra dividers or lines, button state changes, and any other new mobile-specific embellishment or behavior.
 - If a desktop element should disappear on mobile, hide or reposition it through responsive rules instead of removing the underlying structure entirely unless there is a clear performance reason.
 - Any new mobile styling should be written so another chat can continue the work by extending the same shared component and breakpoint logic, not by starting a parallel mobile rebuild.
+- When mobile sections are visually separated, implement them as real structural sections or section-level blocks rather than making one section visually invade another.
+
+## Tablet Implementation
+
+- Tablet layouts must still respect the same site grid, gutters, and content-box logic as the rest of the site.
+- Unless a page-specific request says otherwise, tablet should preserve the desktop structure as much as possible while remaining unbroken and grid-aligned.
+- If a tablet-specific adaptation is requested for a section, keep it in shared responsive code and scope it only to the requested breakpoint range.
+- For the process-stack area specifically, tablets should use normal vertical document flow instead of the stacked scroll effect unless a future request explicitly restores that behavior.
 
 ## Performance
 

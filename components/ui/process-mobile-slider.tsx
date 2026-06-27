@@ -1,8 +1,7 @@
 'use client';
 
-import { Box, ChevronLeft, ChevronRight } from 'lucide-react';
-import type { CSSProperties } from 'react';
-import type { TouchEvent } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import type { CSSProperties, TouchEvent } from 'react';
 import type { StaticImageData } from 'next/image';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
@@ -14,13 +13,19 @@ import injectionObject from '@/assets/images/process-injection-object-figma.webp
 import wiresObject from '@/assets/images/process-wires-object-figma.webp';
 import styles from '@/components/ui/process-mobile-slider.module.css';
 
+type ProcessApplication = {
+  label: string;
+  iconSrc: string;
+  iconAlt: string;
+};
+
 type ProcessSlide = {
   key: string;
   label: string;
   title: string;
   description: string;
   chips: readonly [string, string];
-  applications: readonly [string, string, string];
+  applications: readonly [ProcessApplication, ProcessApplication, ProcessApplication];
   image: StaticImageData;
   imageAlt: string;
   imageWidth: string;
@@ -46,9 +51,21 @@ const processSlides: readonly ProcessSlide[] = [
       'Polímero fundido injetado sob alta pressão em molde fechado, precisão dimensional e repetitividade em cada ciclo.',
     chips: ['Alta dispersão', 'Cor consistente'],
     applications: [
-      'Tampas de cosméticos',
-      'Caixas organizadoras',
-      'Peças automotivas',
+      {
+        label: 'Tampas de cosméticos',
+        iconSrc: '/assets/images/process-app-injection-cap.svg',
+        iconAlt: 'Ícone de tampa de cosméticos',
+      },
+      {
+        label: 'Caixas organizadoras',
+        iconSrc: '/assets/images/process-app-injection-box.svg',
+        iconAlt: 'Ícone de caixa organizadora',
+      },
+      {
+        label: 'Peças automotivas',
+        iconSrc: '/assets/images/process-app-injection-carpart.svg',
+        iconAlt: 'Ícone de peça automotiva',
+      },
     ],
     image: injectionObject,
     imageAlt: 'Peças plásticas do processo de injeção',
@@ -71,7 +88,23 @@ const processSlides: readonly ProcessSlide[] = [
     description:
       'Parison inflado dentro do molde com expansão biaxial. Alta produtividade, foco total em embalagem e estabilidade visual.',
     chips: ['Alta resistência', 'Cor consistente'],
-    applications: ['Garrafas PET', 'Frascos de shampoo', 'Galões industriais'],
+    applications: [
+      {
+        label: 'Garrafas PET',
+        iconSrc: '/assets/images/process-app-blow-petbottle.svg',
+        iconAlt: 'Ícone de garrafa PET',
+      },
+      {
+        label: 'Frascos de shampoo',
+        iconSrc: '/assets/images/process-app-blow-shampoo.svg',
+        iconAlt: 'Ícone de frasco de shampoo',
+      },
+      {
+        label: 'Galões industriais',
+        iconSrc: '/assets/images/process-app-blow-gallon.svg',
+        iconAlt: 'Ícone de galão industrial',
+      },
+    ],
     image: blowObject,
     imageAlt: 'Frascos e galões do processo de sopro',
     imageWidth: '18rem',
@@ -93,7 +126,23 @@ const processSlides: readonly ProcessSlide[] = [
     description:
       'Material fundido empurrado continuamente por uma matriz, com seção constante, estabilidade de processo e acabamento controlado.',
     chips: ['Estabilidade', 'Cor consistente'],
-    applications: ['Perfis de PVC', 'Tubos e mangueiras', 'Chapas plásticas'],
+    applications: [
+      {
+        label: 'Perfis de PVC',
+        iconSrc: '/assets/images/process-app-extrusion-profile.svg',
+        iconAlt: 'Ícone de perfil de PVC',
+      },
+      {
+        label: 'Tubos e mangueiras',
+        iconSrc: '/assets/images/process-app-extrusion-hose.svg',
+        iconAlt: 'Ícone de tubos e mangueiras',
+      },
+      {
+        label: 'Chapas plásticas',
+        iconSrc: '/assets/images/process-app-extrusion-sheet.svg',
+        iconAlt: 'Ícone de chapa plástica',
+      },
+    ],
     image: extrusionObject,
     imageAlt: 'Perfis e tubos do processo de extrusão',
     imageWidth: '23.2rem',
@@ -116,7 +165,23 @@ const processSlides: readonly ProcessSlide[] = [
     description:
       'Extrusão por sopro ou casting para espessuras muito baixas, mono ou multicamada, com continuidade visual em alta escala.',
     chips: ['Baixa espessura', 'Cor consistente'],
-    applications: ['Sacolas', 'Filme stretch', 'Embalagens flexíveis'],
+    applications: [
+      {
+        label: 'Sacolas',
+        iconSrc: '/assets/images/process-app-film-bag.svg',
+        iconAlt: 'Ícone de sacolas',
+      },
+      {
+        label: 'Filme stretch',
+        iconSrc: '/assets/images/process-app-film-stretch.svg',
+        iconAlt: 'Ícone de filme stretch',
+      },
+      {
+        label: 'Embalagens flexíveis',
+        iconSrc: '/assets/images/process-app-film-flexible.svg',
+        iconAlt: 'Ícone de embalagem flexível',
+      },
+    ],
     image: filmObject,
     imageAlt: 'Embalagens flexíveis do processo filme',
     imageWidth: '17.5rem',
@@ -139,9 +204,21 @@ const processSlides: readonly ProcessSlide[] = [
       'Extrusão contínua de polímero sobre condutor metálico, com foco em isolamento, norma técnica e segurança de aplicação.',
     chips: ['Norma técnica', 'Cor consistente'],
     applications: [
-      'Cabos residenciais',
-      'Cabos automotivos',
-      'Cabos de dados',
+      {
+        label: 'Cabos residenciais',
+        iconSrc: '/assets/images/process-app-wires-residential.svg',
+        iconAlt: 'Ícone de cabos residenciais',
+      },
+      {
+        label: 'Cabos automotivos',
+        iconSrc: '/assets/images/process-app-wires-automotive.svg',
+        iconAlt: 'Ícone de cabos automotivos',
+      },
+      {
+        label: 'Cabos de dados',
+        iconSrc: '/assets/images/process-app-wires-data.svg',
+        iconAlt: 'Ícone de cabos de dados',
+      },
     ],
     image: wiresObject,
     imageAlt: 'Cabos elétricos coloridos do processo de fios e cabos',
@@ -321,12 +398,19 @@ export function ProcessMobileSlider() {
 
                 <div className={styles.applications}>
                   {activeSlide.applications.map((application) => (
-                    <div key={application} className={styles.applicationCard}>
+                    <div key={application.label} className={styles.applicationCard}>
                       <div className={styles.applicationIconWrap}>
-                        <Box size={26} strokeWidth={1.6} />
+                        <Image
+                          src={application.iconSrc}
+                          alt={application.iconAlt}
+                          width={42}
+                          height={42}
+                          unoptimized
+                          className={styles.applicationIcon}
+                        />
                       </div>
                       <span className={styles.applicationLabel}>
-                        {application}
+                        {application.label}
                       </span>
                     </div>
                   ))}

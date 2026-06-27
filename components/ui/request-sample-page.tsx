@@ -450,64 +450,66 @@ export function RequestSamplePage() {
                 </p>
               </div>
 
-              <div className={styles.contactStack}>
-                <a
-                  className={`${styles.contactCard} ${styles.contactCardPrimary}`}
-                  href="https://wa.me/5511910089499"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <span className={styles.contactCardBody}>
-                    <span className={styles.contactIconWrap} aria-hidden="true">
-                      <Image src={whatsappIcon} alt="" width={22} height={22} />
+              <div className={styles.contactSection}>
+                <div className={styles.contactStack}>
+                  <a
+                    className={`${styles.contactCard} ${styles.contactCardPrimary}`}
+                    href="https://wa.me/5511910089499"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <span className={styles.contactCardBody}>
+                      <span className={styles.contactIconWrap} aria-hidden="true">
+                        <Image src={whatsappIcon} alt="" width={22} height={22} />
+                      </span>
+                      <span className={styles.contactTextGroup}>
+                        <span className={styles.contactLabel}>WhatsApp</span>
+                        <span className={styles.contactMeta}>Fale agora pelo WhatsApp</span>
+                      </span>
                     </span>
-                    <span className={styles.contactTextGroup}>
-                      <span className={styles.contactLabel}>WhatsApp</span>
-                      <span className={styles.contactMeta}>Fale agora pelo WhatsApp</span>
-                    </span>
-                  </span>
-                  <ChevronRight
-                    className={styles.contactCardArrow}
-                    size={22}
-                    aria-hidden="true"
-                  />
-                </a>
+                    <ChevronRight
+                      className={styles.contactCardArrow}
+                      size={22}
+                      aria-hidden="true"
+                    />
+                  </a>
 
-                <div className={`${styles.contactCard} ${styles.contactCardStatic}`}>
-                  <span className={styles.contactCardBody}>
-                    <span className={styles.contactIconWrap} aria-hidden="true">
-                      <Phone size={20} />
+                  <div className={`${styles.contactCard} ${styles.contactCardStatic}`}>
+                    <span className={styles.contactCardBody}>
+                      <span className={styles.contactIconWrap} aria-hidden="true">
+                        <Phone size={20} />
+                      </span>
+                      <span className={styles.contactTextGroup}>
+                        <span className={styles.contactLabel}>Telefone</span>
+                        <span className={styles.contactMeta}>(11) 91008-9499</span>
+                      </span>
                     </span>
-                    <span className={styles.contactTextGroup}>
-                      <span className={styles.contactLabel}>Telefone</span>
-                      <span className={styles.contactMeta}>(11) 91008-9499</span>
+                  </div>
+
+                  <div className={`${styles.contactCard} ${styles.contactCardStatic}`}>
+                    <span className={styles.contactCardBody}>
+                      <span className={styles.contactIconWrap} aria-hidden="true">
+                        <Mail size={20} />
+                      </span>
+                      <span className={styles.contactTextGroup}>
+                        <span className={styles.contactLabel}>E-mail</span>
+                        <span className={styles.contactMeta}>comercial@binhoplastic.com.br</span>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+
+                <div className={styles.addressRow}>
+                  <span className={styles.contactIconWrap} aria-hidden="true">
+                    <MapPin size={22} />
+                  </span>
+                  <span className={styles.addressText}>
+                    <span className={styles.addressLabel}>Endereço</span>
+                    <span className={styles.addressMeta}>
+                      Rua Galvão, 165 - Qta da Boa Vista - Itaquaquecetuba - SP
                     </span>
                   </span>
                 </div>
-
-                <div className={`${styles.contactCard} ${styles.contactCardStatic}`}>
-                  <span className={styles.contactCardBody}>
-                    <span className={styles.contactIconWrap} aria-hidden="true">
-                      <Mail size={20} />
-                    </span>
-                    <span className={styles.contactTextGroup}>
-                      <span className={styles.contactLabel}>E-mail</span>
-                      <span className={styles.contactMeta}>comercial@binhoplastic.com.br</span>
-                    </span>
-                  </span>
-                </div>
-              </div>
-
-              <div className={styles.addressRow}>
-                <span className={styles.contactIconWrap} aria-hidden="true">
-                  <MapPin size={22} />
-                </span>
-                <span className={styles.addressText}>
-                  <span className={styles.addressLabel}>Endereço</span>
-                  <span className={styles.addressMeta}>
-                    Rua Galvão, 165 - Qta da Boa Vista - Itaquaquecetuba - SP
-                  </span>
-                </span>
               </div>
             </section>
 
