@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
+import Image, { getImageProps } from 'next/image';
 import { motion, useInView } from 'framer-motion';
 import { Beaker, Blend, FlaskConical } from 'lucide-react';
 
 import foundationImage from '@/assets/images/about-foundation.webp';
 import heroCardsImage from '@/assets/images/about-hero-cards.png';
+import heroCardsMobileImage from '@/assets/images/about-hero-cards-mobile.webp';
 import portraitImage from '@/assets/images/about-portrait.webp';
 import { CountUpValue } from '@/components/ui/count-up-value';
 import { FlowButton } from '@/components/ui/flow-button';
@@ -30,9 +31,21 @@ function getRevealMotion(
 }
 
 const metrics = [
-  { value: '500+', label: 'cores desenvolvidas' },
-  { value: '20 anos', label: 'de experiência no setor' },
-  { value: '98%', label: 'de replicabilidade' },
+  {
+    value: '500+',
+    label: 'cores desenvolvidas',
+    mobileLabel: 'cores',
+  },
+  {
+    value: '20 anos',
+    label: 'de experiência no setor',
+    mobileLabel: '',
+  },
+  {
+    value: '98%',
+    label: 'de replicabilidade',
+    mobileLabel: 'de precisão',
+  },
 ] as const;
 
 const differentiators = [
@@ -101,6 +114,23 @@ export function AboutPage() {
     void audio.play().catch(() => {});
   };
 
+  const heroImageAlt = 'Cartelas coloridas de masterbatch da Binho Plastic.';
+  const heroImageSizes = '(max-width: 900px) 100vw, 86vw';
+  const { props: heroDesktopProps } = getImageProps({
+    src: heroCardsImage,
+    alt: heroImageAlt,
+    className: styles.heroImage,
+    sizes: heroImageSizes,
+    priority: true,
+  });
+  const { props: heroMobileProps } = getImageProps({
+    src: heroCardsMobileImage,
+    alt: heroImageAlt,
+    className: styles.heroImage,
+    sizes: heroImageSizes,
+    priority: true,
+  });
+
   return (
     <>
       <SiteHeader />
@@ -112,7 +142,7 @@ export function AboutPage() {
               <div className={styles.heroGrid}>
                 <div className={styles.heroHeadingBlock}>
                   <motion.h1 className={styles.title} {...getRevealMotion(isHeroInView, 0.08)}>
-                    Nossa História, Visão,
+                    Nossa História, Visão
                   </motion.h1>
                   <motion.span
                     className={styles.titleOverflow}
@@ -132,13 +162,10 @@ export function AboutPage() {
 
               <motion.div {...getRevealMotion(isHeroInView, 0.42, 30, 0.82)}>
                 <div className={styles.heroMedia}>
-                  <Image
-                    src={heroCardsImage}
-                    alt="Cartelas coloridas de masterbatch da Binho Plastic."
-                    className={styles.heroImage}
-                    sizes="(max-width: 900px) 100vw, 86vw"
-                    priority
-                  />
+                  <picture>
+                    <source media="(max-width: 640px)" srcSet={heroMobileProps.srcSet} />
+                    <img {...heroDesktopProps} />
+                  </picture>
                 </div>
               </motion.div>
             </div>
@@ -217,7 +244,12 @@ export function AboutPage() {
                         suffix={item.value.replace(/^\d+/, '')}
                       />
                     </div>
-                    <p className={styles.metricLabel}>{item.label}</p>
+                    <p className={styles.metricLabel}>
+                      <span className={styles.metricLabelDesktop}>{item.label}</span>
+                      {item.mobileLabel ? (
+                        <span className={styles.metricLabelMobile}>{item.mobileLabel}</span>
+                      ) : null}
+                    </p>
                   </div>
                 </article>
               ))}

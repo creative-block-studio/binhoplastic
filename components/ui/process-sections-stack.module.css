@@ -21,6 +21,25 @@
   z-index: var(--stack-z, 1);
 }
 
+@media (min-width: 901px) and (max-width: 1100px) {
+  .item {
+    min-height: auto;
+  }
+
+  .item + .item {
+    margin-top: 0;
+  }
+
+  .item:last-child {
+    min-height: auto;
+  }
+
+  .card {
+    position: relative;
+    top: auto;
+  }
+}
+
 @media (min-width: 721px) and (max-height: 860px) {
   .item {
     min-height: 236svh;

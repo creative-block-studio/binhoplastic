@@ -303,6 +303,15 @@
   line-height: 1.15;
 }
 
+.metricLabelDesktop,
+.metricLabelMobile {
+  display: block;
+}
+
+.metricLabelMobile {
+  display: none;
+}
+
 .metricDivider {
   flex: 0 0 auto;
   width: 1px;
@@ -487,22 +496,24 @@
   }
 }
 
-@media (max-width: 860px) {
-  .hero {
-    padding-top: 6.5rem;
+@media (max-width: 640px) {
+  .heroInner,
+  .storyInner,
+  .metricsInner,
+  .portraitInner,
+  .developmentInner {
+    width: 100%;
   }
 
   .storyGrid,
-  .developmentGrid,
-  .metricsInner {
+  .developmentGrid {
     grid-template-columns: 1fr;
   }
 
   .storyLead,
   .aboutCard,
   .developmentCopy,
-  .featureList,
-  .metricItem {
+  .featureList {
     grid-column: 1;
   }
 
@@ -510,31 +521,12 @@
   .cardText {
     max-width: none;
   }
-
-  .metricsInner {
-    gap: 1rem;
-  }
-
-  .metricItem {
-    padding: 0;
-  }
-
-  .metricContent {
-    gap: 0.75rem;
-  }
-
-  .metricDivider {
-    display: none;
-  }
-
-  .portraitFrame {
-    aspect-ratio: 4 / 3;
-  }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 640px) {
   .heroGrid {
     grid-template-columns: 1fr;
+    gap: 0.85rem;
   }
 
   .heroHeadingBlock,
@@ -544,44 +536,203 @@
     max-width: none;
     padding-top: 0;
   }
-
-  .heroCopy {
-    max-width: none;
-  }
 }
 
 @media (max-width: 640px) {
   .hero {
-    padding: 6rem 0 2rem;
+    padding: 6rem 0 0.5rem;
   }
 
   .heroHeadingBlock {
-    --hero-title-size: clamp(2rem, 9vw, 2.8rem);
+    --hero-title-size: clamp(1.95rem, 8.2vw, 2.45rem);
+    --hero-title-line-height: 0.94;
+    --hero-title-letter-spacing: -0.055em;
   }
 
   .title {
-    padding-bottom: 1.7rem;
+    padding-bottom: 0;
+  }
+
+  .titleOverflow {
+    position: static;
+    margin-top: 0;
+    white-space: normal;
   }
 
   .heroCopy {
-    font-size: 0.92rem;
-    line-height: 1.35;
+    font-size: 0.95rem;
+    line-height: 1.16;
   }
 
-  .story,
-  .metricsBand,
-  .portraitSection,
-  .developmentSection {
-    padding-top: 2rem;
+  .heroMedia {
+    margin-top: 0.85rem;
+    margin-bottom: 0;
+    transform: none;
+    border-radius: 0.9rem;
   }
 
-  .aboutCard,
+  .story {
+    padding-top: 1.65rem;
+  }
+
+  .storyLead {
+    gap: 0.8rem;
+  }
+
+  .quote {
+    gap: 0.4rem;
+  }
+
+  .quoteMark {
+    margin-bottom: -0.9rem;
+    font-size: 4rem;
+    line-height: 0.78;
+  }
+
+  .quoteText {
+    font-size: 0.95rem;
+    line-height: 1.16;
+    letter-spacing: -0.045em;
+  }
+
+  .foundationMedia {
+    border-radius: 0.85rem;
+    aspect-ratio: 342 / 90;
+  }
+
+  .aboutCard {
+    padding: 1.55rem 1.45rem;
+    border-radius: 0.9rem;
+    gap: 0.9rem;
+  }
+
+  .cardEyebrow {
+    font-size: 0.84rem;
+    letter-spacing: 0.08em;
+  }
+
+  .cardText {
+    font-size: 0.95rem;
+    line-height: 1.16;
+  }
+
+  .metricsBand {
+    padding-top: 1.25rem;
+  }
+
   .metricsInner {
-    padding: 1.35rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    padding: 0.95rem 1rem;
+    border-radius: 0.55rem;
+  }
+
+  .metricItem {
+    padding: 0 0.3rem;
+    min-width: 0;
+  }
+
+  .metricContent {
+    gap: 0.42rem;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+
+  .metricValue {
+    font-size: 1.05rem;
+    line-height: 0.92;
+  }
+
+  .metricLabel {
+    max-width: 2.7rem;
+    font-size: 0.34rem;
+    line-height: 1.05;
+  }
+
+  .metricLabelDesktop {
+    display: none;
+  }
+
+  .metricLabelMobile {
+    display: block;
+    font-size: 0.62rem;
+    font-weight: 700;
+  }
+
+  .metricDivider {
+    display: block;
+    width: 1px;
+    height: 1rem;
+    margin-right: 0.42rem;
+  }
+
+  .portraitFrame {
+    border-radius: 1rem;
+    aspect-ratio: 342 / 298;
+  }
+
+  .developmentSection {
+    margin-top: 1.35rem;
+    padding: 2rem 0 2.5rem;
+    background: #ffffff;
+  }
+
+  .developmentGrid {
+    gap: 1rem;
+  }
+
+  .developmentEyebrow {
+    margin-bottom: 0.7rem;
+    color: #9b9a96;
+    font-size: 0.46rem;
+    letter-spacing: 0.18em;
+  }
+
+  .developmentTitle {
+    max-width: none;
+    font-size: clamp(1.52rem, 6.9vw, 1.9rem);
+    line-height: 0.94;
+  }
+
+  .developmentText {
+    margin-top: 0.7rem;
+    max-width: 21rem;
+    font-size: 0.74rem;
+    line-height: 1.45;
   }
 
   .developmentButton {
-    width: 100%;
-    justify-content: center;
+    width: auto;
+    margin-top: 1rem;
+    justify-content: flex-start;
+  }
+
+  .featureList {
+    gap: 0.65rem;
+  }
+
+  .featureCard {
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: 0.75rem;
+    padding: 0.85rem 0.9rem;
+    border-radius: 0.8rem;
+  }
+
+  .featureIcon {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+
+  .featureTitle {
+    font-size: 0.75rem;
+  }
+
+  .featureDescription {
+    font-size: 0.62rem;
+    line-height: 1.35;
+  }
+
+  .portraitSection {
+    padding-top: 2rem;
   }
 }

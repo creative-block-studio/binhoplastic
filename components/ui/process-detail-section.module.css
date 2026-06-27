@@ -389,6 +389,102 @@
   }
 }
 
+@media (min-width: 901px) and (max-width: 1100px) {
+  .section {
+    padding-block: clamp(18px, 2.6vw, 28px);
+  }
+
+  .stage {
+    min-height: calc(100cqw * 804 / 1440);
+  }
+
+  .composition {
+    min-height: calc(100cqw * 804 / 1440);
+  }
+
+  .copyLeft {
+    left: 6%;
+    top: 6%;
+    width: min(27%, 24ch);
+  }
+
+  .copyRight {
+    right: 6%;
+    top: 15%;
+    width: 24%;
+  }
+
+  .eyebrow {
+    font-size: clamp(16px, 1.65vw, 19px);
+  }
+
+  .title {
+    margin-bottom: clamp(18px, 2vw, 26px);
+    font-size: clamp(34px, 3.4vw, 42px);
+  }
+
+  .description,
+  .productsTitle,
+  .productsList {
+    font-size: clamp(14px, 1.35vw, 17px);
+  }
+
+  .productsList {
+    line-height: 1.7;
+  }
+
+  .objectWrap {
+    width: min(var(--process-object-width, 32.56%), 34%);
+    top: 52%;
+  }
+
+  .objectShadow {
+    top: 81%;
+    width: 25%;
+    height: 4.4%;
+  }
+
+  .chip {
+    font-size: clamp(13px, 1.2vw, 15px);
+  }
+
+  .chipTop {
+    left: 38.5%;
+    top: 12%;
+  }
+
+  .chipBottom {
+    left: 19%;
+    top: 61.5%;
+  }
+
+  .codeCardWrap {
+    right: 6%;
+    bottom: 24%;
+  }
+
+  .codeCard {
+    width: clamp(112px, 9vw, 140px);
+    height: clamp(74px, 5.7vw, 92px);
+    font-size: clamp(14px, 1.1vw, 18px);
+  }
+
+  .cta {
+    right: 6%;
+    bottom: 14%;
+  }
+
+  .ghostTitle {
+    left: 6%;
+    bottom: 2.4%;
+    font-size: clamp(64px, 7.4vw, 84px);
+  }
+
+  .arrow {
+    bottom: 4.8%;
+  }
+}
+
 @media (min-width: 721px) and (max-height: 860px) {
   .section {
     padding-block: clamp(12px, 2.2vh, 20px);

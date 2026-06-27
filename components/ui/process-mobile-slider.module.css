@@ -3,16 +3,26 @@
   overflow: clip;
   background: var(--process-mobile-bg, #1e2140);
   color: var(--process-mobile-fg, #ffffff);
-  box-shadow: inset -1px 0 0 var(--process-mobile-bg, #1e2140);
   transition:
     background-color 240ms ease-out,
-    color 240ms ease-out,
-    box-shadow 240ms ease-out;
+    color 240ms ease-out;
+}
+
+.section::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -2px;
+  bottom: 0;
+  width: 4px;
+  background: var(--process-mobile-bg, #1e2140);
+  pointer-events: none;
 }
 
 .shell {
   width: 100%;
   padding: 3.25rem 0 3rem;
+  overflow: hidden;
 }
 
 .eyebrow {
@@ -29,19 +39,22 @@
 .title {
   margin: 0;
   color: var(--process-mobile-fg, #ffffff);
-  font-size: clamp(2.5rem, 10vw, 3.55rem);
+  max-width: 100%;
+  font-size: clamp(1.85rem, 9vw, 3.55rem);
   font-weight: 200;
-  line-height: 0.94;
+  line-height: 0.96;
   letter-spacing: -0.06em;
   text-transform: uppercase;
+  text-wrap: balance;
 }
 
 .tabs {
   display: flex;
   gap: 0.95rem;
   overflow-x: auto;
-  margin: 1.35rem calc(var(--site-gutter) * -1) 0;
-  padding: 0 var(--site-gutter) 0.8rem;
+  width: 100%;
+  margin: 1.35rem 0 0;
+  padding: 0 0 0.8rem;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -58,12 +71,13 @@
   border-bottom: 1px solid transparent;
   background: transparent;
   color: var(--process-mobile-muted, rgba(255, 255, 255, 0.45));
-  font-size: 0.6875rem;
+  font-size: 0.665rem;
   font-weight: 400;
   line-height: 1.5;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .tabActive {
@@ -113,7 +127,7 @@
 }
 
 .arrowNext {
-  right: -0.35rem;
+  right: 0;
 }
 
 .objectWrap {
@@ -130,7 +144,8 @@
 .ghost {
   position: absolute;
   left: 50%;
-  width: 120vw;
+  width: 100%;
+  max-width: 100%;
   bottom: -0.1rem;
   z-index: 1;
   color: var(--process-mobile-ghost, rgba(84, 92, 140, 0.34));
@@ -253,4 +268,103 @@
   line-height: 1.5;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .title {
+    font-size: clamp(1.75rem, 8.4vw, 2.6rem);
+  }
+
+  .tabs {
+    gap: 0.8rem;
+  }
+
+  .tab {
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 900px) {
+  .shell {
+    padding: 4.15rem 0 4rem;
+  }
+
+  .eyebrow {
+    font-size: 0.78rem;
+  }
+
+  .title {
+    font-size: clamp(2.9rem, 6vw, 4rem);
+  }
+
+  .tabs {
+    gap: 1.15rem;
+    margin-top: 1.7rem;
+    padding-bottom: 1rem;
+  }
+
+  .tab {
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+  }
+
+  .hero {
+    min-height: 31rem;
+    margin-top: 1.5rem;
+  }
+
+  .arrow {
+    top: 14.2rem;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .arrowPrev {
+    left: 0;
+  }
+
+  .objectWrap {
+    width: min(100%, var(--process-tablet-object-width, 28rem)) !important;
+    height: var(--process-tablet-object-height, 26rem) !important;
+  }
+
+  .ghost {
+    font-size: clamp(7rem, 18vw, 9rem);
+  }
+
+  .chips {
+    gap: 0.9rem;
+    margin-top: 1.35rem;
+  }
+
+  .chip {
+    min-height: 2.8rem;
+    font-size: 0.95rem;
+  }
+
+  .description {
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  .applicationsEyebrow {
+    margin-top: 1.8rem;
+    font-size: 0.68rem;
+  }
+
+  .applicationIconWrap {
+    width: min(100%, 5.6rem);
+    padding: 1rem;
+  }
+
+  .applicationLabel {
+    font-size: 0.8rem;
+  }
+
+  .cta {
+    min-height: 3.8rem;
+    margin-top: 1.8rem;
+    font-size: 0.86rem;
+  }
 }

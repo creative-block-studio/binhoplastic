@@ -146,7 +146,7 @@ export default function ZoomParallaxDemo() {
           >
             <div className="mb-[clamp(3.5rem,12vw,6.5rem)] ml-auto flex w-full flex-col items-end gap-[clamp(0.45rem,1vw,0.85rem)] sm:mb-0 sm:gap-[clamp(0.35rem,0.72vw,0.85rem)]">
               <motion.p
-                className="m-0 whitespace-nowrap text-right text-[clamp(1.25rem,4.6vw,2.8rem)] font-extralight leading-[1.08] tracking-[-0.045em] text-[#e0f0f1] sm:text-[clamp(1rem,2.08vw,2.8rem)]"
+                className="m-0 max-w-full whitespace-normal text-right text-[clamp(0.95rem,4.3vw,2.8rem)] font-extralight leading-[1.08] tracking-[-0.045em] text-[#e0f0f1] sm:whitespace-nowrap sm:text-[clamp(1rem,2.08vw,2.8rem)]"
                 variants={heroLineVariants}
                 initial="hidden"
                 animate="visible"
@@ -154,9 +154,9 @@ export default function ZoomParallaxDemo() {
               >
                 A COR CERTA PARA O SEU PLÁSTICO
               </motion.p>
-              <div className="flex flex-col items-end gap-[clamp(0.45rem,1vw,0.85rem)] text-right text-[clamp(2rem,7.2vw,3.05rem)] font-bold leading-[1.03] tracking-[-0.05em] text-[#e0f0f1] sm:gap-[clamp(0.35rem,0.72vw,0.85rem)] sm:text-[clamp(1.45rem,2.72vw,3.05rem)]">
+              <div className="flex max-w-full flex-col items-end gap-[clamp(0.45rem,1vw,0.85rem)] text-right text-[clamp(1.1rem,6.6vw,3.05rem)] font-bold leading-[1.03] tracking-[-0.05em] text-[#e0f0f1] sm:gap-[clamp(0.35rem,0.72vw,0.85rem)] sm:text-[clamp(1.45rem,2.72vw,3.05rem)]">
                 <motion.p
-                  className="m-0 whitespace-nowrap"
+                  className="m-0 max-w-full whitespace-normal sm:whitespace-nowrap"
                   variants={heroLineVariants}
                   initial="hidden"
                   animate="visible"
@@ -166,7 +166,7 @@ export default function ZoomParallaxDemo() {
                   <span className="text-[#62C3D1]">desenvolvimento</span>
                 </motion.p>
                 <motion.p
-                  className="m-0 whitespace-nowrap"
+                  className="m-0 max-w-full whitespace-normal sm:whitespace-nowrap"
                   variants={heroLineVariants}
                   initial="hidden"
                   animate="visible"
@@ -191,7 +191,7 @@ export default function ZoomParallaxDemo() {
       </section>
       <ProductsSection />
       <SolutionsSection />
-      <section className="max-[640px]:hidden w-full bg-[#0D0C1A]" data-nav-tone="dark">
+      <section className="max-[900px]:hidden w-full bg-[#0D0C1A]" data-nav-tone="dark">
         <div className="site-shell">
           <div className="relative flex min-h-[26vh] items-center justify-center px-0 pb-6 pt-16 sm:pt-20 lg:pt-24">
             <div
@@ -209,10 +209,10 @@ export default function ZoomParallaxDemo() {
           </div>
         </div>
       </section>
-      <div className="min-[641px]:hidden">
+      <div className="min-[901px]:hidden">
         <SectorsMobileSlider slides={mobileSectorSlides} />
       </div>
-      <div className="max-[640px]:hidden">
+      <div className="max-[900px]:hidden">
         <ZoomParallax
           images={images}
           finalReveal={{
@@ -225,10 +225,10 @@ export default function ZoomParallaxDemo() {
         />
       </div>
       <section id="processos" data-nav-tone="dark">
-        <div className="min-[641px]:hidden">
+        <div className="min-[901px]:hidden">
           <ProcessMobileSlider />
         </div>
-        <div className="max-[640px]:hidden">
+        <div className="max-[900px]:hidden">
           <ProcessSectionsStack
             sections={[
               {

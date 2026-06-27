@@ -25,6 +25,8 @@ type ProcessSlide = {
   imageAlt: string;
   imageWidth: string;
   imageHeight?: string;
+  tabletImageWidth?: string;
+  tabletImageHeight?: string;
   background: string;
   foreground: string;
   muted: string;
@@ -51,6 +53,8 @@ const processSlides: readonly ProcessSlide[] = [
     image: injectionObject,
     imageAlt: 'Peças plásticas do processo de injeção',
     imageWidth: '17.25rem',
+    tabletImageWidth: '29rem',
+    tabletImageHeight: '27rem',
     background: '#20284c',
     foreground: '#ffffff',
     muted: 'rgba(255, 255, 255, 0.54)',
@@ -71,6 +75,8 @@ const processSlides: readonly ProcessSlide[] = [
     image: blowObject,
     imageAlt: 'Frascos e galões do processo de sopro',
     imageWidth: '18rem',
+    tabletImageWidth: '29rem',
+    tabletImageHeight: '27rem',
     background: '#8f1238',
     foreground: '#ffffff',
     muted: 'rgba(255, 255, 255, 0.54)',
@@ -92,6 +98,8 @@ const processSlides: readonly ProcessSlide[] = [
     imageAlt: 'Perfis e tubos do processo de extrusão',
     imageWidth: '23.2rem',
     imageHeight: '21.1rem',
+    tabletImageWidth: '33rem',
+    tabletImageHeight: '29rem',
     background: '#20284c',
     foreground: '#ffffff',
     muted: 'rgba(255, 255, 255, 0.54)',
@@ -112,6 +120,8 @@ const processSlides: readonly ProcessSlide[] = [
     image: filmObject,
     imageAlt: 'Embalagens flexíveis do processo filme',
     imageWidth: '17.5rem',
+    tabletImageWidth: '29rem',
+    tabletImageHeight: '27rem',
     background: '#f7c31b',
     foreground: '#1a2d5a',
     muted: 'rgba(26, 45, 90, 0.72)',
@@ -136,6 +146,8 @@ const processSlides: readonly ProcessSlide[] = [
     image: wiresObject,
     imageAlt: 'Cabos elétricos coloridos do processo de fios e cabos',
     imageWidth: '17.25rem',
+    tabletImageWidth: '29rem',
+    tabletImageHeight: '27rem',
     background: '#20284c',
     foreground: '#ffffff',
     muted: 'rgba(255, 255, 255, 0.54)',
@@ -216,6 +228,8 @@ export function ProcessMobileSlider() {
           '--process-mobile-cta-bg': activeSlide.ctaBackground,
           '--process-mobile-cta-fg': activeSlide.ctaForeground,
           '--process-mobile-accent': PROCESS_MOBILE_ACCENT,
+          '--process-tablet-object-width': activeSlide.tabletImageWidth ?? '28rem',
+          '--process-tablet-object-height': activeSlide.tabletImageHeight ?? '26rem',
         } as CSSProperties
       }
     >
@@ -276,7 +290,7 @@ export function ProcessMobileSlider() {
                       src={activeSlide.image}
                       alt={activeSlide.imageAlt}
                       fill
-                      sizes="(max-width: 640px) 70vw, 18rem"
+                      sizes="(max-width: 640px) 70vw, (max-width: 900px) 28rem, 18rem"
                       className={styles.objectImage}
                       priority
                     />

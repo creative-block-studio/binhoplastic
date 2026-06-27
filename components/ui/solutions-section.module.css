@@ -196,21 +196,9 @@
   .resinList {
     grid-column: 1 / span 8;
   }
-
-  .cards {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .card:last-child {
-    grid-column: 1 / -1;
-  }
-
-  .card:last-child .cardContent {
-    max-width: 28rem;
-  }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 640px) {
   .inner {
     width: 100%;
   }

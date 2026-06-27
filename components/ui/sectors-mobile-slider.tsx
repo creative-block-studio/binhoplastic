@@ -39,7 +39,7 @@ export function SectorsMobileSlider({ slides }: SectorsMobileSliderProps) {
                     src={slide.image}
                     alt={slide.alt}
                     fill
-                    sizes="(max-width: 640px) 248px, 0px"
+                    sizes="(max-width: 640px) 14.5rem, (max-width: 900px) 19rem, 19rem"
                     className={styles.slideMedia}
                   />
                   <span className={styles.label}>{slide.label}</span>
