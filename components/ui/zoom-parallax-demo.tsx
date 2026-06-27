@@ -17,6 +17,7 @@ import { FiosCabosDetailSection } from '@/components/ui/fios-cabos-detail-sectio
 import { InjectionDetailSection } from '@/components/ui/injection-detail-section';
 import { ProcessSectionsStack } from '@/components/ui/process-sections-stack';
 import { ProductsSection } from '@/components/ui/products-section';
+import { SectorsMobileSlider } from '@/components/ui/sectors-mobile-slider';
 import { SiteFooter } from '@/components/ui/site-footer';
 import { SiteHeader } from '@/components/ui/site-header';
 import { SoproDetailSection } from '@/components/ui/sopro-detail-section';
@@ -64,6 +65,39 @@ const images = [
     src: sectorsFoodImage,
     alt: 'Alimentícios',
     label: 'Alimentícios',
+  },
+] as const;
+
+const mobileSectorSlides = [
+  {
+    image: sectorsPackagingImage,
+    alt: 'Embalagens',
+    label: 'Embalagens',
+  },
+  {
+    image: sectorsConsumerGoodsImage,
+    alt: 'Materiais de bens e consumo',
+    label: 'Materiais de bens e consumo',
+  },
+  {
+    image: sectorsToysImage,
+    alt: 'Brinquedos',
+    label: 'Brinquedos',
+  },
+  {
+    image: sectorsWiresCablesImage,
+    alt: 'Fios e cabos',
+    label: 'Fios e cabos',
+  },
+  {
+    image: sectorsConstructionImage,
+    alt: 'Construção civil',
+    label: 'Construção civil',
+  },
+  {
+    image: sectorsFoodImage,
+    alt: 'Alimentos',
+    label: 'Alimentos',
   },
 ] as const;
 
@@ -156,7 +190,7 @@ export default function ZoomParallaxDemo() {
       </section>
       <ProductsSection />
       <SolutionsSection />
-      <section className="w-full bg-[#0D0C1A]" data-nav-tone="dark">
+      <section className="max-[640px]:hidden w-full bg-[#0D0C1A]" data-nav-tone="dark">
         <div className="site-shell">
           <div className="relative flex min-h-[26vh] items-center justify-center px-0 pb-6 pt-16 sm:pt-20 lg:pt-24">
             <div
@@ -174,16 +208,21 @@ export default function ZoomParallaxDemo() {
           </div>
         </div>
       </section>
-      <ZoomParallax
-        images={images}
-        finalReveal={{
-          eyebrow: 'APLICAÇÃO',
-          headlineTopPrefix: 'DO',
-          headlineTopEmphasis: 'MASTERBATCH',
-          headlineBottom: 'AO PRODUTO FINAL',
-          caption: 'conheça cada processo',
-        }}
-      />
+      <div className="min-[641px]:hidden">
+        <SectorsMobileSlider slides={mobileSectorSlides} />
+      </div>
+      <div className="max-[640px]:hidden">
+        <ZoomParallax
+          images={images}
+          finalReveal={{
+            eyebrow: 'APLICAÇÃO',
+            headlineTopPrefix: 'DO',
+            headlineTopEmphasis: 'MASTERBATCH',
+            headlineBottom: 'AO PRODUTO FINAL',
+            caption: 'conheça cada processo',
+          }}
+        />
+      </div>
       <section id="processos" data-nav-tone="dark">
         <ProcessSectionsStack
           sections={[

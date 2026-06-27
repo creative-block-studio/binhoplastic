@@ -22,8 +22,6 @@
 
 .titleBlock {
   grid-column: 1 / span 7;
-  display: grid;
-  gap: 1.5rem;
 }
 
 .title {
@@ -355,8 +353,4 @@
     object-position: 82% center;
   }
 
-  .titleBlock {
-    gap: 0;
-    width: 100%;
-  }
 }
