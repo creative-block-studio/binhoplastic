@@ -15,6 +15,7 @@ import { ExtrusaoDetailSection } from '@/components/ui/extrusao-detail-section';
 import { FilmeDetailSection } from '@/components/ui/filme-detail-section';
 import { FiosCabosDetailSection } from '@/components/ui/fios-cabos-detail-section';
 import { InjectionDetailSection } from '@/components/ui/injection-detail-section';
+import { ProcessMobileSlider } from '@/components/ui/process-mobile-slider';
 import { ProcessSectionsStack } from '@/components/ui/process-sections-stack';
 import { ProductsSection } from '@/components/ui/products-section';
 import { SectorsMobileSlider } from '@/components/ui/sectors-mobile-slider';
@@ -224,30 +225,35 @@ export default function ZoomParallaxDemo() {
         />
       </div>
       <section id="processos" data-nav-tone="dark">
-        <ProcessSectionsStack
-          sections={[
-            {
-              id: 'processo-injecao',
-              content: <InjectionDetailSection key="injection" />,
-            },
-            {
-              id: 'processo-sopro',
-              content: <SoproDetailSection key="sopro" />,
-            },
-            {
-              id: 'processo-extrusao',
-              content: <ExtrusaoDetailSection key="extrusao" />,
-            },
-            {
-              id: 'processo-filme',
-              content: <FilmeDetailSection key="filme" />,
-            },
-            {
-              id: 'processo-fios-cabos',
-              content: <FiosCabosDetailSection key="fios-cabos" />,
-            },
-          ]}
-        />
+        <div className="min-[641px]:hidden">
+          <ProcessMobileSlider />
+        </div>
+        <div className="max-[640px]:hidden">
+          <ProcessSectionsStack
+            sections={[
+              {
+                id: 'processo-injecao',
+                content: <InjectionDetailSection key="injection" />,
+              },
+              {
+                id: 'processo-sopro',
+                content: <SoproDetailSection key="sopro" />,
+              },
+              {
+                id: 'processo-extrusao',
+                content: <ExtrusaoDetailSection key="extrusao" />,
+              },
+              {
+                id: 'processo-filme',
+                content: <FilmeDetailSection key="filme" />,
+              },
+              {
+                id: 'processo-fios-cabos',
+                content: <FiosCabosDetailSection key="fios-cabos" />,
+              },
+            ]}
+          />
+        </div>
       </section>
       <div id="sobre" data-nav-tone="light">
         <DiferenciaisSection />

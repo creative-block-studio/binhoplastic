@@ -1,0 +1,256 @@
+.section {
+  position: relative;
+  overflow: clip;
+  background: var(--process-mobile-bg, #1e2140);
+  color: var(--process-mobile-fg, #ffffff);
+  box-shadow: inset -1px 0 0 var(--process-mobile-bg, #1e2140);
+  transition:
+    background-color 240ms ease-out,
+    color 240ms ease-out,
+    box-shadow 240ms ease-out;
+}
+
+.shell {
+  width: 100%;
+  padding: 3.25rem 0 3rem;
+}
+
+.eyebrow {
+  display: block;
+  margin: 0 0 0.4rem;
+  color: var(--process-mobile-accent, #d14d72);
+  font-size: 0.625rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  color: var(--process-mobile-fg, #ffffff);
+  font-size: clamp(2.5rem, 10vw, 3.55rem);
+  font-weight: 200;
+  line-height: 0.94;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.95rem;
+  overflow-x: auto;
+  margin: 1.35rem calc(var(--site-gutter) * -1) 0;
+  padding: 0 var(--site-gutter) 0.8rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  position: relative;
+  flex: 0 0 auto;
+  padding: 0 0 0.22rem;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: transparent;
+  color: var(--process-mobile-muted, rgba(255, 255, 255, 0.45));
+  font-size: 0.6875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.tabActive {
+  border-bottom-color: var(--process-mobile-accent, #d14d72);
+  color: var(--process-mobile-fg, #ffffff);
+}
+
+.carousel {
+  position: relative;
+}
+
+.slide {
+  width: 100%;
+}
+
+.slideInner {
+  width: 100%;
+  margin-inline: auto;
+  padding-bottom: 0.2rem;
+}
+
+.hero {
+  position: relative;
+  min-height: 21.5rem;
+  margin-top: 1.1rem;
+}
+
+.arrow {
+  position: absolute;
+  top: 10.4rem;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.82);
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.arrowPrev {
+  left: -0.35rem;
+}
+
+.arrowNext {
+  right: -0.35rem;
+}
+
+.objectWrap {
+  position: relative;
+  z-index: 2;
+  height: 17.75rem;
+  margin: 0 auto;
+}
+
+.objectImage {
+  object-fit: contain;
+}
+
+.ghost {
+  position: absolute;
+  left: 50%;
+  width: 120vw;
+  bottom: -0.1rem;
+  z-index: 1;
+  color: var(--process-mobile-ghost, rgba(84, 92, 140, 0.34));
+  font-size: clamp(5.4rem, 28vw, 7.8rem);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.42rem;
+  margin-top: 0.15rem;
+}
+
+.dot {
+  width: 0.34rem;
+  height: 0.34rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--process-mobile-fg, #ffffff) 18%, transparent);
+}
+
+.dotActive {
+  width: 1.42rem;
+  background: var(--process-mobile-accent, #d14d72);
+}
+
+.chips {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.1rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 0.3rem;
+  background: var(--process-mobile-chip-bg, rgba(255, 255, 255, 0.08));
+  color: var(--process-mobile-chip-fg, #ffffff);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.description {
+  margin: 1rem 0 0;
+  color: var(--process-mobile-muted, rgba(255, 255, 255, 0.54));
+  font-size: 0.87rem;
+  font-weight: 300;
+  line-height: 1.45;
+}
+
+.applicationsEyebrow {
+  display: block;
+  margin: 1.45rem 0 0;
+  color: var(--process-mobile-accent, #d14d72);
+  font-size: 0.5625rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.applications {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-top: 0.9rem;
+}
+
+.applicationCard {
+  display: grid;
+  justify-items: center;
+  gap: 0.6rem;
+}
+
+.applicationIconWrap {
+  display: grid;
+  place-items: center;
+  width: min(100%, 4.6rem);
+  aspect-ratio: 1;
+  min-height: 0;
+  padding: 0.75rem;
+  border-radius: 0.85rem;
+  background: color-mix(in srgb, var(--process-mobile-fg, #ffffff) 7%, transparent);
+  color: var(--process-mobile-fg, #ffffff);
+}
+
+.applicationLabel {
+  color: var(--process-mobile-muted, rgba(255, 255, 255, 0.54));
+  font-size: 0.67rem;
+  font-weight: 300;
+  line-height: 1.28;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 3.2rem;
+  margin-top: 1.45rem;
+  border-radius: 0.25rem;
+  background: var(--process-mobile-cta-bg, #d14d72);
+  color: var(--process-mobile-cta-fg, #ffffff);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
