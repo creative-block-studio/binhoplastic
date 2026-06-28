@@ -25,6 +25,8 @@
 .heroTone {
   top: 0;
   height: 24rem;
+  left: -1px;
+  right: -1px;
   background: var(--contact-hero);
 }
 
@@ -695,11 +697,25 @@
   }
 
   .intro {
+    position: relative;
+    isolation: isolate;
     order: 1;
     margin-inline: calc(var(--site-gutter) * -1);
     margin-top: -20px;
     padding: 74px var(--site-gutter) 1.2rem;
+    background: transparent;
+  }
+
+  .intro::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: calc((var(--site-gutter) * -1) - 2px);
+    bottom: 0;
+    left: calc((var(--site-gutter) * -1) - 2px);
+    z-index: -1;
     background: var(--contact-hero);
+    pointer-events: none;
   }
 
   .formCard {

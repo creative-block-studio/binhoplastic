@@ -1,6 +1,9 @@
 .section {
   position: relative;
+  left: -1px;
+  width: calc(100% + 2px);
   overflow: clip;
+  isolation: isolate;
   background: var(--process-mobile-bg, #1e2140);
   color: var(--process-mobile-fg, #ffffff);
   transition:
@@ -12,9 +15,20 @@
   content: "";
   position: absolute;
   top: 0;
-  right: -2px;
+  right: -3px;
   bottom: 0;
-  width: 4px;
+  width: 6px;
+  background: var(--process-mobile-bg, #1e2140);
+  pointer-events: none;
+}
+
+.section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -3px;
+  bottom: 0;
+  width: 6px;
   background: var(--process-mobile-bg, #1e2140);
   pointer-events: none;
 }

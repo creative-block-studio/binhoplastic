@@ -20,11 +20,13 @@ export function SiteHeader() {
   const dockRef = useRef<HTMLDivElement | null>(null);
   const barRef = useRef<HTMLElement | null>(null);
   const ctaRef = useRef<HTMLElement | null>(null);
+  const mobileMenuPanelRef = useRef<HTMLElement | null>(null);
   const mobileMenuButtonRef = useRef<HTMLButtonElement | null>(null);
   const lastScrollYRef = useRef(0);
   const tickingRef = useRef(false);
   const [barIsLight, setBarIsLight] = useState(false);
   const [ctaIsLight, setCtaIsLight] = useState(false);
+  const [mobileSurfaceIsLight, setMobileSurfaceIsLight] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -167,10 +169,18 @@ export function SiteHeader() {
       const delta = currentScrollY - previousScrollY;
 
       const toneTarget =
-        window.innerWidth <= 640 ? mobileMenuButtonRef.current : ctaRef.current;
+        window.innerWidth <= 640
+          ? isMobileMenuOpen
+            ? mobileMenuPanelRef.current
+            : mobileMenuButtonRef.current
+          : ctaRef.current;
 
       setBarIsLight(sampleTone(barRef.current));
       setCtaIsLight(sampleTone(toneTarget));
+
+      if (window.innerWidth <= 640) {
+        setMobileSurfaceIsLight(sampleTone(toneTarget));
+      }
 
       if (isMobileMenuOpen && window.innerWidth <= 640) {
         setIsHidden(false);
@@ -293,7 +303,8 @@ export function SiteHeader() {
   const mobileMenuButtonClassName = [
     styles.bar,
     styles.mobileMenuButton,
-    ctaIsLight ? styles.light : '',
+    mobileSurfaceIsLight ? styles.light : '',
+    mobileSurfaceIsLight ? styles.mobileLight : '',
     isHidden ? styles.hidden : '',
     isMobileMenuOpen ? styles.mobileMenuButtonOpen : '',
   ]
@@ -302,7 +313,7 @@ export function SiteHeader() {
 
   const mobileMenuPanelClassName = [
     styles.mobileMenuPanel,
-    ctaIsLight ? styles.ctaLight : '',
+    mobileSurfaceIsLight ? styles.mobilePanelLight : '',
     isMobileMenuOpen ? styles.mobileMenuPanelOpen : '',
   ]
     .filter(Boolean)
@@ -399,6 +410,7 @@ export function SiteHeader() {
         </div>
 
         <nav
+          ref={mobileMenuPanelRef}
           id="site-mobile-menu"
           className={mobileMenuPanelClassName}
           aria-label="Seções principais mobile"
