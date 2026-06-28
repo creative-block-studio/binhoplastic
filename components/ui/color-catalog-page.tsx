@@ -196,6 +196,7 @@ export function ColorCatalogPage() {
     .map((colorId) => catalogColorById.get(colorId))
     .filter((color): color is NonNullable<typeof color> => Boolean(color));
   const selectedDetailKey = `${selectedColor.id}-${selectedColor.technicalSpecs.length}-${selectedColor.applications.length}`;
+  const mobileHighlightSpecs = selectedColor.technicalSpecs.slice(0, 3);
   const canExpandDetail = detailHeights.expanded - detailHeights.collapsed > 12;
   const singleRequestHref = `/solicitar-amostra?message=${encodeURIComponent(
     buildSampleRequestMessage([{ code: selectedColor.code }]),
@@ -298,6 +299,22 @@ export function ColorCatalogPage() {
     setSelectedPolymers([]);
     setSelectedColorGroups([]);
     setHeavyMetalFilter('todos');
+  };
+
+  const handleSelectColor = (colorId: string) => {
+    setSelectedColorId(colorId);
+
+    if (
+      typeof window !== 'undefined' &&
+      window.matchMedia('(max-width: 640px)').matches
+    ) {
+      window.requestAnimationFrame(() => {
+        detailPanelRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      });
+    }
   };
 
   const toggleRequestColor = (colorId: string) => {
@@ -654,6 +671,14 @@ export function ColorCatalogPage() {
 
             <div className={styles.catalogGrid}>
               <div className={styles.cardsColumn}>
+                <div className={styles.cardsMobileHeader}>
+                  <p className={styles.cardsMobileEyebrow}>Cores disponíveis</p>
+                  <div className={styles.cardsMobileHeaderRow}>
+                    <h2 className={styles.cardsMobileTitle}>{filteredColors.length} cores visíveis</h2>
+                    <p className={styles.cardsMobileText}>Toque em uma cor para atualizar o detalhe.</p>
+                  </div>
+                </div>
+
                 <div className={styles.cardsGrid}>
                   {filteredColors.map((color) => {
                     const isActiveCard = color.id === selectedColor.id;
@@ -669,7 +694,7 @@ export function ColorCatalogPage() {
                         <button
                           type="button"
                           className={styles.cardMainButton}
-                          onClick={() => setSelectedColorId(color.id)}
+                          onClick={() => handleSelectColor(color.id)}
                         >
                         <div
                           className={styles.cardSwatch}
@@ -787,6 +812,20 @@ export function ColorCatalogPage() {
                         : undefined
                     }
                   >
+                    <section className={styles.detailMobileHighlights} aria-label="Resumo técnico">
+                      {mobileHighlightSpecs.map((item) => (
+                        <article key={item.label} className={styles.detailMobileHighlightCard}>
+                          <span className={styles.detailMobileHighlightLabel}>{item.label}</span>
+                          <strong className={styles.detailMobileHighlightValue}>
+                            {formatSpecValue(item.value, item.icon)}
+                          </strong>
+                          {item.description ? (
+                            <p className={styles.detailMobileHighlightText}>{item.description}</p>
+                          ) : null}
+                        </article>
+                      ))}
+                    </section>
+
                     <div className={styles.detailStack}>
                       <section className={styles.detailSection}>
                         <div className={styles.detailSectionHeader}>

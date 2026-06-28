@@ -527,6 +527,10 @@
   min-width: 0;
 }
 
+.cardsMobileHeader {
+  display: none;
+}
+
 .cardsGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -768,6 +772,10 @@
   height: 0;
 }
 
+.detailMobileHighlights {
+  display: none;
+}
+
 .detailHero {
   min-height: 13.5rem;
   padding: 1.15rem;
@@ -930,6 +938,38 @@
   line-height: 1.55;
 }
 
+.detailMobileHighlightCard {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid rgba(144, 146, 145, 0.18);
+  border-radius: 0.9rem;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.detailMobileHighlightLabel {
+  color: #70716b;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.detailMobileHighlightValue {
+  color: #111110;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.detailMobileHighlightText {
+  margin: 0;
+  color: #5d5e58;
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
 .responsibleBlock {
   display: grid;
   gap: 0.35rem;
@@ -1019,6 +1059,23 @@
 }
 
 @media (min-width: 901px) and (max-width: 1120px) {
+  .hero {
+    min-height: 24rem;
+    padding-bottom: 3.2rem;
+  }
+
+  .heroBackgroundImage {
+    object-position: center 22%;
+  }
+
+  .catalogSection {
+    padding-top: 2rem;
+  }
+
+  .filtersBar {
+    row-gap: 0.85rem;
+  }
+
   .catalogGrid {
     grid-template-columns: minmax(0, 2.15fr) minmax(16.5rem, 19rem);
     gap: 0.9rem;
@@ -1081,7 +1138,8 @@
   }
 
   .cardsGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
   }
 
   .catalogClosingNotice {
@@ -1096,10 +1154,19 @@
 
   .catalogGrid {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .detailPanel {
     position: static;
+  }
+
+  .detailColumn {
+    order: 1;
+  }
+
+  .cardsColumn {
+    order: 2;
   }
 
   .title {
@@ -1117,16 +1184,183 @@
     padding-bottom: 5rem;
   }
 
+  .cardsMobileHeader {
+    display: grid;
+    gap: 0.28rem;
+    margin-bottom: 0.95rem;
+  }
+
+  .cardsMobileEyebrow,
+  .cardsMobileTitle,
+  .cardsMobileText {
+    margin: 0;
+  }
+
+  .cardsMobileEyebrow {
+    color: #222b58;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .cardsMobileHeaderRow {
+    display: grid;
+    gap: 0.18rem;
+  }
+
+  .cardsMobileTitle {
+    color: #111110;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .cardsMobileText {
+    color: #666761;
+    font-size: 0.8rem;
+    line-height: 1.45;
+  }
+
   .detailHero {
-    min-height: 14rem;
+    min-height: 9rem;
+    padding: 0.95rem 1rem;
+  }
+
+  .detailPanel {
+    display: grid;
+    gap: 0;
+    scroll-margin-top: calc(var(--site-scroll-offset) + 0.75rem);
+  }
+
+  .detailHero {
+    order: 1;
+  }
+
+  .ctaStack {
+    order: 2;
+    gap: 0.5rem;
+    padding: 0.85rem 1rem 0.85rem;
+    border-top: 1px solid rgba(240, 239, 234, 0.95);
+  }
+
+  .detailScrollable {
+    order: 3;
+    min-height: 0;
+    max-height: none !important;
+    overflow: visible;
+    scrollbar-width: none;
+  }
+
+  .detailScrollable::-webkit-scrollbar {
+    display: none;
+  }
+
+  .detailMobileHighlights {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+    padding: 0 1rem 1rem;
+  }
+
+  .detailMobileHighlightCard:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+
+  .detailStack {
+    gap: 0.85rem;
+    padding: 0 1rem 1rem;
+  }
+
+  .detailSection {
+    padding: 0.9rem 0.95rem;
+    border: 1px solid rgba(144, 146, 145, 0.16);
+    border-radius: 0.95rem;
+    background: rgba(255, 255, 255, 0.82);
+  }
+
+  .detailSectionToggle {
+    display: none;
+  }
+
+  .detailName {
+    font-size: 1.78rem;
+    line-height: 0.98;
+  }
+
+  .detailCode {
+    font-size: 0.64rem;
+  }
+
+  .primaryCta {
+    min-height: 3rem;
+  }
+
+  .secondaryCta {
+    min-height: 2.55rem;
+    font-size: 0.76rem;
+    padding-inline: 0.85rem;
   }
 
   .detailName {
     max-width: none;
   }
 
-  .detailStack,
-  .ctaStack {
-    padding-inline: 1rem;
+  .card,
+  .cardSelected {
+    border-radius: 0.82rem;
+  }
+
+  .cardSwatch {
+    min-height: 6.2rem;
+    padding: 0.72rem 0.75rem;
+  }
+
+  .cardTitle {
+    font-size: 0.84rem;
+  }
+
+  .cardCode {
+    font-size: 0.54rem;
+  }
+
+  .cardBody {
+    display: none;
+  }
+
+  .cardActionRow {
+    gap: 0;
+    padding: 0.72rem;
+  }
+
+  .cardStatusRow {
+    display: none;
+  }
+
+  .cardSelectChip,
+  .cardSelectChipActive {
+    width: 100%;
+    min-height: 2.15rem;
+    font-size: 0.64rem;
+    padding-inline: 0.55rem;
+    text-align: center;
+  }
+
+  .catalogClosingNotice {
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .cardsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .detailMobileHighlights {
+    grid-template-columns: 1fr;
+  }
+
+  .detailMobileHighlightCard:nth-child(3) {
+    grid-column: auto;
   }
 }

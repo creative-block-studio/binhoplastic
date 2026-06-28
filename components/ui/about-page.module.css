@@ -496,6 +496,45 @@
   }
 }
 
+@media (min-width: 641px) and (max-width: 1100px) {
+  .storyLead {
+    grid-column: 1 / span 6;
+  }
+
+  .aboutCard {
+    grid-column: 7 / -1;
+    padding: 1.35rem 1.45rem;
+  }
+
+  .quoteText {
+    max-width: 38ch;
+    font-size: clamp(1rem, 1.55vw, 1.22rem);
+    line-height: 1.18;
+  }
+
+  .cardText {
+    max-width: none;
+    font-size: clamp(1rem, 1.5vw, 1.18rem);
+    line-height: 1.18;
+  }
+
+  .foundationMedia {
+    aspect-ratio: 600 / 170;
+  }
+
+  .developmentCopy {
+    min-height: auto;
+  }
+
+  .developmentText {
+    margin-bottom: 1.15rem;
+  }
+
+  .developmentButton {
+    margin-top: 0;
+  }
+}
+
 @media (max-width: 640px) {
   .heroInner,
   .storyInner,
