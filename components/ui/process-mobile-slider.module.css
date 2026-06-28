@@ -36,7 +36,7 @@
 .shell {
   width: 100%;
   padding: 3.25rem 0 3rem;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .eyebrow {
@@ -101,22 +101,26 @@
 
 .carousel {
   position: relative;
+  overflow: visible;
 }
 
 .slide {
   width: 100%;
+  overflow: visible;
 }
 
 .slideInner {
   width: 100%;
   margin-inline: auto;
   padding-bottom: 0.2rem;
+  overflow: visible;
 }
 
 .hero {
   position: relative;
   min-height: 21.5rem;
   margin-top: 1.1rem;
+  overflow: visible;
 }
 
 .arrow {
@@ -158,8 +162,8 @@
 .ghost {
   position: absolute;
   left: 50%;
-  width: 100%;
-  max-width: 100%;
+  width: max-content;
+  max-width: none;
   bottom: -0.1rem;
   z-index: 1;
   color: var(--process-mobile-ghost, rgba(84, 92, 140, 0.34));
@@ -171,6 +175,7 @@
   white-space: nowrap;
   text-align: center;
   transform: translateX(-50%);
+  pointer-events: none;
 }
 
 .pagination {
