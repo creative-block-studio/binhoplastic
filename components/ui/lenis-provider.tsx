@@ -5,18 +5,23 @@ import Lenis from 'lenis';
 
 export function LenisProvider() {
   useLayoutEffect(() => {
-    const lenis = new Lenis();
-    let frame = 0;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isTouchDevice =
+      window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
 
-    const raf = (time: number) => {
-      lenis.raf(time);
-      frame = requestAnimationFrame(raf);
-    };
+    if (prefersReducedMotion || isTouchDevice) {
+      return;
+    }
 
-    frame = requestAnimationFrame(raf);
+    const lenis = new Lenis({
+      autoRaf: true,
+      smoothWheel: true,
+      gestureOrientation: 'vertical',
+      overscroll: false,
+      anchors: true,
+    });
 
     return () => {
-      cancelAnimationFrame(frame);
       lenis.destroy();
     };
   }, []);

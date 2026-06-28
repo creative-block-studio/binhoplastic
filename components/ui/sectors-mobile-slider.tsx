@@ -16,7 +16,12 @@ export function SectorsMobileSlider({ slides }: SectorsMobileSliderProps) {
   const loopSlides = [...slides, ...slides];
 
   return (
-    <section className={styles.section} aria-labelledby="mobile-sectors-title" data-nav-tone="dark">
+    <section
+      className={styles.section}
+      aria-labelledby="mobile-sectors-title"
+      data-nav-tone="dark"
+      data-lenis-prevent-touch
+    >
       <div className="site-shell">
         <div className={styles.shell}>
           <div className={styles.header}>

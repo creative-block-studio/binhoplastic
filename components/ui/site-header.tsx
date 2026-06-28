@@ -167,9 +167,10 @@ export function SiteHeader() {
       const currentScrollY = Math.max(window.scrollY, 0);
       const previousScrollY = lastScrollYRef.current;
       const delta = currentScrollY - previousScrollY;
+      const isMobileViewport = window.innerWidth <= 640;
 
       const toneTarget =
-        window.innerWidth <= 640
+        isMobileViewport
           ? isMobileMenuOpen
             ? mobileMenuPanelRef.current
             : mobileMenuButtonRef.current
@@ -178,11 +179,8 @@ export function SiteHeader() {
       setBarIsLight(sampleTone(barRef.current));
       setCtaIsLight(sampleTone(toneTarget));
 
-      if (window.innerWidth <= 640) {
+      if (isMobileViewport) {
         setMobileSurfaceIsLight(sampleTone(toneTarget));
-      }
-
-      if (isMobileMenuOpen && window.innerWidth <= 640) {
         setIsHidden(false);
         lastScrollYRef.current = currentScrollY;
         return;

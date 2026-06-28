@@ -259,6 +259,7 @@ export function ProcessMobileSlider() {
   return (
     <div
       className={styles.section}
+      data-lenis-prevent-touch
       style={
         {
           '--process-mobile-bg': activeSlide.background,
