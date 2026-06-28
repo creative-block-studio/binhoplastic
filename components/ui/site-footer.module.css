@@ -50,6 +50,10 @@
   gap: 26px;
 }
 
+.applicationColumn {
+  display: grid;
+}
+
 .brandTitle,
 .sectionTitle {
   margin: 0;
@@ -180,6 +184,10 @@
   .column:first-child,
   .column:last-child {
     grid-column: 1 / -1;
+  }
+
+  .applicationColumn {
+    display: none;
   }
 
   .brandTitle,

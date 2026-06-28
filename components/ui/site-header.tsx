@@ -349,6 +349,7 @@ export function SiteHeader() {
                   aria-hidden="true"
                   className={styles.logoMark}
                   sizes="46px"
+                  loading="eager"
                 />
               </button>
             </header>

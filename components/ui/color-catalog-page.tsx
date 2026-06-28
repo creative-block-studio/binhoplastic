@@ -234,13 +234,22 @@ export function ColorCatalogPage() {
         return;
       }
 
+      const expandedContentHeight = scrollable.scrollHeight;
+
+      if (window.matchMedia('(max-width: 640px)').matches) {
+        setDetailHeights({
+          collapsed: 0,
+          expanded: expandedContentHeight,
+        });
+        return;
+      }
+
       const panelTop = panel.getBoundingClientRect().top;
       const viewportLimit = window.innerHeight - 1.25 * 16;
       const maxPanelHeight = Math.min(46 * 16, viewportLimit - panelTop);
       const heroHeight = hero.getBoundingClientRect().height;
       const ctaHeight = cta.getBoundingClientRect().height;
       const availableContentHeight = Math.max(14 * 16, maxPanelHeight - heroHeight - ctaHeight);
-      const expandedContentHeight = scrollable.scrollHeight;
 
       setDetailHeights({
         collapsed: Math.min(availableContentHeight, expandedContentHeight),
@@ -805,7 +814,7 @@ export function ColorCatalogPage() {
                     className={styles.detailScrollable}
                     onWheelCapture={handleDetailWheel}
                     style={
-                      detailHeights.collapsed > 0
+                      detailHeights.expanded > 0
                         ? {
                             maxHeight: `${isDetailExpanded ? detailHeights.expanded : detailHeights.collapsed}px`,
                           }
@@ -833,7 +842,7 @@ export function ColorCatalogPage() {
                           {canExpandDetail || isDetailExpanded ? (
                             <button
                               type="button"
-                              className={styles.detailSectionToggle}
+                              className={`${styles.detailSectionToggle} ${styles.detailPanelToggleDesktop}`}
                               aria-expanded={isDetailExpanded}
                               onClick={() => setIsDetailExpanded((current) => !current)}
                             >
@@ -910,6 +919,22 @@ export function ColorCatalogPage() {
                       <Download size={16} strokeWidth={1.9} />
                       <span>Baixar laudo de análise (em breve)</span>
                     </button>
+
+                    {canExpandDetail || isDetailExpanded ? (
+                      <button
+                        type="button"
+                        className={`${styles.detailSectionToggle} ${styles.detailPanelToggleMobile}`}
+                        aria-expanded={isDetailExpanded}
+                        onClick={() => setIsDetailExpanded((current) => !current)}
+                      >
+                        {isDetailExpanded ? (
+                          <ChevronUp size={14} strokeWidth={2} />
+                        ) : (
+                          <ChevronDown size={14} strokeWidth={2} />
+                        )}
+                        <span>{isDetailExpanded ? 'Recolher' : 'Ver especificações'}</span>
+                      </button>
+                    ) : null}
                   </div>
                 </div>
               </aside>

@@ -595,7 +595,7 @@
 }
 
 .cardCode {
-  font-size: 0.58rem;
+  font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -789,7 +789,7 @@
 }
 
 .detailCode {
-  font-size: 0.68rem;
+  font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 0.11em;
   text-transform: uppercase;
@@ -873,6 +873,18 @@
 .detailSectionToggle:focus-visible {
   color: #111110;
   transform: translateY(-1px);
+}
+
+.detailPanelToggleDesktop {
+  display: inline-flex;
+}
+
+.detailPanelToggleMobile {
+  display: none;
+  justify-content: center;
+  min-height: 2.4rem;
+  padding: 0.2rem 0 0;
+  border-top: 1px solid rgba(240, 239, 234, 0.95);
 }
 
 .specList {
@@ -1251,13 +1263,22 @@
   .detailScrollable {
     order: 3;
     min-height: 0;
-    max-height: none !important;
-    overflow: visible;
+    overflow: hidden;
     scrollbar-width: none;
   }
 
   .detailScrollable::-webkit-scrollbar {
     display: none;
+  }
+
+  .detailPanel[data-expanded='false'] .detailScrollable {
+    max-height: 0;
+    opacity: 0;
+  }
+
+  .detailPanel[data-expanded='true'] .detailScrollable {
+    opacity: 1;
+    overflow: clip;
   }
 
   .detailMobileHighlights {
@@ -1283,8 +1304,12 @@
     background: rgba(255, 255, 255, 0.82);
   }
 
-  .detailSectionToggle {
+  .detailPanelToggleDesktop {
     display: none;
+  }
+
+  .detailPanelToggleMobile {
+    display: inline-flex;
   }
 
   .detailName {
@@ -1293,7 +1318,7 @@
   }
 
   .detailCode {
-    font-size: 0.64rem;
+    font-size: 0.74rem;
   }
 
   .primaryCta {
@@ -1325,7 +1350,7 @@
   }
 
   .cardCode {
-    font-size: 0.54rem;
+    font-size: 0.62rem;
   }
 
   .cardBody {

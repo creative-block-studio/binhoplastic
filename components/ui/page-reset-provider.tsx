@@ -14,22 +14,20 @@ export function PageResetProvider() {
       window.history.scrollRestoration = 'manual';
     }
 
-    const resetOnShow = () => {
+    const resetOnMount = () => {
+      if (window.scrollY > 2) {
+        return;
+      }
+
       resetScrollToTop();
       requestAnimationFrame(() => {
-        resetScrollToTop();
+        if (window.scrollY <= 2) {
+          resetScrollToTop();
+        }
       });
     };
 
-    resetOnShow();
-
-    window.addEventListener('load', resetOnShow);
-    window.addEventListener('pageshow', resetOnShow);
-
-    return () => {
-      window.removeEventListener('load', resetOnShow);
-      window.removeEventListener('pageshow', resetOnShow);
-    };
+    resetOnMount();
   }, []);
 
   return null;

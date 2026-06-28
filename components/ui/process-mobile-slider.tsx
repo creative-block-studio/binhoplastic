@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { CSSProperties, TouchEvent } from 'react';
 import type { StaticImageData } from 'next/image';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import blowObject from '@/assets/images/process-blow-object-figma.webp';
 import extrusionObject from '@/assets/images/process-extrusion-object-figma.webp';
@@ -236,8 +236,6 @@ const processSlides: readonly ProcessSlide[] = [
   },
 ] as const;
 
-const AUTO_ADVANCE_MS = 4200;
-const AUTO_RESUME_MS = 7000;
 const SWIPE_THRESHOLD = 42;
 const PROCESS_MOBILE_ACCENT = '#d14d72';
 
@@ -245,13 +243,11 @@ export function ProcessMobileSlider() {
   const touchStartXRef = useRef<number | null>(null);
   const touchDeltaXRef = useRef(0);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [autoplayDelay, setAutoplayDelay] = useState(AUTO_ADVANCE_MS);
   const activeSlide = processSlides[activeIndex];
 
-  const scrollToIndex = (index: number, manual = false) => {
+  const scrollToIndex = (index: number) => {
     const nextIndex = Math.max(0, Math.min(processSlides.length - 1, index));
     setActiveIndex(nextIndex);
-    setAutoplayDelay(manual ? AUTO_RESUME_MS : AUTO_ADVANCE_MS);
   };
 
   const handleTouchStart = (event: TouchEvent<HTMLDivElement>) => {
@@ -273,23 +269,14 @@ export function ProcessMobileSlider() {
     const deltaX = touchDeltaXRef.current;
 
     if (deltaX <= -SWIPE_THRESHOLD) {
-      scrollToIndex(activeIndex + 1, true);
+      scrollToIndex(activeIndex + 1);
     } else if (deltaX >= SWIPE_THRESHOLD) {
-      scrollToIndex(activeIndex - 1, true);
+      scrollToIndex(activeIndex - 1);
     }
 
     touchStartXRef.current = null;
     touchDeltaXRef.current = 0;
   };
-
-  useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      setActiveIndex((currentIndex) => (currentIndex + 1) % processSlides.length);
-      setAutoplayDelay(AUTO_ADVANCE_MS);
-    }, autoplayDelay);
-
-    return () => window.clearTimeout(timeoutId);
-  }, [activeIndex, autoplayDelay]);
 
   return (
     <div
@@ -321,7 +308,7 @@ export function ProcessMobileSlider() {
                 key={slide.key}
                 type="button"
                 className={`${styles.tab} ${index === activeIndex ? styles.tabActive : ''}`}
-                onClick={() => scrollToIndex(index, true)}
+                onClick={() => scrollToIndex(index)}
                 role="tab"
                 aria-selected={index === activeIndex}
                 aria-controls={`process-slide-${slide.key}`}
@@ -341,7 +328,7 @@ export function ProcessMobileSlider() {
             <button
               type="button"
               className={`${styles.arrow} ${styles.arrowPrev}`}
-              onClick={() => scrollToIndex(activeIndex - 1, true)}
+              onClick={() => scrollToIndex(activeIndex - 1)}
               aria-label="Processo anterior"
             >
               <ChevronLeft size={18} strokeWidth={1.8} />
@@ -425,7 +412,7 @@ export function ProcessMobileSlider() {
             <button
               type="button"
               className={`${styles.arrow} ${styles.arrowNext}`}
-              onClick={() => scrollToIndex(activeIndex + 1, true)}
+              onClick={() => scrollToIndex(activeIndex + 1)}
               aria-label="Próximo processo"
             >
               <ChevronRight size={18} strokeWidth={1.8} />

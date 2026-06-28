@@ -1,11 +1,7 @@
 'use client';
 
 import type { MouseEvent } from 'react';
-import {
-  Mail,
-  MapPin,
-  Phone,
-} from 'lucide-react';
+import { Mail, MapPin, Phone } from 'lucide-react';
 
 import styles from '@/components/ui/site-footer.module.css';
 
@@ -17,11 +13,11 @@ const navigationLinks = [
 ] as const;
 
 const applicationLinks = [
-  { href: '/#processo-injecao', label: 'Injeção' },
-  { href: '/#processo-extrusao', label: 'Extrusão' },
-  { href: '/#processo-sopro', label: 'Sopro' },
-  { href: '/#processo-filme', label: 'Filme' },
-  { href: '/#processo-fios-cabos', label: 'Fios e cabos' },
+  { href: '/#processos', label: 'Injeção' },
+  { href: '/#processos', label: 'Extrusão' },
+  { href: '/#processos', label: 'Sopro' },
+  { href: '/#processos', label: 'Filme' },
+  { href: '/#processos', label: 'Fios e cabos' },
 ] as const;
 
 const socialLinks = [
@@ -93,7 +89,7 @@ export function SiteFooter() {
             <div className={styles.column}>
               <h3 className={styles.sectionTitle}>Navegação</h3>
               <div className={styles.list}>
-                {navigationLinks.map((link) => (
+                {navigationLinks.map((link) =>
                   link.href.startsWith('https://') ? (
                     <a
                       key={link.label}
@@ -113,12 +109,12 @@ export function SiteFooter() {
                     >
                       {link.label}
                     </a>
-                  )
-                ))}
+                  ),
+                )}
               </div>
             </div>
 
-            <div className={styles.column}>
+            <div className={`${styles.column} ${styles.applicationColumn}`}>
               <h3 className={styles.sectionTitle}>Aplicações</h3>
               <div className={styles.list}>
                 {applicationLinks.map((link) => (

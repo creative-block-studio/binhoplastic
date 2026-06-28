@@ -137,16 +137,10 @@ export default function ZoomParallaxDemo() {
           <source src="/assets/videos/hero-desktop.webm" type="video/webm" />
         </video>
         <div className="site-shell pointer-events-none absolute inset-0 z-10">
-          <div
-            className="flex min-h-[100dvh] flex-col justify-end pb-12 pt-28 sm:justify-between sm:pb-12 sm:pt-32 lg:pb-14 lg:pt-36"
-            style={{
-              paddingLeft: 'var(--site-content-inset-left)',
-              paddingRight: 'var(--site-content-inset-right)',
-            }}
-          >
-            <div className="mb-[clamp(3.5rem,12vw,6.5rem)] ml-auto flex w-full flex-col items-end gap-[clamp(0.45rem,1vw,0.85rem)] sm:mb-0 sm:gap-[clamp(0.35rem,0.72vw,0.85rem)]">
+          <div className="flex min-h-[100dvh] flex-col justify-end pb-12 pt-28 sm:justify-between sm:pb-12 sm:pt-32 sm:pl-[var(--site-content-inset-left)] sm:pr-[var(--site-content-inset-right)] lg:pb-14 lg:pt-36">
+            <div className="mb-[clamp(3.5rem,12vw,6.5rem)] flex w-full flex-col items-start gap-[clamp(0.45rem,1vw,0.85rem)] sm:mb-0 sm:ml-auto sm:items-end sm:gap-[clamp(0.35rem,0.72vw,0.85rem)]">
               <motion.p
-                className="m-0 max-w-full whitespace-normal text-right text-[clamp(0.95rem,4.3vw,2.8rem)] font-extralight leading-[1.08] tracking-[-0.045em] text-[#e0f0f1] sm:whitespace-nowrap sm:text-[clamp(1rem,2.08vw,2.8rem)]"
+                className="m-0 max-w-full whitespace-normal text-left text-[clamp(0.95rem,4.3vw,2.8rem)] font-extralight leading-[1.08] tracking-[-0.045em] text-[#e0f0f1] sm:text-right sm:whitespace-nowrap sm:text-[clamp(1rem,2.08vw,2.8rem)]"
                 variants={heroLineVariants}
                 initial="hidden"
                 animate="visible"
@@ -154,7 +148,7 @@ export default function ZoomParallaxDemo() {
               >
                 A COR CERTA PARA O SEU PLÁSTICO
               </motion.p>
-              <div className="flex max-w-full flex-col items-end gap-[clamp(0.45rem,1vw,0.85rem)] text-right text-[clamp(1.1rem,6.6vw,3.05rem)] font-bold leading-[1.03] tracking-[-0.05em] text-[#e0f0f1] sm:gap-[clamp(0.35rem,0.72vw,0.85rem)] sm:text-[clamp(1.45rem,2.72vw,3.05rem)]">
+              <div className="flex max-w-full flex-col items-start gap-[clamp(0.45rem,1vw,0.85rem)] text-left text-[clamp(1.1rem,6.6vw,3.05rem)] font-bold leading-[1.03] tracking-[-0.05em] text-[#e0f0f1] sm:items-end sm:gap-[clamp(0.35rem,0.72vw,0.85rem)] sm:text-right sm:text-[clamp(1.45rem,2.72vw,3.05rem)]">
                 <motion.p
                   className="m-0 max-w-full whitespace-normal sm:whitespace-nowrap"
                   variants={heroLineVariants}
