@@ -7,6 +7,17 @@ export type ProcessKey =
   | 'filme'
   | 'fios-cabos';
 
+export type ColorGroupKey =
+  | 'branco'
+  | 'preto'
+  | 'rosa'
+  | 'vermelho'
+  | 'laranja'
+  | 'amarelo'
+  | 'verde'
+  | 'azul'
+  | 'turquesa';
+
 export type SpecIcon = 'temperature' | 'sun' | 'migration' | 'pigment' | 'percent' | 'shield';
 
 export type SpecItem = {
@@ -21,6 +32,7 @@ export type CatalogColor = {
   code: string;
   name: string;
   swatch: string;
+  colorGroup: ColorGroupKey;
   processes: Exclude<ProcessKey, 'todos'>[];
   polymers: string[];
   heavyMetalsFree: boolean;
@@ -53,6 +65,34 @@ export const processShortLabels: Record<Exclude<ProcessKey, 'todos'>, string> = 
   'fios-cabos': 'FIO',
 };
 
+export const colorGroupLabels: Record<ColorGroupKey, string> = {
+  branco: 'Branco',
+  preto: 'Preto',
+  rosa: 'Rosa',
+  vermelho: 'Vermelho',
+  laranja: 'Laranja',
+  amarelo: 'Amarelo',
+  verde: 'Verde',
+  azul: 'Azul',
+  turquesa: 'Turquesa',
+};
+
+export const colorGroupSwatches: Record<ColorGroupKey, string> = {
+  branco: '#FFFFFF',
+  preto: '#111111',
+  rosa: '#E32168',
+  vermelho: '#C92B37',
+  laranja: '#F47D20',
+  amarelo: '#FCCE20',
+  verde: '#1A5C38',
+  azul: '#1B2F6E',
+  turquesa: '#62C3D1',
+};
+
+export const colorGroupKeys = Object.keys(colorGroupLabels) as ColorGroupKey[];
+
+export const polymerFilterOptions = ['PP', 'PE', 'PET', 'ABS', 'PS', 'PVC', 'PA'] as const;
+
 export const defaultSelectedColorId = 'b008831';
 
 export const catalogColors: CatalogColor[] = [
@@ -61,6 +101,7 @@ export const catalogColors: CatalogColor[] = [
     code: 'B015109',
     name: 'MB Branco',
     swatch: '#FFFFFF',
+    colorGroup: 'branco',
     processes: ['injecao', 'extrusao', 'sopro', 'rotomoldagem', 'filme', 'fios-cabos'],
     polymers: ['PP', 'PE', 'PET', 'ABS', 'PS', 'PVC'],
     heavyMetalsFree: true,
@@ -126,6 +167,7 @@ export const catalogColors: CatalogColor[] = [
     code: 'B015110',
     name: 'MB Preto',
     swatch: '#111111',
+    colorGroup: 'preto',
     processes: ['injecao', 'extrusao', 'sopro', 'rotomoldagem', 'filme', 'fios-cabos'],
     polymers: ['PP', 'PE', 'PET', 'ABS', 'PS', 'PVC'],
     heavyMetalsFree: true,
@@ -191,6 +233,7 @@ export const catalogColors: CatalogColor[] = [
     code: 'B008831',
     name: 'Rosa Pink',
     swatch: '#E32168',
+    colorGroup: 'rosa',
     processes: ['injecao', 'extrusao'],
     polymers: ['PP', 'PE', 'PET', 'ABS'],
     heavyMetalsFree: true,
@@ -256,6 +299,7 @@ export const catalogColors: CatalogColor[] = [
     code: 'B001042',
     name: 'Vermelho Carmim',
     swatch: '#C92B37',
+    colorGroup: 'vermelho',
     processes: ['injecao', 'extrusao'],
     polymers: ['PP', 'PE', 'PET', 'ABS'],
     heavyMetalsFree: false,
@@ -321,6 +365,7 @@ export const catalogColors: CatalogColor[] = [
     code: 'B002156',
     name: 'Laranja Cítrico',
     swatch: '#F47D20',
+    colorGroup: 'laranja',
     processes: ['extrusao', 'sopro'],
     polymers: ['PE', 'PP', 'PVC'],
     heavyMetalsFree: true,
@@ -386,6 +431,7 @@ export const catalogColors: CatalogColor[] = [
     code: 'B003421',
     name: 'Amarelo Ouro',
     swatch: '#FCCE20',
+    colorGroup: 'amarelo',
     processes: ['extrusao', 'filme'],
     polymers: ['PP', 'PE', 'ABS', 'PS'],
     heavyMetalsFree: true,
@@ -451,6 +497,7 @@ export const catalogColors: CatalogColor[] = [
     code: 'B005672',
     name: 'Verde Bandeira',
     swatch: '#1A5C38',
+    colorGroup: 'verde',
     processes: ['extrusao'],
     polymers: ['PP', 'PE', 'PET'],
     heavyMetalsFree: true,
@@ -516,6 +563,7 @@ export const catalogColors: CatalogColor[] = [
     code: 'B006891',
     name: 'Azul Marinho',
     swatch: '#1B2F6E',
+    colorGroup: 'azul',
     processes: ['injecao', 'extrusao'],
     polymers: ['PP', 'PE', 'ABS', 'PS'],
     heavyMetalsFree: true,
@@ -581,6 +629,7 @@ export const catalogColors: CatalogColor[] = [
     code: 'B007234',
     name: 'Azul Piscina',
     swatch: '#62C3D1',
+    colorGroup: 'turquesa',
     processes: ['sopro', 'filme'],
     polymers: ['PE', 'PP', 'LDPE'],
     heavyMetalsFree: false,

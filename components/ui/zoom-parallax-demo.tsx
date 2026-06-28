@@ -119,7 +119,7 @@ const heroLineVariants = {
 
 export default function ZoomParallaxDemo() {
   return (
-    <main id="inicio" className="min-h-[100dvh] w-full">
+    <main id="inicio" className="min-h-[100dvh] w-full" tabIndex={-1}>
       <SiteHeader />
       <section
         className="relative isolate min-h-[100dvh] w-full overflow-hidden bg-[#0D0C1A] select-none"

@@ -377,6 +377,7 @@ export function SiteHeader() {
                     .filter(Boolean)
                     .join(' ')}
                   href={link.href}
+                  aria-current={isLinkActive(link.href) ? 'page' : undefined}
                   onClick={(event) => handlePageResetNavigation(event, link.href)}
                 >
                   {link.label}
@@ -414,6 +415,7 @@ export function SiteHeader() {
                   .filter(Boolean)
                   .join(' ')}
                 href={link.href}
+                aria-current={isLinkActive(link.href) ? 'page' : undefined}
                 onClick={(event) => handlePageResetNavigation(event, link.href)}
               >
                 {link.label}

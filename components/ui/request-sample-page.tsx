@@ -433,7 +433,7 @@ export function RequestSamplePage() {
   return (
     <>
       <SiteHeader />
-      <main id="inicio" className={styles.page}>
+      <main id="inicio" className={styles.page} tabIndex={-1}>
         <div className={styles.heroTone} data-nav-tone="dark" aria-hidden="true" />
         <div className={styles.bodyTone} data-nav-tone="light" aria-hidden="true" />
         <div className={styles.shell}>

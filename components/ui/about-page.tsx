@@ -135,7 +135,7 @@ export function AboutPage() {
     <>
       <SiteHeader />
       <audio ref={duckAudioRef} src="/quack.mp3" preload="auto" aria-hidden="true" />
-      <main className={styles.page} id="inicio">
+      <main className={styles.page} id="inicio" tabIndex={-1}>
         <section ref={heroRef} className={styles.hero} data-nav-tone="light">
           <div className="site-shell">
             <div className={styles.heroInner}>
@@ -164,7 +164,7 @@ export function AboutPage() {
                 <div className={styles.heroMedia}>
                   <picture>
                     <source media="(max-width: 640px)" srcSet={heroMobileProps.srcSet} />
-                    <img {...heroDesktopProps} />
+                    <img {...heroDesktopProps} alt={heroImageAlt} />
                   </picture>
                 </div>
               </motion.div>

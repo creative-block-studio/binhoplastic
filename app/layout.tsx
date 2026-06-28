@@ -67,6 +67,9 @@ export default function RootLayout({
       className={`${processSans.variable} ${chillax.variable} h-full antialiased`}
     >
       <body className="min-h-full font-sans">
+        <a href="#inicio" className="skip-link">
+          Ir para o conteúdo principal
+        </a>
         <PageResetProvider />
         <LenisProvider />
         {children}

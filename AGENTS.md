@@ -67,6 +67,7 @@ These rules apply to all future edits in this project.
 - Keep media loading practical and fast.
 - After iterative UI exploration, remove failed attempts, obsolete styles, unused helpers, and dead code paths.
 - Keep only code that is actively used by the final implementation.
+- Remove orphaned assets, unused CSS tokens, duplicated breakpoint blocks, and other implementation leftovers when they are no longer part of the final solution.
 
 ## Visual Implementation
 
@@ -84,6 +85,8 @@ These rules apply to all future edits in this project.
 ## Interaction Behavior
 
 - Preserve the site's existing global interaction patterns unless the user explicitly asks to change them.
+- Do not add global `prefers-reduced-motion` rules that disable or neuter the site's existing animations, transitions, hover states, or motion system.
+- If motion needs to be reduced for a specific component or scenario, scope that change locally and do not use a blanket global reset for all elements.
 - The navbar logo is a reset action: it should return the experience to its initial state from the top.
 - Re-clicking the current top-level page link in the navbar should reload that page from its initial state.
 - Prevent accidental text selection in intentionally non-selectable UI such as the main hero and navbar text, unless a task explicitly requires selection there.

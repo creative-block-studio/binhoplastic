@@ -4,7 +4,6 @@ import {
   type CSSProperties,
   useEffect,
   useLayoutEffect,
-  useMemo,
   useRef,
   useState,
   type WheelEvent,
@@ -31,10 +30,15 @@ import {
 import catalogHeroHeader from '@/assets/images/catalogo-hero-header.webp';
 import {
   catalogColors,
+  colorGroupKeys,
+  colorGroupLabels,
+  colorGroupSwatches,
   defaultSelectedColorId,
+  polymerFilterOptions,
   processKeys,
   processLabels,
   processShortLabels,
+  type ColorGroupKey,
   type ProcessKey,
   type SpecIcon,
 } from '@/components/ui/color-catalog-data';
@@ -44,7 +48,9 @@ import { SiteHeader } from '@/components/ui/site-header';
 import styles from '@/components/ui/color-catalog-page.module.css';
 
 const catalogColorById = new Map(catalogColors.map((color) => [color.id, color]));
-const polymerOptions = Array.from(new Set(catalogColors.flatMap((color) => color.polymers))).sort();
+const availableColorGroupKeys = colorGroupKeys.filter((group) =>
+  catalogColors.some((color) => color.colorGroup === group),
+);
 
 function buildSampleRequestMessage(
   colors: Array<{
@@ -144,6 +150,7 @@ export function ColorCatalogPage() {
   const [isDetailExpanded, setIsDetailExpanded] = useState(false);
   const [selectedRequestColorIds, setSelectedRequestColorIds] = useState<string[]>([]);
   const [selectedPolymers, setSelectedPolymers] = useState<string[]>([]);
+  const [selectedColorGroups, setSelectedColorGroups] = useState<ColorGroupKey[]>([]);
   const [heavyMetalFilter, setHeavyMetalFilter] = useState<'todos' | 'livre' | 'contem'>('todos');
   const detailPanelRef = useRef<HTMLDivElement | null>(null);
   const detailHeroRef = useRef<HTMLDivElement | null>(null);
@@ -165,24 +172,30 @@ export function ColorCatalogPage() {
       selectedPolymers.length === 0 ||
       selectedPolymers.some((polymer) => color.polymers.includes(polymer));
 
+    const matchesColorGroup =
+      selectedColorGroups.length === 0 || selectedColorGroups.includes(color.colorGroup);
+
     const matchesHeavyMetals =
       heavyMetalFilter === 'todos' ||
       (heavyMetalFilter === 'livre' && color.heavyMetalsFree) ||
       (heavyMetalFilter === 'contem' && !color.heavyMetalsFree);
 
-    return matchesPolymers && matchesHeavyMetals;
+    return matchesPolymers && matchesColorGroup && matchesHeavyMetals;
   });
 
-  const selectedColor = catalogColorById.get(selectedColorId) ?? catalogColors[0];
+  const selectedColor =
+    filteredColors.find((color) => color.id === selectedColorId) ??
+    filteredColors[0] ??
+    catalogColorById.get(selectedColorId) ??
+    catalogColors[0];
   const activeDrawerFilterCount =
-    selectedPolymers.length + (heavyMetalFilter === 'todos' ? 0 : 1);
+    selectedPolymers.length +
+    selectedColorGroups.length +
+    (heavyMetalFilter === 'todos' ? 0 : 1);
   const selectedRequestColors = selectedRequestColorIds
     .map((colorId) => catalogColorById.get(colorId))
     .filter((color): color is NonNullable<typeof color> => Boolean(color));
-  const selectedDetailKey = useMemo(
-    () => `${selectedColor.id}-${selectedColor.technicalSpecs.length}-${selectedColor.applications.length}`,
-    [selectedColor],
-  );
+  const selectedDetailKey = `${selectedColor.id}-${selectedColor.technicalSpecs.length}-${selectedColor.applications.length}`;
   const canExpandDetail = detailHeights.expanded - detailHeights.collapsed > 12;
   const singleRequestHref = `/solicitar-amostra?message=${encodeURIComponent(
     buildSampleRequestMessage([{ code: selectedColor.code }]),
@@ -272,8 +285,18 @@ export function ColorCatalogPage() {
     );
   };
 
+  const toggleColorGroup = (group: ColorGroupKey) => {
+    setSelectedColorGroups((current) =>
+      current.includes(group)
+        ? current.filter((item) => item !== group)
+        : [...current, group],
+    );
+  };
+
   const clearDrawerFilters = () => {
+    setActiveProcess('todos');
     setSelectedPolymers([]);
+    setSelectedColorGroups([]);
     setHeavyMetalFilter('todos');
   };
 
@@ -322,7 +345,7 @@ export function ColorCatalogPage() {
   return (
     <>
       <SiteHeader />
-      <main id="inicio" className={styles.page}>
+      <main id="inicio" className={styles.page} tabIndex={-1}>
         <section className={styles.hero} data-nav-tone="dark">
           <div className={styles.heroMedia} aria-hidden="true">
             <Image
@@ -368,7 +391,7 @@ export function ColorCatalogPage() {
 
               <button
                 type="button"
-                className={styles.filterMeta}
+                className={`${styles.filterMeta} ${styles.filterMetaDesktop}`}
                 aria-expanded={isFilterDrawerOpen}
                 aria-controls="catalog-filter-drawer"
                 onClick={toggleFilterDrawer}
@@ -390,6 +413,20 @@ export function ColorCatalogPage() {
                 Cores sofrem variação em telas. Solicite uma amostra física antes de aprovar.
               </p>
             </div>
+
+            <button
+              type="button"
+              className={`${styles.filterMeta} ${styles.filterMetaMobile}`}
+              aria-expanded={isFilterDrawerOpen}
+              aria-controls="catalog-filter-drawer"
+              onClick={toggleFilterDrawer}
+            >
+              <Filter size={16} strokeWidth={1.8} />
+              <span>Filtrar</span>
+              {activeDrawerFilterCount > 0 ? (
+                <span className={styles.filterMetaCount}>{activeDrawerFilterCount}</span>
+              ) : null}
+            </button>
 
             {selectedRequestColors.length > 0 ? (
               <div className={styles.requestSelectionBar}>
@@ -469,26 +506,24 @@ export function ColorCatalogPage() {
                       </div>
 
                       <div className={styles.filterDrawerOptions}>
-                        {processKeys
-                          .filter((process) => process !== 'todos')
-                          .map((process) => {
-                            const isActive = activeProcess === process;
+                        {processKeys.map((process) => {
+                          const isActive = activeProcess === process;
 
-                            return (
-                              <button
-                                key={process}
-                                type="button"
-                                className={
-                                  isActive ? styles.filterDrawerOptionActive : styles.filterDrawerOption
-                                }
-                                aria-pressed={isActive}
-                                onClick={() => setActiveProcess(process)}
-                              >
-                                <span>{processLabels[process]}</span>
-                                {isActive ? <Check size={14} strokeWidth={2} /> : null}
-                              </button>
-                            );
-                          })}
+                          return (
+                            <button
+                              key={process}
+                              type="button"
+                              className={
+                                isActive ? styles.filterDrawerOptionActive : styles.filterDrawerOption
+                              }
+                              aria-pressed={isActive}
+                              onClick={() => setActiveProcess(process)}
+                            >
+                              <span>{processLabels[process]}</span>
+                              {isActive ? <Check size={14} strokeWidth={2} /> : null}
+                            </button>
+                          );
+                        })}
                       </div>
                     </section>
 
@@ -501,7 +536,7 @@ export function ColorCatalogPage() {
                       </div>
 
                       <div className={styles.filterDrawerOptions}>
-                        {polymerOptions.map((polymer) => {
+                        {polymerFilterOptions.map((polymer) => {
                           const isActive = selectedPolymers.includes(polymer);
 
                           return (
@@ -516,6 +551,48 @@ export function ColorCatalogPage() {
                             >
                               <span>{polymer}</span>
                               {isActive ? <Check size={14} strokeWidth={2} /> : null}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </section>
+
+                    <section className={styles.filterDrawerSection}>
+                      <div className={styles.filterDrawerSectionHead}>
+                        <h3 className={styles.filterDrawerSectionTitle}>Grupo de cor</h3>
+                        <p className={styles.filterDrawerSectionText}>
+                          Selecione um ou mais espectros disponíveis no catálogo.
+                        </p>
+                      </div>
+
+                      <div className={styles.filterDrawerColorGroupGrid}>
+                        {availableColorGroupKeys.map((group) => {
+                          const isActive = selectedColorGroups.includes(group);
+
+                          return (
+                            <button
+                              key={group}
+                              type="button"
+                              className={
+                                isActive
+                                  ? styles.filterDrawerColorGroupActive
+                                  : styles.filterDrawerColorGroup
+                              }
+                              aria-label={`Filtrar grupo ${colorGroupLabels[group]}`}
+                              title={colorGroupLabels[group]}
+                              aria-pressed={isActive}
+                              onClick={() => toggleColorGroup(group)}
+                            >
+                              <span
+                                className={styles.filterDrawerColorSwatch}
+                                style={{ backgroundColor: colorGroupSwatches[group] }}
+                                aria-hidden="true"
+                              />
+                              {isActive ? (
+                                <span className={styles.filterDrawerColorCheck} aria-hidden="true">
+                                  <Check size={16} strokeWidth={2.4} />
+                                </span>
+                              ) : null}
                             </button>
                           );
                         })}
