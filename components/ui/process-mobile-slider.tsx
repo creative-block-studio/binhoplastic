@@ -1,10 +1,10 @@
 'use client';
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import type { CSSProperties, TouchEvent } from 'react';
+import type { CSSProperties } from 'react';
 import type { StaticImageData } from 'next/image';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 import blowObject from '@/assets/images/process-blow-object-figma.webp';
 import extrusionObject from '@/assets/images/process-extrusion-object-figma.webp';
@@ -236,46 +236,24 @@ const processSlides: readonly ProcessSlide[] = [
   },
 ] as const;
 
-const SWIPE_THRESHOLD = 42;
 const PROCESS_MOBILE_ACCENT = '#d14d72';
 
 export function ProcessMobileSlider() {
-  const touchStartXRef = useRef<number | null>(null);
-  const touchDeltaXRef = useRef(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const activeSlide = processSlides[activeIndex];
+  const totalSlides = processSlides.length;
 
   const scrollToIndex = (index: number) => {
     const nextIndex = Math.max(0, Math.min(processSlides.length - 1, index));
     setActiveIndex(nextIndex);
   };
 
-  const handleTouchStart = (event: TouchEvent<HTMLDivElement>) => {
-    touchStartXRef.current = event.touches[0]?.clientX ?? null;
-    touchDeltaXRef.current = 0;
+  const goToPreviousSlide = () => {
+    setActiveIndex((current) => (current - 1 + totalSlides) % totalSlides);
   };
 
-  const handleTouchMove = (event: TouchEvent<HTMLDivElement>) => {
-    const startX = touchStartXRef.current;
-
-    if (startX === null) {
-      return;
-    }
-
-    touchDeltaXRef.current = (event.touches[0]?.clientX ?? startX) - startX;
-  };
-
-  const handleTouchEnd = () => {
-    const deltaX = touchDeltaXRef.current;
-
-    if (deltaX <= -SWIPE_THRESHOLD) {
-      scrollToIndex(activeIndex + 1);
-    } else if (deltaX >= SWIPE_THRESHOLD) {
-      scrollToIndex(activeIndex - 1);
-    }
-
-    touchStartXRef.current = null;
-    touchDeltaXRef.current = 0;
+  const goToNextSlide = () => {
+    setActiveIndex((current) => (current + 1) % totalSlides);
   };
 
   return (
@@ -319,16 +297,11 @@ export function ProcessMobileSlider() {
             ))}
           </div>
 
-          <div
-            className={styles.carousel}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
+          <div className={styles.carousel}>
             <button
               type="button"
               className={`${styles.arrow} ${styles.arrowPrev}`}
-              onClick={() => scrollToIndex(activeIndex - 1)}
+              onClick={goToPreviousSlide}
               aria-label="Processo anterior"
             >
               <ChevronLeft size={18} strokeWidth={1.8} />
@@ -412,7 +385,7 @@ export function ProcessMobileSlider() {
             <button
               type="button"
               className={`${styles.arrow} ${styles.arrowNext}`}
-              onClick={() => scrollToIndex(activeIndex + 1)}
+              onClick={goToNextSlide}
               aria-label="Próximo processo"
             >
               <ChevronRight size={18} strokeWidth={1.8} />
