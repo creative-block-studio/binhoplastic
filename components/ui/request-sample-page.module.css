@@ -600,13 +600,21 @@
   stroke: #ffffff;
 }
 
-.submitButton :global(span:nth-child(2)) {
-  transform: translateX(0);
+.submitButton :global(svg:first-child) {
+  left: -32px;
 }
 
-.submitButton:hover :global(span:nth-child(2)),
-.submitButton:focus-visible :global(span:nth-child(2)) {
-  transform: translateX(0);
+.submitButton:hover :global(svg:first-child),
+.submitButton:focus-visible :global(svg:first-child) {
+  left: 0.9rem;
+}
+
+.submitButton :global(span:nth-child(2)) {
+  display: block;
+  width: 100%;
+  padding-inline: 1.35rem 1.5rem;
+  text-align: center;
+  transform: translateX(0) !important;
 }
 
 .submitButton:hover :global(svg),
@@ -616,12 +624,6 @@
 
 .submitButton :global(span:nth-child(3)) {
   background: var(--contact-surface-strong);
-}
-
-.submitButton:hover :global(span:nth-child(3)),
-.submitButton:focus-visible :global(span:nth-child(3)) {
-  width: 320px;
-  height: 320px;
 }
 
 @container (max-width: 34rem) {
